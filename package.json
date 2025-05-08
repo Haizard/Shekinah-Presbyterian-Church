@@ -13,10 +13,10 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "init-admin": "node initAdmin.js",
     "seed-data": "node seedData.js",
-    "build": "cd jsmart1-react && npm install && npm run build",
-    "install-client": "cd jsmart1-react && npm install",
+    "build": "cd jsmart1-react && npm install --include=dev && npm run build",
+    "install-client": "cd jsmart1-react && npm install --include=dev",
     "setup": "node setup.js",
-    "render-postbuild": "npm run install-client && npm run build && npm run init-admin"
+    "render-postbuild": "chmod +x build.sh && ./build.sh"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
