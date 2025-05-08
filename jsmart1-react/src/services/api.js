@@ -1,7 +1,20 @@
 // API service for making requests to the backend
 
+// Determine the base API URL based on the environment
+const getBaseUrl = () => {
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    // In production, use the same origin as the frontend
+    if (window.location.hostname !== 'localhost') {
+      return '';  // Empty string means use the same origin
+    }
+  }
+  // In development, use localhost
+  return 'http://localhost:5000';
+};
+
 // Base API URL - points to our Express backend
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = getBaseUrl();
 
 // Get the user from localStorage
 const getUser = () => {
