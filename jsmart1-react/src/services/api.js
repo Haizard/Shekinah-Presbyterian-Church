@@ -1,5 +1,8 @@
 // API service for making requests to the backend
 
+// Base API URL - points to our Express backend
+const API_BASE_URL = 'http://localhost:5000';
+
 // Get the user from localStorage
 const getUser = () => {
   const userString = localStorage.getItem('user');
@@ -10,7 +13,7 @@ const getUser = () => {
 const apiRequest = async (url, options = {}) => {
   // Get the user token if available
   const user = getUser();
-  
+
   // Set default headers
   const headers = {
     'Content-Type': 'application/json',
@@ -28,8 +31,11 @@ const apiRequest = async (url, options = {}) => {
     headers,
   };
 
+  // Prepend the API base URL to the provided URL
+  const fullUrl = `${API_BASE_URL}${url}`;
+
   try {
-    const response = await fetch(url, requestOptions);
+    const response = await fetch(fullUrl, requestOptions);
     const data = await response.json();
 
     if (!response.ok) {
@@ -38,7 +44,7 @@ const apiRequest = async (url, options = {}) => {
 
     return data;
   } catch (error) {
-    console.error(`API Error (${url}):`, error);
+    console.error(`API Error (${fullUrl}):`, error);
     throw error;
   }
 };
@@ -164,7 +170,7 @@ const api = {
   upload: {
     uploadFile: (formData) => {
       const user = getUser();
-      return fetch('/api/upload', {
+      return fetch(`${API_BASE_URL}/api/upload`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${user?.token}`,

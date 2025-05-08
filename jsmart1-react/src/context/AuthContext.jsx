@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -18,26 +19,14 @@ export const AuthProvider = ({ children }) => {
   // Login user
   const login = async (email, password) => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const data = await api.auth.login({ email, password });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('user', JSON.stringify(data));
-        setUser(data);
-        return { success: true };
-      } else {
-        return { success: false, message: data.message };
-      }
+      localStorage.setItem('user', JSON.stringify(data));
+      setUser(data);
+      return { success: true };
     } catch (error) {
       console.error('Login error:', error);
-      return { success: false, message: 'An error occurred during login' };
+      return { success: false, message: error.message || 'An error occurred during login' };
     }
   };
 
@@ -50,53 +39,28 @@ export const AuthProvider = ({ children }) => {
   // Register user
   const register = async (name, email, password) => {
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
+      const data = await api.auth.register({ name, email, password });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('user', JSON.stringify(data));
-        setUser(data);
-        return { success: true };
-      } else {
-        return { success: false, message: data.message };
-      }
+      localStorage.setItem('user', JSON.stringify(data));
+      setUser(data);
+      return { success: true };
     } catch (error) {
       console.error('Registration error:', error);
-      return { success: false, message: 'An error occurred during registration' };
+      return { success: false, message: error.message || 'An error occurred during registration' };
     }
   };
 
   // Update user profile
   const updateProfile = async (userData) => {
     try {
-      const response = await fetch('/api/auth/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify(userData),
-      });
+      const data = await api.auth.updateProfile(userData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('user', JSON.stringify(data));
-        setUser(data);
-        return { success: true };
-      } else {
-        return { success: false, message: data.message };
-      }
+      localStorage.setItem('user', JSON.stringify(data));
+      setUser(data);
+      return { success: true };
     } catch (error) {
       console.error('Profile update error:', error);
-      return { success: false, message: 'An error occurred during profile update' };
+      return { success: false, message: error.message || 'An error occurred during profile update' };
     }
   };
 
