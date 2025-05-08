@@ -12,7 +12,9 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:3000', // Allow requests from React app
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.CLIENT_URL || '*' // Use CLIENT_URL in production or allow all origins
+    : 'http://localhost:3000', // Allow requests from local React app in development
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -20,12 +22,12 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'dist')));
+  app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist')));
 }
 
 // MongoDB Connection
@@ -56,7 +58,7 @@ app.use('/api/upload', uploadRoutes);
 // Serve React app for any other routes in production
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    res.sendFile(path.join(__dirname, 'jsmart1-react', 'dist', 'index.html'));
   });
 }
 

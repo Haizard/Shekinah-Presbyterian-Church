@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Shekinah Presbyterian Church Tanzania Website with Admin Panel",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
@@ -10,9 +13,10 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "init-admin": "node initAdmin.js",
     "seed-data": "node seedData.js",
-    "build": "cd jsmart1-react && npm run build",
+    "build": "cd jsmart1-react && npm install && npm run build",
     "install-client": "cd jsmart1-react && npm install",
-    "setup": "node setup.js"
+    "setup": "node setup.js",
+    "render-postbuild": "npm run install-client && npm run build && npm run init-admin"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
