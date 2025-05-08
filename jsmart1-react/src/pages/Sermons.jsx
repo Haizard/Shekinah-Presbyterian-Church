@@ -1,0 +1,291 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import '../styles/Sermons.css';
+
+const Sermons = () => {
+  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Sample sermon data
+  const sermons = [
+    {
+      id: 1,
+      title: 'Walking in Faith',
+      speaker: 'Rev. Dr. Daniel John Seni',
+      date: 'June 5, 2023',
+      scripture: 'Hebrews 11:1-6',
+      category: 'faith',
+      image: '/images/SPCT/CHURCH.jpg',
+      audioUrl: '#',
+      videoUrl: '#',
+      notesUrl: '#',
+      description: 'This sermon explores what it means to walk by faith and not by sight, drawing from the examples of the heroes of faith in Hebrews 11.'
+    },
+    {
+      id: 2,
+      title: 'The Power of Prayer',
+      speaker: 'Rev. Emanuel Nzelah',
+      date: 'May 29, 2023',
+      scripture: 'James 5:13-18',
+      category: 'prayer',
+      image: '/images/SPCT/CHURCH.jpg',
+      audioUrl: '#',
+      videoUrl: '#',
+      notesUrl: '#',
+      description: 'An exploration of the transformative power of prayer in the life of a believer and the community of faith.'
+    },
+    {
+      id: 3,
+      title: 'Living as Kingdom Citizens',
+      speaker: 'Rev. Dr. Daniel John Seni',
+      date: 'May 22, 2023',
+      scripture: 'Philippians 3:17-21',
+      category: 'discipleship',
+      image: '/images/SPCT/CHURCH.jpg',
+      audioUrl: '#',
+      videoUrl: '#',
+      notesUrl: '#',
+      description: 'This message examines what it means to live as citizens of heaven while still on earth, with practical applications for daily life.'
+    },
+    {
+      id: 4,
+      title: 'The Gospel and Reconciliation',
+      speaker: 'Mwl. Boyeon Lee',
+      date: 'May 15, 2023',
+      scripture: '2 Corinthians 5:17-21',
+      category: 'gospel',
+      image: '/images/SPCT/CHURCH.jpg',
+      audioUrl: '#',
+      videoUrl: '#',
+      notesUrl: '#',
+      description: 'A powerful message on how the Gospel brings reconciliation between God and humanity, and between people divided by conflict.'
+    },
+    {
+      id: 5,
+      title: 'The Holy Spirit in Mission',
+      speaker: 'Rev. Emanuel Nzelah',
+      date: 'May 8, 2023',
+      scripture: 'Acts 1:8, 2:1-13',
+      category: 'holy-spirit',
+      image: '/images/SPCT/CHURCH.jpg',
+      audioUrl: '#',
+      videoUrl: '#',
+      notesUrl: '#',
+      description: 'This sermon explores the essential role of the Holy Spirit in empowering believers for effective mission and witness.'
+    },
+    {
+      id: 6,
+      title: 'Grace That Transforms',
+      speaker: 'Rev. Dr. Daniel John Seni',
+      date: 'May 1, 2023',
+      scripture: 'Titus 2:11-14',
+      category: 'grace',
+      image: '/images/SPCT/CHURCH.jpg',
+      audioUrl: '#',
+      videoUrl: '#',
+      notesUrl: '#',
+      description: 'An examination of how God\'s grace not only saves us but transforms our character and conduct.'
+    }
+  ];
+
+  // Filter sermons based on category and search term
+  const filteredSermons = sermons.filter(sermon => {
+    const matchesCategory = filter === 'all' || sermon.category === filter;
+    const matchesSearch = sermon.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          sermon.speaker.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          sermon.scripture.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  return (
+    <main className="sermons-page">
+      {/* Page Banner */}
+      <section className="page-banner">
+        <div className="container">
+          <h2>Sermons</h2>
+          <p>Listen to the Word of God preached with clarity and conviction</p>
+        </div>
+      </section>
+
+      {/* Current Series Section */}
+      <section className="section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Current Series</h2>
+            <div className="divider" />
+          </div>
+          <div className="current-series">
+            <div className="series-image">
+              <img src="/images/SPCT/CHURCH.jpg" alt="Current Sermon Series" />
+            </div>
+            <div className="series-details">
+              <h3>Walking in Faith</h3>
+              <p className="series-description">A journey through the book of Hebrews exploring what it means to live by faith in today's world.</p>
+              <p className="series-meta">June 2023 - August 2023</p>
+              <Link to="/sermons/series/faith" className="btn btn-primary">View Series</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sermons Section */}
+      <section className="section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Latest Sermons</h2>
+            <div className="divider" />
+          </div>
+
+          {/* Search and Filter */}
+          <div className="sermons-filters">
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Search sermons..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button type="button"><FontAwesomeIcon icon="search" /></button>
+            </div>
+            <div className="category-filter">
+              <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                <option value="all">All Categories</option>
+                <option value="faith">Faith</option>
+                <option value="prayer">Prayer</option>
+                <option value="discipleship">Discipleship</option>
+                <option value="gospel">Gospel</option>
+                <option value="holy-spirit">Holy Spirit</option>
+                <option value="grace">Grace</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Sermons Grid */}
+          <div className="sermons-grid">
+            {filteredSermons.length > 0 ? (
+              filteredSermons.map(sermon => (
+                <div className="sermon-card" key={sermon.id}>
+                  <div className="sermon-thumbnail">
+                    <img src={sermon.image} alt={sermon.title} />
+                    <div className="play-button">
+                      <FontAwesomeIcon icon="play" />
+                    </div>
+                  </div>
+                  <div className="sermon-details">
+                    <h3>{sermon.title}</h3>
+                    <p className="sermon-meta">{sermon.speaker} | {sermon.date}</p>
+                    <p className="sermon-verse">{sermon.scripture}</p>
+                    <p className="sermon-description">{sermon.description}</p>
+                    <div className="sermon-links">
+                      <a href={sermon.audioUrl}><FontAwesomeIcon icon="headphones" /> Listen</a>
+                      <a href={sermon.videoUrl}><FontAwesomeIcon icon="play" /> Watch</a>
+                      <a href={sermon.notesUrl}><FontAwesomeIcon icon="file-alt" /> Notes</a>
+                      <a href={sermon.audioUrl} download><FontAwesomeIcon icon="download" /> Download</a>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-sermons">
+                <p>No sermons found matching your criteria. Please try a different search or filter.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Pagination */}
+          <div className="pagination">
+            <button type="button" className="active">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <button type="button"><FontAwesomeIcon icon="chevron-right" /></button>
+          </div>
+        </div>
+      </section>
+
+      {/* Series Section */}
+      <section className="section bg-light">
+        <div className="container">
+          <div className="section-header">
+            <h2>Sermon Series</h2>
+            <div className="divider" />
+          </div>
+          <div className="series-grid">
+            <div className="series-card">
+              <div className="series-image">
+                <img src="/images/SPCT/CHURCH.jpg" alt="Foundations of Faith" />
+              </div>
+              <div className="series-details">
+                <h3>Foundations of Faith</h3>
+                <p>A 6-part series exploring the core beliefs of the Christian faith</p>
+                <a href="/sermons/series/foundations" className="btn btn-sm">View Series</a>
+              </div>
+            </div>
+            <div className="series-card">
+              <div className="series-image">
+                <img src="/images/SPCT/CHURCH.jpg" alt="Kingdom Living" />
+              </div>
+              <div className="series-details">
+                <h3>Kingdom Living</h3>
+                <p>A study of the Sermon on the Mount and its implications for daily life</p>
+                <a href="/sermons/series/kingdom" className="btn btn-sm">View Series</a>
+              </div>
+            </div>
+            <div className="series-card">
+              <div className="series-image">
+                <img src="/images/SPCT/CHURCH.jpg" alt="Spiritual Disciplines" />
+              </div>
+              <div className="series-details">
+                <h3>Spiritual Disciplines</h3>
+                <p>Practical guidance on prayer, Bible study, fasting, and more</p>
+                <a href="/sermons/series/disciplines" className="btn btn-sm">View Series</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Subscribe Section */}
+      <section className="section bg-light">
+        <div className="container">
+          <div className="section-header">
+            <h2>Subscribe to Our Sermons</h2>
+            <div className="divider" />
+          </div>
+          <div className="subscribe-content">
+            <p>Never miss a sermon! Subscribe to our podcast and receive the latest messages directly on your device.</p>
+            <div className="podcast-platforms">
+              <a href="https://apple.com/podcasts" target="_blank" rel="noopener noreferrer" className="podcast-link">
+                <FontAwesomeIcon icon={['fab', 'apple']} />
+                <span>Apple Podcasts</span>
+              </a>
+              <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="podcast-link">
+                <FontAwesomeIcon icon={['fab', 'spotify']} />
+                <span>Spotify</span>
+              </a>
+              <a href="https://podcasts.google.com" target="_blank" rel="noopener noreferrer" className="podcast-link">
+                <FontAwesomeIcon icon={['fab', 'google']} />
+                <span>Google Podcasts</span>
+              </a>
+              <a href="/rss-feed" className="podcast-link">
+                <FontAwesomeIcon icon="rss" />
+                <span>RSS Feed</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="cta-section">
+        <div className="container">
+          <h2>Join Us This Sunday</h2>
+          <p>Experience the presence of God and the fellowship of believers</p>
+          <a href="/contact" className="btn btn-primary">Plan Your Visit</a>
+        </div>
+      </section>
+    </main>
+  );
+};
+
+export default Sermons;

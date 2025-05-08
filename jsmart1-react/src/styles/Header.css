@@ -1,0 +1,218 @@
+/* Header & Navigation Styles */
+header {
+  background: linear-gradient(135deg, #1a4b8c 0%, #2c5eaa 50%, #1a4b8c 100%);
+  color: var(--light-color);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--box-shadow);
+  transition: all 0.4s ease;
+  border-bottom: 3px solid #f3c623;
+}
+
+header.scrolled {
+  box-shadow: var(--box-shadow-lg);
+  padding: 0.7rem 0;
+  background: linear-gradient(135deg, #153a6f 0%, #1a4b8c 50%, #153a6f 100%);
+}
+
+header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 50px;
+  height: 50px;
+  margin-right: 1rem;
+  border-radius: 50%;
+  border: 2px solid #f3c623;
+}
+
+.logo h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0;
+  color: var(--light-color);
+}
+
+nav ul {
+  display: flex;
+  align-items: center;
+}
+
+nav ul li {
+  margin: 0 0.5rem;
+  position: relative;
+}
+
+nav ul li a {
+  color: var(--light-color);
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  transition: var(--transition);
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+  color: #f3c623;
+}
+
+.btn-give {
+  background-color: #f3c623;
+  color: #1a4b8c !important;
+  padding: 0.5rem 1.5rem !important;
+  border-radius: var(--border-radius);
+  font-weight: 600 !important;
+  transition: var(--transition);
+}
+
+.btn-give:hover {
+  background-color: #e5b71f;
+  transform: translateY(-2px);
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--light-color);
+  min-width: 200px;
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-content a {
+  color: var(--text-color) !important;
+  padding: 0.7rem 1.5rem !important;
+  display: block;
+  font-weight: 400 !important;
+  font-size: 0.9rem;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--light-bg);
+  color: var(--primary-color) !important;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: var(--light-color);
+  border-radius: 3px;
+  transition: var(--transition);
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+  .hamburger {
+    display: flex;
+  }
+
+  nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #1a4b8c 0%, #2c5eaa 50%, #1a4b8c 100%);
+    padding: 1rem 0;
+    box-shadow: var(--box-shadow);
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    transition: all 0.4s ease;
+  }
+
+  nav.active {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 1.5rem;
+  }
+
+  nav ul li {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  nav ul li a {
+    display: block;
+    padding: 0.7rem 0;
+  }
+
+  .dropdown-content {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    background-color: transparent;
+    padding: 0 0 0 1.5rem;
+    display: none;
+  }
+
+  .dropdown.active .dropdown-content {
+    display: block;
+  }
+
+  .dropdown-content a {
+    color: var(--light-color) !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  .dropdown-content a:hover {
+    background-color: transparent;
+    color: #f3c623 !important;
+  }
+
+  .btn-give {
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+}
