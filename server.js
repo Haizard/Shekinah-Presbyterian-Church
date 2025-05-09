@@ -34,8 +34,8 @@ if (process.env.NODE_ENV === 'production') {
 // MongoDB Connection
 console.log('Connecting to MongoDB Atlas...');
 
-// Use the standard MongoDB Atlas connection string
-const MONGODB_URI = 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// Use environment variable for MongoDB connection string or fallback to the standard connection string
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 // Connect to MongoDB
 mongoose.connect(MONGODB_URI)
