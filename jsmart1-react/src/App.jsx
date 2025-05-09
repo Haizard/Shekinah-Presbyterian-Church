@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import { AuthProvider } from './context/AuthContext'
+import { ContentProvider } from './context/ContentContext'
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -71,7 +72,9 @@ import {
   faTrashAlt,
   faEye,
   faReply,
-  faFileUpload
+  faFileUpload,
+  faFileCode,
+  faSync
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -143,7 +146,9 @@ library.add(
   faTrashAlt,
   faEye,
   faReply,
-  faFileUpload
+  faFileUpload,
+  faFileCode,
+  faSync
 )
 
 // Components
@@ -168,13 +173,15 @@ import SermonManager from './pages/admin/SermonManager'
 import EventManager from './pages/admin/EventManager'
 import GalleryManager from './pages/admin/GalleryManager'
 import ContactManager from './pages/admin/ContactManager'
+import ContentManager from './pages/admin/ContentManager'
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
-          <Routes>
+      <ContentProvider>
+        <Router>
+          <div className="App">
+            <Routes>
             {/* Public Routes */}
             <Route path="/" element={
               <>
@@ -241,10 +248,12 @@ function App() {
             <Route path="/admin/sermons" element={<SermonManager />} />
             <Route path="/admin/events" element={<EventManager />} />
             <Route path="/admin/gallery" element={<GalleryManager />} />
+            <Route path="/admin/content" element={<ContentManager />} />
             <Route path="/admin/contact" element={<ContactManager />} />
           </Routes>
         </div>
       </Router>
+      </ContentProvider>
     </AuthProvider>
   )
 }

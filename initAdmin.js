@@ -5,7 +5,18 @@ const User = require('./models/User');
 const bcrypt = require('bcryptjs');
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/shekinah')
+// Set mongoose connection options
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 60000, // Increase timeout to 60 seconds
+  socketTimeoutMS: 90000, // Increase socket timeout
+  family: 4, // Use IPv4, skip trying IPv6
+  connectTimeoutMS: 60000 // Increase connection timeout
+};
+
+// Use the standard MongoDB Atlas connection string
+mongoose.connect('mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => {
     console.error('MongoDB connection error:', err);

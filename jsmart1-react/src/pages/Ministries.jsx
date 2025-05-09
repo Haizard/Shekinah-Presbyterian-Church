@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DynamicContent from '../components/DynamicContent';
+import VideoGallery from '../components/VideoGallery';
 import '../styles/Ministries.css';
 import api from '../services/api';
 import { getImageUrl, handleImageError, debugImage } from '../utils/imageUtils';
@@ -83,19 +85,39 @@ const Ministries = () => {
             <h2>How We Serve</h2>
             <div className="divider" />
           </div>
-          <div className="ministries-intro">
-            <p>At Shekinah Presbyterian Mission Tanzania, ministry is not just what we do — it's who we are. We serve with the conviction that the Gospel of Christ transforms lives, families, communities, and nations.</p>
-            <p>Whether you're called to pray, serve, give, or spread the word — there's a place for you in this mission. We invite you to explore our ministries and find where God is calling you to get involved.</p>
-            <div className="ministry-buttons">
-              <a href="#worship" className="btn btn-sm">Worship</a>
-              <a href="#discipleship" className="btn btn-sm">Discipleship</a>
-              <a href="#children" className="btn btn-sm">Children</a>
-              <a href="#youth" className="btn btn-sm">Youth</a>
-              <a href="#outreach" className="btn btn-sm">Outreach</a>
-              <a href="#missions" className="btn btn-sm">Missions</a>
-              <a href="#prayer" className="btn btn-sm">Prayer</a>
-            </div>
-          </div>
+          <DynamicContent
+            section="how_we_serve"
+            className="ministries-intro"
+            fallback={
+              <div className="ministries-intro">
+                <p>At Shekinah Presbyterian Mission Tanzania, ministry is not just what we do — it's who we are. We serve with the conviction that the Gospel of Christ transforms lives, families, communities, and nations.</p>
+                <p>Whether you're called to pray, serve, give, or spread the word — there's a place for you in this mission. We invite you to explore our ministries and find where God is calling you to get involved.</p>
+                <div className="ministry-buttons">
+                  <a href="#worship" className="btn btn-sm">Worship</a>
+                  <a href="#discipleship" className="btn btn-sm">Discipleship</a>
+                  <a href="#children" className="btn btn-sm">Children</a>
+                  <a href="#youth" className="btn btn-sm">Youth</a>
+                  <a href="#outreach" className="btn btn-sm">Outreach</a>
+                  <a href="#missions" className="btn btn-sm">Missions</a>
+                  <a href="#prayer" className="btn btn-sm">Prayer</a>
+                </div>
+              </div>
+            }
+            renderContent={(content) => (
+              <div className="ministries-intro">
+                <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                <div className="ministry-buttons">
+                  <a href="#worship" className="btn btn-sm">Worship</a>
+                  <a href="#discipleship" className="btn btn-sm">Discipleship</a>
+                  <a href="#children" className="btn btn-sm">Children</a>
+                  <a href="#youth" className="btn btn-sm">Youth</a>
+                  <a href="#outreach" className="btn btn-sm">Outreach</a>
+                  <a href="#missions" className="btn btn-sm">Missions</a>
+                  <a href="#prayer" className="btn btn-sm">Prayer</a>
+                </div>
+              </div>
+            )}
+          />
         </div>
       </section>
 
@@ -446,6 +468,17 @@ const Ministries = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Video Gallery Section */}
+      <section className="section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Ministry Videos</h2>
+            <div className="divider" />
+          </div>
+          <VideoGallery />
         </div>
       </section>
 

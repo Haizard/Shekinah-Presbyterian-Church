@@ -48,16 +48,23 @@ const apiRequest = async (url, options = {}) => {
   const fullUrl = `${API_BASE_URL}${url}`;
 
   try {
+    console.log(`API Request to: ${fullUrl}`, { method: requestOptions.method || 'GET' });
+
     const response = await fetch(fullUrl, requestOptions);
+    console.log(`API Response status: ${response.status} ${response.statusText}`);
+
     const data = await response.json();
+    console.log(`API Response data:`, data);
 
     if (!response.ok) {
+      console.error(`API Error (${fullUrl}):`, data);
       throw new Error(data.message || 'Something went wrong');
     }
 
     return data;
   } catch (error) {
     console.error(`API Error (${fullUrl}):`, error);
+    console.error('Request options:', JSON.stringify(requestOptions, null, 2));
     throw error;
   }
 };

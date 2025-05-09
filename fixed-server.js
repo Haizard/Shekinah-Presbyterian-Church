@@ -31,27 +31,29 @@ if (process.env.NODE_ENV === 'production') {
 // MongoDB Connection with improved error handling
 const connectDB = async () => {
   try {
-    // Use a modified connection string with more options
-    const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/shekinah?retryWrites=true&w=majority';
-    
+    // Use the standard MongoDB Atlas connection string
+    const mongoURI = 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
     // Set mongoose connection options
     const options = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
-      socketTimeoutMS: 45000, // Increase socket timeout
+      serverSelectionTimeoutMS: 60000, // Increase timeout to 60 seconds
+      socketTimeoutMS: 90000, // Increase socket timeout
+      family: 4, // Use IPv4, skip trying IPv6
+      connectTimeoutMS: 60000 // Increase connection timeout
     };
 
     await mongoose.connect(mongoURI, options);
     console.log('MongoDB connected successfully');
-    
+
     // Continue with server setup after successful connection
     setupRoutes();
     startServer();
   } catch (err) {
     console.error('MongoDB connection error:', err);
     console.log('Falling back to local test server...');
-    
+
     // Continue with server setup even if MongoDB connection fails
     setupRoutes();
     startServer();
@@ -82,7 +84,7 @@ const setupRoutes = () => {
     app.use('/api/upload', uploadRoutes);
   } catch (error) {
     console.error('Error setting up routes:', error);
-    
+
     // Setup fallback routes if there's an error
     setupFallbackRoutes();
   }
@@ -104,7 +106,7 @@ const setupRoutes = () => {
 // Fallback routes for testing
 const setupFallbackRoutes = () => {
   console.log('Setting up fallback routes for testing');
-  
+
   // Auth routes
   app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;

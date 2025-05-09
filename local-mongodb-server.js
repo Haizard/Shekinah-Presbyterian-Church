@@ -31,22 +31,32 @@ if (process.env.NODE_ENV === 'production') {
 // MongoDB Connection with local database
 const connectDB = async () => {
   try {
-    // Use a local MongoDB connection
-    const mongoURI = 'mongodb://localhost:27017/shekinah';
-    
-    await mongoose.connect(mongoURI);
-    console.log('Connected to local MongoDB successfully');
-    
+    // Use MongoDB Atlas connection
+    const mongoURI = 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+    // Set mongoose connection options
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 60000, // Increase timeout to 60 seconds
+      socketTimeoutMS: 90000, // Increase socket timeout
+      family: 4, // Use IPv4, skip trying IPv6
+      connectTimeoutMS: 60000 // Increase connection timeout
+    };
+
+    await mongoose.connect(mongoURI, options);
+    console.log('Connected to MongoDB Atlas successfully');
+
     // Initialize admin user if it doesn't exist
     await initializeAdmin();
-    
+
     // Continue with server setup after successful connection
     setupRoutes();
     startServer();
   } catch (err) {
     console.error('MongoDB connection error:', err);
     console.log('Falling back to in-memory database...');
-    
+
     // Continue with server setup even if MongoDB connection fails
     setupFallbackRoutes();
     startServer();
@@ -57,25 +67,25 @@ const connectDB = async () => {
 const initializeAdmin = async () => {
   try {
     const User = require('./models/User');
-    
+
     // Check if admin user exists
     const adminExists = await User.findOne({ email: 'admin@shekinah.org' });
-    
+
     if (!adminExists) {
       console.log('Creating admin user...');
-      
+
       // Create admin user
       const bcrypt = require('bcryptjs');
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('admin123', salt);
-      
+
       await User.create({
         name: 'Admin',
         email: 'admin@shekinah.org',
         password: hashedPassword,
         isAdmin: true
       });
-      
+
       console.log('Admin user created successfully');
     } else {
       console.log('Admin user already exists');
@@ -109,7 +119,7 @@ const setupRoutes = () => {
     app.use('/api/upload', uploadRoutes);
   } catch (error) {
     console.error('Error setting up routes:', error);
-    
+
     // Setup fallback routes if there's an error
     setupFallbackRoutes();
   }
@@ -131,7 +141,7 @@ const setupRoutes = () => {
 // Fallback routes for testing
 const setupFallbackRoutes = () => {
   console.log('Setting up fallback routes with in-memory database');
-  
+
   // In-memory data store
   const db = {
     users: [
@@ -206,7 +216,7 @@ const setupFallbackRoutes = () => {
     ],
     contacts: []
   };
-  
+
   // Auth routes
   app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
@@ -220,7 +230,7 @@ const setupFallbackRoutes = () => {
         process.env.JWT_SECRET || 'shekinah_presbyterian_church_secret_key',
         { expiresIn: '30d' }
       );
-      
+
       res.json({
         _id: 'admin123',
         name: 'Admin',
@@ -237,19 +247,19 @@ const setupFallbackRoutes = () => {
   app.get('/api/ministries', (req, res) => {
     res.json(db.ministries);
   });
-  
+
   app.get('/api/sermons', (req, res) => {
     res.json(db.sermons);
   });
-  
+
   app.get('/api/events', (req, res) => {
     res.json(db.events);
   });
-  
+
   app.get('/api/gallery', (req, res) => {
     res.json(db.gallery);
   });
-  
+
   app.get('/api/content', (req, res) => {
     res.json(db.content);
   });

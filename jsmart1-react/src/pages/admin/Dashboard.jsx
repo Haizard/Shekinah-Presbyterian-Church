@@ -12,10 +12,12 @@ const Dashboard = () => {
     events: 0,
     gallery: 0,
     contacts: 0,
+    content: 0,
   });
-  
+
   const [recentContacts, setRecentContacts] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [recentContent, setRecentContent] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -23,30 +25,35 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch counts
-        const [ministries, sermons, events, gallery, contacts] = await Promise.all([
+        const [ministries, sermons, events, gallery, contacts, content] = await Promise.all([
           api.ministries.getAll(),
           api.sermons.getAll(),
           api.events.getAll(),
           api.gallery.getAll(),
           api.contact.getAll(),
+          api.content.getAll(),
         ]);
-        
+
         setStats({
           ministries: ministries.length,
           sermons: sermons.length,
           events: events.length,
           gallery: gallery.length,
           contacts: contacts.length,
+          content: content.length,
         });
-        
+
         // Set recent contacts (latest 5)
         setRecentContacts(contacts.slice(0, 5));
-        
+
         // Set upcoming events (next 5)
         setUpcomingEvents(events.slice(0, 5));
-        
+
+        // Set recent content (latest 5)
+        setRecentContent(content.slice(0, 5));
+
         setLoading(false);
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
@@ -54,7 +61,7 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-    
+
     fetchDashboardData();
   }, []);
 
@@ -62,7 +69,7 @@ const Dashboard = () => {
     return (
       <AdminLayout>
         <div className="loading-container">
-          <div className="spinner"></div>
+          <div className="spinner" />
           <p>Loading dashboard data...</p>
         </div>
       </AdminLayout>
@@ -75,7 +82,7 @@ const Dashboard = () => {
         <div className="error-container">
           <FontAwesomeIcon icon="exclamation-circle" />
           <p>{error}</p>
-          <button onClick={() => window.location.reload()}>Retry</button>
+          <button type="button" onClick={() => window.location.reload()}>Retry</button>
         </div>
       </AdminLayout>
     );
@@ -85,7 +92,7 @@ const Dashboard = () => {
     <AdminLayout>
       <div className="dashboard">
         <h1>Dashboard</h1>
-        
+
         {/* Stats Cards */}
         <div className="stats-cards">
           <div className="stat-card">
@@ -100,7 +107,7 @@ const Dashboard = () => {
               <FontAwesomeIcon icon="arrow-right" />
             </Link>
           </div>
-          
+
           <div className="stat-card">
             <div className="stat-icon">
               <FontAwesomeIcon icon="bible" />
@@ -113,7 +120,7 @@ const Dashboard = () => {
               <FontAwesomeIcon icon="arrow-right" />
             </Link>
           </div>
-          
+
           <div className="stat-card">
             <div className="stat-icon">
               <FontAwesomeIcon icon="calendar-alt" />
@@ -126,7 +133,7 @@ const Dashboard = () => {
               <FontAwesomeIcon icon="arrow-right" />
             </Link>
           </div>
-          
+
           <div className="stat-card">
             <div className="stat-icon">
               <FontAwesomeIcon icon="images" />
@@ -139,7 +146,7 @@ const Dashboard = () => {
               <FontAwesomeIcon icon="arrow-right" />
             </Link>
           </div>
-          
+
           <div className="stat-card">
             <div className="stat-icon">
               <FontAwesomeIcon icon="envelope" />
@@ -152,8 +159,48 @@ const Dashboard = () => {
               <FontAwesomeIcon icon="arrow-right" />
             </Link>
           </div>
+
+          <div className="stat-card">
+            <div className="stat-icon">
+              <FontAwesomeIcon icon="file-alt" />
+            </div>
+            <div className="stat-details">
+              <h3>{stats.content}</h3>
+              <p>Content Items</p>
+            </div>
+            <Link to="/admin/content" className="stat-link">
+              <FontAwesomeIcon icon="arrow-right" />
+            </Link>
+          </div>
         </div>
-        
+
+        {/* Quick Actions */}
+        <div className="quick-actions-section">
+          <h2>Quick Actions</h2>
+          <div className="quick-actions">
+            <Link to="/admin/ministries/new" className="quick-action">
+              <FontAwesomeIcon icon="plus-circle" />
+              <span>Add Ministry</span>
+            </Link>
+            <Link to="/admin/sermons/new" className="quick-action">
+              <FontAwesomeIcon icon="plus-circle" />
+              <span>Add Sermon</span>
+            </Link>
+            <Link to="/admin/events/new" className="quick-action">
+              <FontAwesomeIcon icon="plus-circle" />
+              <span>Add Event</span>
+            </Link>
+            <Link to="/admin/gallery/new" className="quick-action">
+              <FontAwesomeIcon icon="plus-circle" />
+              <span>Add Gallery</span>
+            </Link>
+            <Link to="/admin/content" className="quick-action">
+              <FontAwesomeIcon icon="file-alt" />
+              <span>Manage Content</span>
+            </Link>
+          </div>
+        </div>
+
         {/* Recent Activity */}
         <div className="dashboard-sections">
           <div className="dashboard-section">
@@ -161,7 +208,7 @@ const Dashboard = () => {
               <h2>Recent Contact Messages</h2>
               <Link to="/admin/contact" className="view-all">View All</Link>
             </div>
-            
+
             <div className="section-content">
               {recentContacts.length > 0 ? (
                 <table className="data-table">
@@ -195,13 +242,13 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-          
+
           <div className="dashboard-section">
             <div className="section-header">
               <h2>Upcoming Events</h2>
               <Link to="/admin/events" className="view-all">View All</Link>
             </div>
-            
+
             <div className="section-content">
               {upcomingEvents.length > 0 ? (
                 <table className="data-table">
@@ -226,6 +273,44 @@ const Dashboard = () => {
                 </table>
               ) : (
                 <p className="no-data">No upcoming events</p>
+              )}
+            </div>
+          </div>
+
+          <div className="dashboard-section">
+            <div className="section-header">
+              <h2>Recent Content Updates</h2>
+              <Link to="/admin/content" className="view-all">View All</Link>
+            </div>
+
+            <div className="section-content">
+              {recentContent.length > 0 ? (
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Section</th>
+                      <th>Last Updated</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentContent.map((content) => (
+                      <tr key={content._id}>
+                        <td>{content.title}</td>
+                        <td>{content.section}</td>
+                        <td>{new Date(content.updatedAt || content.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          <Link to={`/admin/content?edit=${content._id}`} className="action-link">
+                            <FontAwesomeIcon icon="edit" />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="no-data">No content updates</p>
               )}
             </div>
           </div>

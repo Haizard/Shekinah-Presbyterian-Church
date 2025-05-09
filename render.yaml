@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: shekinah-church-website
+    env: node
+    buildCommand: cd jsmart1-react && npm install && npm run build && cd .. && npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        value: mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        generateValue: true
+    healthCheckPath: /api/health

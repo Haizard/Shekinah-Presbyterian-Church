@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DynamicContent from '../components/DynamicContent';
+import WeeklySchedule from '../components/WeeklySchedule';
+import FeaturedEvent from '../components/FeaturedEvent';
+import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import '../styles/About.css';
 
 const About = () => {
@@ -21,16 +25,36 @@ const About = () => {
             <h2>Who We Are</h2>
             <div className="divider" />
           </div>
-          <div className="about-content">
-            <div className="about-text">
-              <p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond. We exist to raise up mature disciples of Jesus, build Gospel-driven communities, and extend the love and truth of Christ to every sphere of life.</p>
-              <p>We are not just building churches—we are cultivating a missional culture where every believer is equipped to live for Christ, serve others, and make disciples who make disciples.</p>
-              <p>We operate through prayer, sound teaching, strategic outreach, and compassionate service, believing that true transformation comes only through the power of the Gospel.</p>
-            </div>
-            <div className="about-image">
-              <img src="/images/SPCT/CHURCH BCND.jpg" alt="Shekinah Church Building" />
-            </div>
-          </div>
+          <DynamicContent
+            section="who_we_are"
+            className="about-content"
+            fallback={
+              <div className="about-content">
+                <div className="about-text">
+                  <p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond. We exist to raise up mature disciples of Jesus, build Gospel-driven communities, and extend the love and truth of Christ to every sphere of life.</p>
+                  <p>We are not just building churches—we are cultivating a missional culture where every believer is equipped to live for Christ, serve others, and make disciples who make disciples.</p>
+                  <p>We operate through prayer, sound teaching, strategic outreach, and compassionate service, believing that true transformation comes only through the power of the Gospel.</p>
+                </div>
+                <div className="about-image">
+                  <img src="/images/SPCT/CHURCH BCND.jpg" alt="Shekinah Church Building" />
+                </div>
+              </div>
+            }
+            renderContent={(content) => (
+              <div className="about-content">
+                <div className="about-text">
+                  <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                </div>
+                <div className="about-image">
+                  <img
+                    src={getImageUrl(content.image)}
+                    alt={content.title}
+                    onError={(e) => handleImageError(e)}
+                  />
+                </div>
+              </div>
+            )}
+          />
         </div>
       </section>
 
@@ -278,6 +302,28 @@ const About = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Weekly Schedule Section */}
+      <section id="schedule" className="section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Weekly Schedule</h2>
+            <div className="divider" />
+          </div>
+          <WeeklySchedule />
+        </div>
+      </section>
+
+      {/* Featured Event Section */}
+      <section id="featured-event" className="section bg-light">
+        <div className="container">
+          <div className="section-header">
+            <h2>Featured Event</h2>
+            <div className="divider" />
+          </div>
+          <FeaturedEvent />
         </div>
       </section>
 

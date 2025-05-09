@@ -32,9 +32,40 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+console.log('Connecting to MongoDB Atlas...');
+
+// Use the standard MongoDB Atlas connection string
+const MONGODB_URI = 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('MongoDB connected successfully');
+    console.log('MongoDB connected to:', mongoose.connection.host);
+    console.log('Database name:', mongoose.connection.name);
+    console.log('Connection state:', mongoose.connection.readyState);
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    console.log('Server will continue to run, but database functionality may be limited');
+  });
+
+// Connection event handlers
+mongoose.connection.on('connecting', () => {
+  console.log('Connecting to MongoDB...');
+});
+
+mongoose.connection.on('connected', () => {
+  console.log('Connected to MongoDB');
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Disconnected from MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
 
 // Import Routes
 const authRoutes = require('./routes/auth');
@@ -45,6 +76,11 @@ const galleryRoutes = require('./routes/gallery');
 const contentRoutes = require('./routes/content');
 const contactRoutes = require('./routes/contact');
 const uploadRoutes = require('./routes/upload');
+
+// Health check endpoint for Render
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
+});
 
 // Use Routes
 app.use('/api/auth', authRoutes);

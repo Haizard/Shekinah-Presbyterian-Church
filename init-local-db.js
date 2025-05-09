@@ -127,7 +127,18 @@ const sampleData = {
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/shekinah');
+    // Set mongoose connection options
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 60000, // Increase timeout to 60 seconds
+      socketTimeoutMS: 90000, // Increase socket timeout
+      family: 4, // Use IPv4, skip trying IPv6
+      connectTimeoutMS: 60000 // Increase connection timeout
+    };
+
+    // Use the standard MongoDB Atlas connection string
+    await mongoose.connect('mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
     console.log('Connected to MongoDB successfully');
     return true;
   } catch (error) {
@@ -152,14 +163,14 @@ const initializeDB = async () => {
       console.log('Creating admin user...');
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('admin123', salt);
-      
+
       await User.create({
         name: 'Admin',
         email: 'admin@shekinah.org',
         password: hashedPassword,
         isAdmin: true
       });
-      
+
       console.log('Admin user created successfully');
     } else {
       console.log('Admin user already exists');
@@ -171,17 +182,17 @@ const initializeDB = async () => {
     const eventsCount = await Event.countDocuments();
     const galleryCount = await Gallery.countDocuments();
     const contentCount = await Content.countDocuments();
-    
+
     if (ministriesCount === 0 && sermonsCount === 0 && eventsCount === 0 && galleryCount === 0 && contentCount === 0) {
       console.log('Inserting sample data...');
-      
+
       // Insert sample data
       await Ministry.insertMany(sampleData.ministries);
       await Sermon.insertMany(sampleData.sermons);
       await Event.insertMany(sampleData.events);
       await Gallery.insertMany(sampleData.gallery);
       await Content.insertMany(sampleData.content);
-      
+
       console.log('Sample data inserted successfully');
     } else {
       console.log('Data already exists in the database');
@@ -193,7 +204,7 @@ const initializeDB = async () => {
     console.log('\nAdmin login:');
     console.log('Email: admin@shekinah.org');
     console.log('Password: admin123');
-    
+
     // Disconnect from MongoDB
     await mongoose.disconnect();
     process.exit(0);
