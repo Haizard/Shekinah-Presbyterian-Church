@@ -5,7 +5,7 @@ const User = require('./models/User');
 const bcrypt = require('bcryptjs');
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/shekinah')
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => {
     console.error('MongoDB connection error:', err);
@@ -25,21 +25,21 @@ const createAdmin = async () => {
   try {
     // Check if admin already exists
     const adminExists = await User.findOne({ email: adminData.email });
-    
+
     if (adminExists) {
       console.log('Admin user already exists');
       process.exit(0);
     }
-    
+
     // Create new admin user
     const admin = new User(adminData);
-    
+
     await admin.save();
-    
+
     console.log('Admin user created successfully');
     console.log('Email:', adminData.email);
     console.log('Password:', adminData.password);
-    
+
     process.exit(0);
   } catch (error) {
     console.error('Error creating admin user:', error);

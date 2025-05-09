@@ -1,74 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/Events.css';
+import api from '../services/api';
+import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
 const Events = () => {
   const [filter, setFilter] = useState('all');
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample events data
-  const events = [
-    {
-      id: 1,
-      title: 'Sunday Worship Service',
-      date: 'June 12, 2023',
-      time: '9:00 AM - 12:00 PM',
-      location: 'Main Sanctuary',
-      category: 'worship',
-      description: 'Join us for our weekly Sunday worship service as we gather to praise God, hear His Word, and fellowship together.',
-      image: '/images/SPCT/CHURCH.jpg'
-    },
-    {
-      id: 2,
-      title: 'Bible Study',
-      date: 'June 15, 2023',
-      time: '6:00 PM - 8:00 PM',
-      location: 'Fellowship Hall',
-      category: 'study',
-      description: 'A deep dive into the book of Romans, exploring the foundations of our faith and the implications for our lives today.',
-      image: '/images/SPCT/CHURCH.jpg'
-    },
-    {
-      id: 3,
-      title: 'Youth Fellowship',
-      date: 'June 20, 2023',
-      time: '4:00 PM - 6:00 PM',
-      location: 'Youth Center',
-      category: 'youth',
-      description: 'A time for young people to connect, grow in their faith, and have fun through games, worship, and Bible teaching.',
-      image: '/images/SPCT/CHURCH.jpg'
-    },
-    {
-      id: 4,
-      title: 'Prayer Meeting',
-      date: 'June 22, 2023',
-      time: '7:00 PM - 8:30 PM',
-      location: 'Prayer Room',
-      category: 'prayer',
-      description: 'A focused time of corporate prayer for our church, community, nation, and world.',
-      image: '/images/SPCT/CHURCH.jpg'
-    },
-    {
-      id: 5,
-      title: 'Women\'s Conference',
-      date: 'July 8-9, 2023',
-      time: '9:00 AM - 4:00 PM',
-      location: 'Main Sanctuary',
-      category: 'conference',
-      description: 'A two-day conference for women focused on spiritual growth, fellowship, and encouragement.',
-      image: '/images/SPCT/CHURCH.jpg'
-    },
-    {
-      id: 6,
-      title: 'Community Outreach',
-      date: 'July 15, 2023',
-      time: '10:00 AM - 2:00 PM',
-      location: 'Community Center',
-      category: 'outreach',
-      description: 'Join us as we serve our local community through various projects and share the love of Christ in practical ways.',
-      image: '/images/SPCT/CHURCH.jpg'
-    }
-  ];
+  // Fetch events from API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const data = await api.events.getAll();
+        console.log('Fetched events:', data);
+        setEvents(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching events:', err);
+        setError('Failed to load events. Please try again.');
+
+        // Fallback to sample data if API fails
+        setEvents([
+          {
+            _id: '1',
+            title: 'Sunday Worship Service',
+            date: 'June 12, 2023',
+            time: '9:00 AM - 12:00 PM',
+            location: 'Main Sanctuary',
+            category: 'worship',
+            description: 'Join us for our weekly Sunday worship service as we gather to praise God, hear His Word, and fellowship together.',
+            image: '/images/SPCT/CHURCH.jpg'
+          },
+          {
+            _id: '2',
+            title: 'Bible Study',
+            date: 'June 15, 2023',
+            time: '6:00 PM - 8:00 PM',
+            location: 'Fellowship Hall',
+            category: 'study',
+            description: 'A deep dive into the book of Romans, exploring the foundations of our faith and the implications for our lives today.',
+            image: '/images/SPCT/CHURCH.jpg'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   // Filter events based on category
   const filteredEvents = filter === 'all'
@@ -196,26 +181,45 @@ const Events = () => {
 
           {/* Events Grid */}
           <div className="events-grid">
-            {filteredEvents.map(event => (
-              <div className="event-card" key={event.id}>
-                <div className="event-image">
-                  <img src={event.image} alt={event.title} />
-                  <div className="event-date">
-                    <span className="month">{event.date.split(' ')[0]}</span>
-                    <span className="day">{event.date.split(' ')[1].replace(',', '')}</span>
-                  </div>
-                </div>
-                <div className="event-details">
-                  <h3>{event.title}</h3>
-                  <div className="event-meta">
-                    <p><FontAwesomeIcon icon="clock" /> {event.time}</p>
-                    <p><FontAwesomeIcon icon="map-marker-alt" /> {event.location}</p>
-                  </div>
-                  <p className="event-description">{event.description}</p>
-                  <Link to={`/events/${event.id}`} className="btn btn-sm">Learn More</Link>
-                </div>
+            {loading ? (
+              <div className="loading-container">
+                <div className="spinner" />
+                <p>Loading events...</p>
               </div>
-            ))}
+            ) : error ? (
+              <div className="error-container">
+                <p>{error}</p>
+              </div>
+            ) : filteredEvents.length > 0 ? (
+              filteredEvents.map(event => (
+                <div className="event-card" key={event._id}>
+                  <div className="event-image">
+                    <img
+                      src={getImageUrl(event.image)}
+                      alt={event.title}
+                      onError={(e) => handleImageError(e)}
+                    />
+                    <div className="event-date">
+                      <span className="month">{event.date ? event.date.split(' ')[0] : 'TBD'}</span>
+                      <span className="day">{event.date ? event.date.split(' ')[1]?.replace(',', '') : ''}</span>
+                    </div>
+                  </div>
+                  <div className="event-details">
+                    <h3>{event.title}</h3>
+                    <div className="event-meta">
+                      <p><FontAwesomeIcon icon="clock" /> {event.time}</p>
+                      <p><FontAwesomeIcon icon="map-marker-alt" /> {event.location}</p>
+                    </div>
+                    <p className="event-description">{event.description}</p>
+                    <Link to={`/events/${event._id}`} className="btn btn-sm">Learn More</Link>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-results">
+                <p>No events found in this category.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

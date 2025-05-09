@@ -1,112 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/Gallery.css';
+import api from '../services/api';
+import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState(null);
   const [visibleImages, setVisibleImages] = useState(8);
   const [showLoadMore, setShowLoadMore] = useState(true);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample gallery data
-  const galleryImages = [
-    {
-      id: 1,
-      category: 'worship',
-      title: 'Sunday Worship Service',
-      description: 'Our congregation gathered for Sunday worship service.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'June 5, 2023'
-    },
-    {
-      id: 2,
-      category: 'events',
-      title: 'Annual Church Conference',
-      description: 'Highlights from our annual church conference.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'May 20, 2023'
-    },
-    {
-      id: 3,
-      category: 'youth',
-      title: 'Youth Retreat',
-      description: 'Our youth group during their annual retreat.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'April 15, 2023'
-    },
-    {
-      id: 4,
-      category: 'outreach',
-      title: 'Community Outreach',
-      description: 'Church members serving the local community.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'March 28, 2023'
-    },
-    {
-      id: 5,
-      category: 'worship',
-      title: 'Easter Sunday Celebration',
-      description: 'Celebrating the resurrection of our Lord Jesus Christ.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'April 9, 2023'
-    },
-    {
-      id: 6,
-      category: 'children',
-      title: 'Children\'s Sunday School',
-      description: 'Children learning about God\'s Word in Sunday School.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'May 7, 2023'
-    },
-    {
-      id: 7,
-      category: 'events',
-      title: 'Church Anniversary',
-      description: 'Celebrating another year of God\'s faithfulness to our church.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'February 12, 2023'
-    },
-    {
-      id: 8,
-      category: 'outreach',
-      title: 'Mission Trip',
-      description: 'Our mission team serving in a neighboring community.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'January 25, 2023'
-    },
-    {
-      id: 9,
-      category: 'youth',
-      title: 'Youth Worship Night',
-      description: 'Young people praising God during our monthly youth worship night.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'May 26, 2023'
-    },
-    {
-      id: 10,
-      category: 'children',
-      title: 'Vacation Bible School',
-      description: 'Children enjoying activities during our annual Vacation Bible School.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'June 1, 2023'
-    },
-    {
-      id: 11,
-      category: 'worship',
-      title: 'Worship Team Practice',
-      description: 'Our worship team preparing for Sunday service.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'May 30, 2023'
-    },
-    {
-      id: 12,
-      category: 'events',
-      title: 'Baptism Service',
-      description: 'New believers publicly declaring their faith through baptism.',
-      image: '/images/SPCT/CHURCH.jpg',
-      date: 'April 30, 2023'
-    }
-  ];
+  // Fetch gallery images from API
+  useEffect(() => {
+    const fetchGalleryImages = async () => {
+      try {
+        setLoading(true);
+        const data = await api.gallery.getAll();
+        console.log('Fetched gallery images:', data);
+        setGalleryImages(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching gallery images:', err);
+        setError('Failed to load gallery images. Please try again.');
+
+        // Fallback to sample data if API fails
+        setGalleryImages([
+          {
+            _id: '1',
+            category: 'worship',
+            title: 'Sunday Worship Service',
+            description: 'Our congregation gathered for Sunday worship service.',
+            image: '/images/SPCT/CHURCH.jpg',
+            date: 'June 5, 2023'
+          },
+          {
+            _id: '2',
+            category: 'events',
+            title: 'Annual Church Conference',
+            description: 'Highlights from our annual church conference.',
+            image: '/images/SPCT/CHURCH.jpg',
+            date: 'May 20, 2023'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGalleryImages();
+  }, []);
 
   // Filter images based on category
   const filteredImages = activeCategory === 'all'
@@ -209,28 +154,47 @@ const Gallery = () => {
 
           {/* Gallery Grid */}
           <div className="gallery-grid">
-            {filteredImages.slice(0, visibleImages).map(image => (
-              <button
-                type="button"
-                className="gallery-item"
-                key={image.id}
-                onClick={() => openModal(image)}
-                aria-label={`View ${image.title}`}
-              >
-                <div className="gallery-image">
-                  <img src={image.image} alt={image.title} />
-                  <div className="gallery-overlay">
-                    <div className="gallery-info">
-                      <h3>{image.title}</h3>
-                      <p>{image.date}</p>
-                      <div className="view-icon">
-                        <FontAwesomeIcon icon="search-plus" />
+            {loading ? (
+              <div className="loading-container">
+                <div className="spinner" />
+                <p>Loading gallery...</p>
+              </div>
+            ) : error ? (
+              <div className="error-container">
+                <p>{error}</p>
+              </div>
+            ) : filteredImages.slice(0, visibleImages).length > 0 ? (
+              filteredImages.slice(0, visibleImages).map(image => (
+                <button
+                  type="button"
+                  className="gallery-item"
+                  key={image._id}
+                  onClick={() => openModal(image)}
+                  aria-label={`View ${image.title}`}
+                >
+                  <div className="gallery-image">
+                    <img
+                      src={getImageUrl(image.image)}
+                      alt={image.title}
+                      onError={(e) => handleImageError(e)}
+                    />
+                    <div className="gallery-overlay">
+                      <div className="gallery-info">
+                        <h3>{image.title}</h3>
+                        <p>{image.date}</p>
+                        <div className="view-icon">
+                          <FontAwesomeIcon icon="search-plus" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))
+            ) : (
+              <div className="no-results">
+                <p>No gallery images found in this category.</p>
+              </div>
+            )}
           </div>
 
           {/* Load More Button */}
@@ -324,7 +288,11 @@ const Gallery = () => {
               <FontAwesomeIcon icon="times" />
             </button>
             <div className="modal-image">
-              <img src={selectedImage.image} alt={selectedImage.title} />
+              <img
+                src={getImageUrl(selectedImage.image)}
+                alt={selectedImage.title}
+                onError={(e) => handleImageError(e)}
+              />
             </div>
             <div className="modal-details">
               <h3 id={`modal-title-${selectedImage.id}`}>{selectedImage.title}</h3>

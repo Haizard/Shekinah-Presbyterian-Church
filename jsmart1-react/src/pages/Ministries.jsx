@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/Ministries.css';
 import api from '../services/api';
+import { getImageUrl, handleImageError, debugImage } from '../utils/imageUtils';
 
 const Ministries = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -16,6 +17,15 @@ const Ministries = () => {
       try {
         setLoading(true);
         const data = await api.ministries.getAll();
+        console.log('Fetched ministries data:', data);
+
+        // Log image paths for debugging
+        if (data && data.length > 0) {
+          data.forEach(ministry => {
+            console.log(`Ministry "${ministry.title}" image path:`, ministry.image);
+          });
+        }
+
         setMinistries(data);
         setError(null);
       } catch (err) {
@@ -177,7 +187,12 @@ const Ministries = () => {
                 filteredMinistries.map(ministry => (
                   <div className="ministry-card" key={ministry._id}>
                     <div className="ministry-image">
-                      <img src={ministry.image} alt={ministry.title} />
+                      <img
+                        src={getImageUrl(ministry.image)}
+                        alt={ministry.title}
+                        onError={(e) => handleImageError(e)}
+                        onLoad={() => debugImage(ministry.image, 'MinistryCard')}
+                      />
                     </div>
                     <div className="ministry-details">
                       <h3>{ministry.title}</h3>

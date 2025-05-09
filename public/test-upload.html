@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test File Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      display: none;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test File Upload</h1>
+  
+  <form id="uploadForm">
+    <div class="form-group">
+      <label for="file">Select File:</label>
+      <input type="file" id="file" name="file">
+    </div>
+    
+    <button type="submit">Upload File</button>
+  </form>
+  
+  <div class="error" id="error"></div>
+  
+  <div class="result" id="result">
+    <h2>Upload Result:</h2>
+    <pre id="resultContent"></pre>
+    
+    <div id="imagePreview" style="margin-top: 15px; display: none;">
+      <h3>Image Preview:</h3>
+      <img id="previewImg" style="max-width: 100%;" alt="Uploaded image">
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const fileInput = document.getElementById('file');
+      const errorElement = document.getElementById('error');
+      const resultElement = document.getElementById('result');
+      const resultContent = document.getElementById('resultContent');
+      const imagePreview = document.getElementById('imagePreview');
+      const previewImg = document.getElementById('previewImg');
+      
+      // Reset previous results
+      errorElement.textContent = '';
+      resultElement.style.display = 'none';
+      imagePreview.style.display = 'none';
+      
+      if (!fileInput.files.length) {
+        errorElement.textContent = 'Please select a file to upload';
+        return;
+      }
+      
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      try {
+        const response = await fetch('http://localhost:5003/api/test-upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Upload failed');
+        }
+        
+        const data = await response.json();
+        
+        // Display result
+        resultContent.textContent = JSON.stringify(data, null, 2);
+        resultElement.style.display = 'block';
+        
+        // Show image preview if it's an image
+        if (file.type.startsWith('image/')) {
+          previewImg.src = data.filePath;
+          imagePreview.style.display = 'block';
+        }
+        
+      } catch (error) {
+        errorElement.textContent = `Error: ${error.message}`;
+        console.error('Upload error:', error);
+      }
+    });
+  </script>
+</body>
+</html>

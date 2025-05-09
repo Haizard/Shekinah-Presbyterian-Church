@@ -82,6 +82,7 @@
   height: 250px;
   object-fit: cover;
   transition: var(--transition);
+  background-color: #f0f0f0; /* Light background for images that are loading */
 }
 
 .ministry-card:hover .ministry-image img {

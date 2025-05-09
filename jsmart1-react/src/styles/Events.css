@@ -66,6 +66,7 @@
   height: 250px;
   object-fit: cover;
   transition: var(--transition);
+  background-color: #f0f0f0; /* Light background for images that are loading */
 }
 
 .event-card:hover .event-image img {

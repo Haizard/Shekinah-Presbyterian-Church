@@ -1,100 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/Sermons.css';
+import api from '../services/api';
+import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
 const Sermons = () => {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sermons, setSermons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample sermon data
-  const sermons = [
-    {
-      id: 1,
-      title: 'Walking in Faith',
-      speaker: 'Rev. Dr. Daniel John Seni',
-      date: 'June 5, 2023',
-      scripture: 'Hebrews 11:1-6',
-      category: 'faith',
-      image: '/images/SPCT/CHURCH.jpg',
-      audioUrl: '#',
-      videoUrl: '#',
-      notesUrl: '#',
-      description: 'This sermon explores what it means to walk by faith and not by sight, drawing from the examples of the heroes of faith in Hebrews 11.'
-    },
-    {
-      id: 2,
-      title: 'The Power of Prayer',
-      speaker: 'Rev. Emanuel Nzelah',
-      date: 'May 29, 2023',
-      scripture: 'James 5:13-18',
-      category: 'prayer',
-      image: '/images/SPCT/CHURCH.jpg',
-      audioUrl: '#',
-      videoUrl: '#',
-      notesUrl: '#',
-      description: 'An exploration of the transformative power of prayer in the life of a believer and the community of faith.'
-    },
-    {
-      id: 3,
-      title: 'Living as Kingdom Citizens',
-      speaker: 'Rev. Dr. Daniel John Seni',
-      date: 'May 22, 2023',
-      scripture: 'Philippians 3:17-21',
-      category: 'discipleship',
-      image: '/images/SPCT/CHURCH.jpg',
-      audioUrl: '#',
-      videoUrl: '#',
-      notesUrl: '#',
-      description: 'This message examines what it means to live as citizens of heaven while still on earth, with practical applications for daily life.'
-    },
-    {
-      id: 4,
-      title: 'The Gospel and Reconciliation',
-      speaker: 'Mwl. Boyeon Lee',
-      date: 'May 15, 2023',
-      scripture: '2 Corinthians 5:17-21',
-      category: 'gospel',
-      image: '/images/SPCT/CHURCH.jpg',
-      audioUrl: '#',
-      videoUrl: '#',
-      notesUrl: '#',
-      description: 'A powerful message on how the Gospel brings reconciliation between God and humanity, and between people divided by conflict.'
-    },
-    {
-      id: 5,
-      title: 'The Holy Spirit in Mission',
-      speaker: 'Rev. Emanuel Nzelah',
-      date: 'May 8, 2023',
-      scripture: 'Acts 1:8, 2:1-13',
-      category: 'holy-spirit',
-      image: '/images/SPCT/CHURCH.jpg',
-      audioUrl: '#',
-      videoUrl: '#',
-      notesUrl: '#',
-      description: 'This sermon explores the essential role of the Holy Spirit in empowering believers for effective mission and witness.'
-    },
-    {
-      id: 6,
-      title: 'Grace That Transforms',
-      speaker: 'Rev. Dr. Daniel John Seni',
-      date: 'May 1, 2023',
-      scripture: 'Titus 2:11-14',
-      category: 'grace',
-      image: '/images/SPCT/CHURCH.jpg',
-      audioUrl: '#',
-      videoUrl: '#',
-      notesUrl: '#',
-      description: 'An examination of how God\'s grace not only saves us but transforms our character and conduct.'
-    }
-  ];
+  // Fetch sermons from API
+  useEffect(() => {
+    const fetchSermons = async () => {
+      try {
+        setLoading(true);
+        const data = await api.sermons.getAll();
+        console.log('Fetched sermons:', data);
+        setSermons(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching sermons:', err);
+        setError('Failed to load sermons. Please try again.');
+
+        // Fallback to sample data if API fails
+        setSermons([
+          {
+            _id: '1',
+            title: 'Walking in Faith',
+            preacher: 'Rev. Dr. Daniel John Seni',
+            date: 'June 5, 2023',
+            scripture: 'Hebrews 11:1-6',
+            category: 'faith',
+            image: '/images/SPCT/CHURCH.jpg',
+            audioUrl: '#',
+            description: 'This sermon explores what it means to walk by faith and not by sight, drawing from the examples of the heroes of faith in Hebrews 11.'
+          },
+          {
+            _id: '2',
+            title: 'The Power of Prayer',
+            preacher: 'Rev. Emanuel Nzelah',
+            date: 'May 29, 2023',
+            scripture: 'James 5:13-18',
+            category: 'prayer',
+            image: '/images/SPCT/CHURCH.jpg',
+            audioUrl: '#',
+            description: 'An exploration of the transformative power of prayer in the life of a believer and the community of faith.'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSermons();
+  }, []);
 
   // Filter sermons based on category and search term
   const filteredSermons = sermons.filter(sermon => {
     const matchesCategory = filter === 'all' || sermon.category === filter;
-    const matchesSearch = sermon.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          sermon.speaker.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          sermon.scripture.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = sermon.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (sermon.preacher || sermon.speaker)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          sermon.scripture?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -163,25 +132,46 @@ const Sermons = () => {
 
           {/* Sermons Grid */}
           <div className="sermons-grid">
-            {filteredSermons.length > 0 ? (
+            {loading ? (
+              <div className="loading-container">
+                <div className="spinner" />
+                <p>Loading sermons...</p>
+              </div>
+            ) : error ? (
+              <div className="error-container">
+                <p>{error}</p>
+              </div>
+            ) : filteredSermons.length > 0 ? (
               filteredSermons.map(sermon => (
-                <div className="sermon-card" key={sermon.id}>
+                <div className="sermon-card" key={sermon._id}>
                   <div className="sermon-thumbnail">
-                    <img src={sermon.image} alt={sermon.title} />
+                    <img
+                      src={getImageUrl(sermon.image)}
+                      alt={sermon.title}
+                      onError={(e) => handleImageError(e)}
+                    />
                     <div className="play-button">
                       <FontAwesomeIcon icon="play" />
                     </div>
                   </div>
                   <div className="sermon-details">
                     <h3>{sermon.title}</h3>
-                    <p className="sermon-meta">{sermon.speaker} | {sermon.date}</p>
+                    <p className="sermon-meta">{sermon.preacher || sermon.speaker} | {sermon.date}</p>
                     <p className="sermon-verse">{sermon.scripture}</p>
                     <p className="sermon-description">{sermon.description}</p>
                     <div className="sermon-links">
-                      <a href={sermon.audioUrl}><FontAwesomeIcon icon="headphones" /> Listen</a>
-                      <a href={sermon.videoUrl}><FontAwesomeIcon icon="play" /> Watch</a>
-                      <a href={sermon.notesUrl}><FontAwesomeIcon icon="file-alt" /> Notes</a>
-                      <a href={sermon.audioUrl} download><FontAwesomeIcon icon="download" /> Download</a>
+                      {sermon.audioUrl && (
+                        <a href={sermon.audioUrl}><FontAwesomeIcon icon="headphones" /> Listen</a>
+                      )}
+                      {sermon.videoUrl && (
+                        <a href={sermon.videoUrl}><FontAwesomeIcon icon="play" /> Watch</a>
+                      )}
+                      {sermon.notesUrl && (
+                        <a href={sermon.notesUrl}><FontAwesomeIcon icon="file-alt" /> Notes</a>
+                      )}
+                      {sermon.audioUrl && (
+                        <a href={sermon.audioUrl} download><FontAwesomeIcon icon="download" /> Download</a>
+                      )}
                     </div>
                   </div>
                 </div>

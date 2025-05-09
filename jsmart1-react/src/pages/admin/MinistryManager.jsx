@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AdminLayout from '../../components/admin/AdminLayout';
 import api from '../../services/api';
+import { getImageUrl, handleImageError } from '../../utils/imageUtils';
 import '../../styles/admin/DataManager.css';
 
 const MinistryManager = () => {
@@ -61,9 +62,14 @@ const MinistryManager = () => {
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
+        console.log('Setting image preview from file upload');
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
+    } else {
+      // If no file is selected, clear the preview
+      setImagePreview(null);
+      setImageFile(null);
     }
   };
 
@@ -101,7 +107,16 @@ const MinistryManager = () => {
       leader: ministry.leader,
       meetingTime: ministry.meetingTime
     });
-    setImagePreview(ministry.image);
+
+    // Use the correct image URL for preview
+    if (ministry.image) {
+      console.log('Setting image preview for edit:', ministry.image);
+      // For database images, use the full URL
+      setImagePreview(getImageUrl(ministry.image));
+    } else {
+      setImagePreview(null);
+    }
+
     setEditMode(true);
     setCurrentMinistry(ministry);
     setShowForm(true);
@@ -116,7 +131,7 @@ const MinistryManager = () => {
     try {
       const formData = new FormData();
       formData.append('file', imageFile);
-      
+
       const response = await api.upload.uploadFile(formData);
       return response.filePath;
     } catch (err) {
@@ -128,17 +143,17 @@ const MinistryManager = () => {
   // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setFormError(null);
       setFormSuccess(null);
-      
+
       // Validate form
       if (!formData.title || !formData.category || !formData.description || !formData.leader || !formData.meetingTime) {
         setFormError('Please fill in all required fields.');
         return;
       }
-      
+
       // Upload image if selected
       let imagePath = formData.image;
       if (imageFile) {
@@ -148,12 +163,12 @@ const MinistryManager = () => {
           return;
         }
       }
-      
+
       const ministryData = {
         ...formData,
         image: imagePath
       };
-      
+
       if (editMode && currentMinistry) {
         // Update existing ministry
         await api.ministries.update(currentMinistry._id, ministryData);
@@ -163,16 +178,16 @@ const MinistryManager = () => {
         await api.ministries.create(ministryData);
         setFormSuccess('Ministry created successfully!');
       }
-      
+
       // Refresh ministries list
       fetchMinistries();
-      
+
       // Reset form after a short delay
       setTimeout(() => {
         setShowForm(false);
         resetForm();
       }, 2000);
-      
+
     } catch (err) {
       console.error('Error saving ministry:', err);
       setFormError('Failed to save ministry. Please try again.');
@@ -210,14 +225,14 @@ const MinistryManager = () => {
             <FontAwesomeIcon icon="plus" /> Add New Ministry
           </button>
         </div>
-        
+
         {error && (
           <div className="alert alert-danger">
             <FontAwesomeIcon icon="exclamation-circle" />
             {error}
           </div>
         )}
-        
+
         {loading ? (
           <div className="loading-container">
             <div className="spinner-large"></div>
@@ -249,13 +264,13 @@ const MinistryManager = () => {
                         <td>{ministry.leader}</td>
                         <td>{ministry.meetingTime}</td>
                         <td className="actions">
-                          <button 
+                          <button
                             className="btn btn-sm btn-edit"
                             onClick={() => handleEdit(ministry)}
                           >
                             <FontAwesomeIcon icon="edit" /> Edit
                           </button>
-                          <button 
+                          <button
                             className="btn btn-sm btn-delete"
                             onClick={() => handleDeleteConfirm(ministry)}
                           >
@@ -270,7 +285,7 @@ const MinistryManager = () => {
             )}
           </>
         )}
-        
+
         {/* Form Modal */}
         {showForm && (
           <div className="modal-overlay">
@@ -281,21 +296,21 @@ const MinistryManager = () => {
                   <FontAwesomeIcon icon="times" />
                 </button>
               </div>
-              
+
               {formError && (
                 <div className="alert alert-danger">
                   <FontAwesomeIcon icon="exclamation-circle" />
                   {formError}
                 </div>
               )}
-              
+
               {formSuccess && (
                 <div className="alert alert-success">
                   <FontAwesomeIcon icon="check-circle" />
                   {formSuccess}
                 </div>
               )}
-              
+
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label htmlFor="title">Title <span className="required">*</span></label>
@@ -308,7 +323,7 @@ const MinistryManager = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="category">Category <span className="required">*</span></label>
                   <select
@@ -327,7 +342,7 @@ const MinistryManager = () => {
                     <option value="discipleship">Discipleship</option>
                   </select>
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="description">Description <span className="required">*</span></label>
                   <textarea
@@ -339,7 +354,7 @@ const MinistryManager = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="image">Image</label>
                   <input
@@ -351,11 +366,15 @@ const MinistryManager = () => {
                   />
                   {imagePreview && (
                     <div className="image-preview">
-                      <img src={imagePreview} alt="Preview" />
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        onError={(e) => handleImageError(e)}
+                      />
                     </div>
                   )}
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="leader">Leader <span className="required">*</span></label>
                   <input
@@ -367,7 +386,7 @@ const MinistryManager = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="meetingTime">Meeting Time <span className="required">*</span></label>
                   <input
@@ -379,7 +398,7 @@ const MinistryManager = () => {
                     required
                   />
                 </div>
-                
+
                 <div className="form-actions">
                   <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>
                     Cancel
@@ -392,7 +411,7 @@ const MinistryManager = () => {
             </div>
           </div>
         )}
-        
+
         {/* Delete Confirmation Modal */}
         {confirmDelete && (
           <div className="modal-overlay">
@@ -403,12 +422,12 @@ const MinistryManager = () => {
                   <FontAwesomeIcon icon="times" />
                 </button>
               </div>
-              
+
               <div className="confirm-content">
                 <p>Are you sure you want to delete the ministry <strong>{confirmDelete.title}</strong>?</p>
                 <p className="warning">This action cannot be undone.</p>
               </div>
-              
+
               <div className="form-actions">
                 <button type="button" className="btn btn-secondary" onClick={handleDeleteCancel}>
                   Cancel

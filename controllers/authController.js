@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
-        token: generateToken(user._id),
+        token: generateToken(user._id, user.email),
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -57,8 +57,11 @@ const loginUser = async (req, res) => {
       console.log('Password match:', isMatch ? 'Yes' : 'No');
 
       if (isMatch) {
-        const token = generateToken(user._id);
-        console.log('Token generated successfully');
+        // Log the user ID to see what we're working with
+        console.log('User ID for token:', user._id, 'Type:', typeof user._id);
+
+        const token = generateToken(user._id, user.email);
+        console.log('Token generated successfully with email included');
 
         const userData = {
           _id: user._id,
@@ -129,7 +132,7 @@ const updateUserProfile = async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
-        token: generateToken(updatedUser._id),
+        token: generateToken(updatedUser._id, updatedUser.email),
       });
     } else {
       res.status(404).json({ message: 'User not found' });

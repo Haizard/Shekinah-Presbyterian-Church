@@ -10,7 +10,7 @@ const getBaseUrl = () => {
     }
   }
   // In development, use localhost
-  return 'http://localhost:5000';
+  return 'http://localhost:5002';
 };
 
 // Base API URL - points to our Express backend
@@ -181,15 +181,33 @@ const api = {
 
   // Upload endpoint
   upload: {
-    uploadFile: (formData) => {
-      const user = getUser();
-      return fetch(`${API_BASE_URL}/api/upload`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: formData, // Don't stringify FormData
-      }).then(response => response.json());
+    uploadFile: async (formData) => {
+      try {
+        const user = getUser();
+        if (!user || !user.token) {
+          throw new Error('Authentication required');
+        }
+
+        console.log('Uploading file to:', `${API_BASE_URL}/api/upload`);
+
+        const response = await fetch(`${API_BASE_URL}/api/upload`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: formData, // Don't stringify FormData
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Upload failed');
+        }
+
+        return response.json();
+      } catch (error) {
+        console.error('Upload API error:', error);
+        throw error;
+      }
     },
   },
 };

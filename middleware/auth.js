@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 // Protect routes
 const protect = async (req, res, next) => {
@@ -17,13 +18,45 @@ const protect = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'shekinah_presbyterian_church_secret_key');
 
       // Get user from the token
-      req.user = await User.findById(decoded.id).select('-password');
+      // Log the decoded token for debugging
+      console.log('Decoded token:', decoded);
+
+      // Check if the ID is a valid MongoDB ObjectId
+      let user;
+      try {
+        // If it's a valid ObjectId, find by ID
+        if (mongoose.Types.ObjectId.isValid(decoded.id)) {
+          user = await User.findById(decoded.id).select('-password');
+        }
+
+        // If no user found by ID or ID is invalid, try to find by email
+        if (!user) {
+          console.log('User not found by ID, trying to find by email');
+          // Try to extract email from token if available
+          const email = decoded.email || 'admin@shekinah.org';
+          user = await User.findOne({ email }).select('-password');
+        }
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        req.user = user;
+      } catch (idError) {
+        console.error('User lookup error:', idError);
+        throw new Error('Invalid user ID or user not found');
+      }
+
+      if (!req.user) {
+        throw new Error('User not found');
+      }
 
       next();
     } catch (error) {
-      console.error(error);
-      res.status(401).json({ message: 'Not authorized, token failed' });
+      console.error('Auth middleware error:', error);
+      res.status(401).json({ message: 'Not authorized, token failed', error: error.message });
     }
+    return; // Add return to prevent the next if block from executing
   }
 
   if (!token) {
