@@ -63,8 +63,13 @@ const DynamicContent = ({
         console.log(`DynamicContent: Fetching content for section "${section}"...`);
         const data = await getContentBySection(section);
         if (componentMounted.current) {
-          console.log(`DynamicContent: Setting content data for section "${section}":`, data);
-          setContentData(data);
+          if (data) {
+            console.log(`DynamicContent: Setting content data for section "${section}":`, data);
+            setContentData(data);
+          } else {
+            console.log(`DynamicContent: No data found for section "${section}". Using fallback.`);
+            // We'll use the fallback content, which is handled in the render logic
+          }
           setLastFetchTime(Date.now());
         }
       } catch (err) {
@@ -79,30 +84,39 @@ const DynamicContent = ({
     fetchContent();
   }, [section, getContentBySection, refreshTrigger]);
 
-  // Refresh content periodically (every 10 seconds instead of 30)
+  // Refresh content periodically (every 30 seconds)
   useEffect(() => {
     const refreshInterval = setInterval(() => {
-      // Only refresh if it's been more than 10 seconds since the last fetch
-      if (Date.now() - lastFetchTime > 10000) {
+      // Only refresh if it's been more than 30 seconds since the last fetch
+      if (Date.now() - lastFetchTime > 30000) {
         console.log(`DynamicContent: Periodic refresh for section "${section}"`);
         const refreshData = async () => {
           try {
             console.log(`DynamicContent: Fetching fresh data for section "${section}"...`);
             const data = await getContentBySection(section);
             if (componentMounted.current) {
-              console.log(`DynamicContent: Updating content data for section "${section}"`, data);
-              setContentData(data);
-              setLastFetchTime(Date.now());
-              setLocalRefreshCount(prev => prev + 1);
+              // Only update if we got valid data
+              if (data) {
+                console.log(`DynamicContent: Updating content data for section "${section}"`, data);
+                setContentData(data);
+                setLastFetchTime(Date.now());
+                setLocalRefreshCount(prev => prev + 1);
+              } else {
+                console.log(`DynamicContent: No data found for section "${section}" during refresh`);
+                // Still update the last fetch time to prevent too frequent retries
+                setLastFetchTime(Date.now());
+              }
             }
           } catch (err) {
             console.error(`DynamicContent: Error refreshing content for section ${section}:`, err);
+            // Still update the last fetch time to prevent too frequent retries on error
+            setLastFetchTime(Date.now());
           }
         };
 
         refreshData();
       }
-    }, 10000); // Reduced from 30000 to 10000 ms
+    }, 30000); // Back to 30 seconds to reduce server load
 
     return () => clearInterval(refreshInterval);
   }, [section, getContentBySection, lastFetchTime]);

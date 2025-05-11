@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
+import '../../styles/admin/modern-admin.css';
 import '../../styles/admin/AdminLayout.css';
 
 const AdminLayout = ({ children }) => {
@@ -12,8 +13,8 @@ const AdminLayout = ({ children }) => {
   if (loading) {
     return (
       <div className="admin-loading">
-        <div className="spinner"></div>
-        <p>Loading...</p>
+        <div className="admin-spinner"></div>
+        <p className="text-secondary">Loading...</p>
       </div>
     );
   }

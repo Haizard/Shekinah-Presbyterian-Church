@@ -12,7 +12,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: '*', // Allow requests from any origin
+  origin: ['http://localhost:3000', 'http://localhost:5002', 'http://localhost:5001'], // Allow requests from frontend origins
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -37,8 +37,13 @@ console.log('Connecting to MongoDB Atlas...');
 // Use environment variable for MongoDB connection string or fallback to the standard connection string
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI)
+// Connect to MongoDB with additional options
+mongoose.connect(MONGODB_URI, {
+  serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
+  socketTimeoutMS: 45000, // Increase socket timeout to 45 seconds
+  family: 4, // Use IPv4, skip trying IPv6
+  maxPoolSize: 10 // Maintain up to 10 socket connections
+})
   .then(() => {
     console.log('MongoDB connected successfully');
     console.log('MongoDB connected to:', mongoose.connection.host);
@@ -106,7 +111,7 @@ app.use((err, req, res, next) => {
 });
 
 // Set port and start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -1,20 +1,9 @@
 // API service for making requests to the backend
 
-// Determine the base API URL based on the environment
-const getBaseUrl = () => {
-  // Check if we're in a browser environment
-  if (typeof window !== 'undefined') {
-    // In production, use the same origin as the frontend
-    if (window.location.hostname !== 'localhost') {
-      return '';  // Empty string means use the same origin
-    }
-  }
-  // In development, use localhost
-  return 'http://localhost:5002';
-};
+// Always use the explicit backend URL for development
+const API_BASE_URL = 'http://localhost:5002';
 
-// Base API URL - points to our Express backend
-const API_BASE_URL = getBaseUrl();
+console.log('API Base URL:', API_BASE_URL);
 
 // Get the user from localStorage
 const getUser = () => {
@@ -53,15 +42,29 @@ const apiRequest = async (url, options = {}) => {
     const response = await fetch(fullUrl, requestOptions);
     console.log(`API Response status: ${response.status} ${response.statusText}`);
 
-    const data = await response.json();
-    console.log(`API Response data:`, data);
-
+    // Check if the response is ok before trying to parse JSON
     if (!response.ok) {
-      console.error(`API Error (${fullUrl}):`, data);
-      throw new Error(data.message || 'Something went wrong');
+      let errorData;
+      try {
+        errorData = await response.json();
+        console.error(`API Error (${fullUrl}):`, errorData);
+        throw new Error(errorData.message || `Server responded with status: ${response.status}`);
+      } catch (jsonError) {
+        // If we can't parse JSON from the error response
+        console.error(`API Error (${fullUrl}): Could not parse error response`, jsonError);
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
     }
 
-    return data;
+    // Parse JSON response
+    try {
+      const data = await response.json();
+      console.log('API Response data:', data);
+      return data;
+    } catch (jsonError) {
+      console.error(`API Error (${fullUrl}): Could not parse JSON response`, jsonError);
+      throw new Error('Invalid response format from server');
+    }
   } catch (error) {
     console.error(`API Error (${fullUrl}):`, error);
     console.error('Request options:', JSON.stringify(requestOptions, null, 2));
