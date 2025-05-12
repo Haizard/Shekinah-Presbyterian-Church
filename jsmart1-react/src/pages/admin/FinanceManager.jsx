@@ -77,7 +77,7 @@ const FinanceManager = () => {
         api.branches.getAll(),
         api.finances.getSummary()
       ]);
-      
+
       setFinances(financesData);
       setBranches(branchesData);
       setSummary(summaryData);
@@ -161,7 +161,7 @@ const FinanceManager = () => {
   // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setFormError(null);
       setFormSuccess(null);
@@ -225,7 +225,7 @@ const FinanceManager = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setFilterBranch('');
-    
+
     if (tab === 'all') {
       fetchData();
     } else {
@@ -239,7 +239,7 @@ const FinanceManager = () => {
   const handleBranchFilterChange = (e) => {
     const branchId = e.target.value;
     setFilterBranch(branchId);
-    
+
     if (branchId) {
       fetchFinancesByBranch(branchId);
     } else {
@@ -273,7 +273,7 @@ const FinanceManager = () => {
       <div className="data-manager finance-manager">
         <div className="manager-header">
           <h1>Finance Manager</h1>
-          <button className="btn btn-primary" onClick={handleAddNew}>
+          <button type="button" className="btn btn-primary" onClick={handleAddNew}>
             <FontAwesomeIcon icon="plus" /> Add New Transaction
           </button>
         </div>
@@ -296,20 +296,20 @@ const FinanceManager = () => {
               <p className="amount">{formatCurrency(summary.totalIncome)}</p>
             </div>
           </div>
-          
+
           <div className="summary-card expenses">
             <div className="card-icon">
-              <FontAwesomeIcon icon="arrow-down" />
+              <FontAwesomeIcon icon="money-bill-alt" />
             </div>
             <div className="card-content">
               <h3>Total Expenses</h3>
               <p className="amount">{formatCurrency(summary.totalExpenses)}</p>
             </div>
           </div>
-          
+
           <div className="summary-card balance">
             <div className="card-icon">
-              <FontAwesomeIcon icon="balance-scale" />
+              <FontAwesomeIcon icon="dollar-sign" />
             </div>
             <div className="card-content">
               <h3>Balance</h3>
@@ -323,31 +323,34 @@ const FinanceManager = () => {
         {/* Filters */}
         <div className="finance-filters">
           <div className="tabs">
-            <button 
+            <button
+              type="button"
               className={`tab ${activeTab === 'all' ? 'active' : ''}`}
               onClick={() => handleTabChange('all')}
             >
               All Transactions
             </button>
-            <button 
+            <button
+              type="button"
               className={`tab ${activeTab === 'income' ? 'active' : ''}`}
               onClick={() => handleTabChange('income')}
             >
               Income
             </button>
-            <button 
+            <button
+              type="button"
               className={`tab ${activeTab === 'expense' ? 'active' : ''}`}
               onClick={() => handleTabChange('expense')}
             >
               Expenses
             </button>
           </div>
-          
+
           <div className="branch-filter">
             <label htmlFor="branchFilter">Branch:</label>
-            <select 
-              id="branchFilter" 
-              value={filterBranch} 
+            <select
+              id="branchFilter"
+              value={filterBranch}
               onChange={handleBranchFilterChange}
             >
               <option value="">All Branches</option>

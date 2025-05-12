@@ -22,6 +22,7 @@ import {
   faEnvelope,
   faClock,
   faArrowUp,
+  faArrowDown,
   faChevronDown,
   faPlay,
   faHeadphones,
@@ -96,7 +97,8 @@ import {
   faUserSlash,
   faUsersGear,
   faUsersSlash,
-  faUsersCog
+  faUsersCog,
+  faBalanceScale
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -118,6 +120,7 @@ library.add(
   faEnvelope,
   faClock,
   faArrowUp,
+  faArrowDown,
   faChevronDown,
   faPlay,
   faHeadphones,
@@ -192,7 +195,8 @@ library.add(
   faUserSlash,
   faUsersGear,
   faUsersSlash,
-  faUsersCog
+  faUsersCog,
+  faBalanceScale
 )
 
 // Components
