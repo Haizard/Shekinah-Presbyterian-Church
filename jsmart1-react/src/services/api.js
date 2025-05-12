@@ -4,18 +4,19 @@
 let API_BASE_URL;
 
 // Check if we're in production (deployed) or development environment
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-  // Development - use localhost with the specific port
-  // This is the port where your backend server is running locally
-  API_BASE_URL = 'http://localhost:5002';
-} else {
+if (process.env.NODE_ENV === 'production' ||
+    !(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
   // Production - since backend and frontend are deployed together on Render,
-  // we can use a relative URL to the current domain
-  // This will make requests to the same domain where the app is hosted
+  // we use a relative URL to the current domain
   API_BASE_URL = '';
+  console.log('Using production API endpoint (same domain)');
+} else {
+  // Development - use localhost with the specific port
+  API_BASE_URL = 'http://localhost:5002';
+  console.log('Using development API endpoint:', API_BASE_URL);
 }
 
-// Log the API base URL for debugging
+// Log environment information for debugging
 console.log('Environment:', process.env.NODE_ENV);
 console.log('Hostname:', window.location.hostname);
 

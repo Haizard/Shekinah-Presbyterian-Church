@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import './App.css'
 import { AuthProvider } from './context/AuthContext'
 import { ContentProvider } from './context/ContentContext'
+import ErrorBoundary from './components/common/ErrorBoundary'
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -332,13 +333,15 @@ const LocationAwareRoutes = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <ContentProvider>
-        <BrowserRouter>
-          <LocationAwareRoutes />
-        </BrowserRouter>
-      </ContentProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ContentProvider>
+          <BrowserRouter>
+            <LocationAwareRoutes />
+          </BrowserRouter>
+        </ContentProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 
