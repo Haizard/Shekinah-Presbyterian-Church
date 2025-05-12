@@ -110,7 +110,7 @@ const FinanceManager = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'amount' ? parseFloat(value) || 0 : value
+      [name]: name === 'amount' ? Number.parseFloat(value) || 0 : value
     });
   };
 
