@@ -3,6 +3,11 @@ import ContentContext from '../../context/ContentContext';
 import { parseContent } from '../../utils/contentUtils';
 import './ContentDebugPanel.css';
 
+// Debug helper function
+const logDebugInfo = (message, data) => {
+  console.log(`ContentDebugPanel: ${message}`, data);
+};
+
 /**
  * A debug panel component that shows the current state of content in the ContentContext
  * and allows for debugging content rendering issues.
@@ -16,18 +21,24 @@ const ContentDebugPanel = () => {
   const [sections, setSections] = useState([]);
   const [refreshCount, setRefreshCount] = useState(0);
 
+  // Track if we've already set the default section
+  const defaultSectionSetRef = useRef(false);
+
   // Get all available sections
   useEffect(() => {
+    logDebugInfo('Content changed, updating sections', content);
     if (content) {
       const sectionNames = Object.keys(content).sort();
       setSections(sectionNames);
 
-      // Set a default selected section if none is selected
-      if (sectionNames.length > 0 && !selectedSection) {
+      // Set a default selected section if none is selected and we haven't set it yet
+      if (sectionNames.length > 0 && !selectedSection && !defaultSectionSetRef.current) {
+        logDebugInfo('Setting default selected section', sectionNames[0]);
         setSelectedSection(sectionNames[0]);
+        defaultSectionSetRef.current = true;
       }
     }
-  }, [content]); // Removed selectedSection from dependencies to prevent infinite loop
+  }, [content, selectedSection]); // Include selectedSection in dependencies
 
   // Track if a fetch is in progress
   const fetchInProgressRef = useRef(false);

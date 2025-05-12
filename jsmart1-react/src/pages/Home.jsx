@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -13,7 +13,7 @@ import {
   faFileAlt
 } from '@fortawesome/free-solid-svg-icons';
 import '../styles/Home.css';
-import DynamicContent from '../components/DynamicContentWrapper';
+import DynamicContent from '../components/DynamicContent';
 import ContentContext from '../context/ContentContext';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
@@ -65,26 +65,20 @@ const Home = () => {
   }, []);
 
   // Get content from context but don't re-render on every change
-  const { content } = useContext(ContentContext);
+  const { content, debugContent } = useContext(ContentContext);
 
-  // Use a ref to track if content has been loaded at least once
-  const contentLoaded = useRef(false);
+  // Simple state to track when content is loaded
   const [localRefreshTrigger, setLocalRefreshTrigger] = useState(0);
 
-  // Only update local trigger when content actually changes in a meaningful way
+  // Update local trigger when content changes
   useEffect(() => {
     // Check if we have content and it has sections
     if (content && Object.keys(content).length > 0) {
-      // Mark that we've loaded content at least once
-      contentLoaded.current = true;
+      console.log('Home: Content is available, sections:', Object.keys(content));
 
-      // Only update the local trigger if this isn't the first load
-      // This prevents unnecessary re-renders on initial load
-      if (localRefreshTrigger > 0) {
-        console.log('Home: Content has changed, updating local trigger');
-        setLocalRefreshTrigger(prev => prev + 1);
-      } else if (localRefreshTrigger === 0) {
-        // First load, set to 1
+      // Only update if we haven't set the trigger yet
+      if (localRefreshTrigger === 0) {
+        console.log('Home: Setting initial local trigger');
         setLocalRefreshTrigger(1);
       }
     }
@@ -107,8 +101,37 @@ const Home = () => {
     }
   }, [content]);
 
+  // Debug function to check content state
+  const handleDebugClick = () => {
+    console.log('Home: Debug button clicked');
+    if (debugContent) {
+      debugContent();
+    } else {
+      console.log('Home: debugContent function not available');
+    }
+    console.log('Home: Local refresh trigger:', localRefreshTrigger);
+  };
+
   return (
     <main>
+      {/* Debug button - only visible in development */}
+      {process.env.NODE_ENV !== 'production' && (
+        <div className="debug-panel" style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 9999 }}>
+          <button
+            type="button"
+            onClick={handleDebugClick}
+            style={{
+              padding: '5px 10px',
+              background: '#f0f0f0',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Debug Content
+          </button>
+        </div>
+      )}
       {/* Hero Section */}
       <section id="home" className="hero">
         <DynamicContent

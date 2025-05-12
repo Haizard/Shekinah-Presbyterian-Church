@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import DynamicContent from '../components/DynamicContentWrapper';
+import DynamicContent from '../components/DynamicContent';
 import WeeklySchedule from '../components/WeeklySchedule';
 import FeaturedEvent from '../components/FeaturedEvent';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';

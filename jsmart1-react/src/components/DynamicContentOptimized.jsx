@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
 import ContentContext from '../context/ContentContext';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
+import { parseContent, isHtmlContent } from '../utils/contentUtils';
 import ContentRendererFactory from './structured/ContentRendererFactory';
 
 /**
@@ -18,26 +19,26 @@ const DynamicContentOptimized = ({
 }) => {
   // Get content and functions from context
   const { content, getContentBySection, refreshContent } = useContext(ContentContext);
-  
+
   // Local state
   const [contentData, setContentData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(Date.now());
-  
+
   // Refs to track component lifecycle and prevent unnecessary updates
   const componentMounted = useRef(true);
   const hasFetchedRef = useRef(false);
   const fetchInProgressRef = useRef(false);
-  
+
   // Check if we already have this content in the global context
   const hasContentInContext = useRef(false);
-  
+
   useEffect(() => {
     // Check if content is available in the global context
-    if (content && content[section]) {
+    if (content?.[section]) {
       hasContentInContext.current = true;
-      
+
       // If we haven't set content data yet, or if it's different from what we have
       if (!contentData || contentData._id !== content[section]._id) {
         console.log(`DynamicContentOptimized: Using content from global context for "${section}"`);
@@ -48,33 +49,33 @@ const DynamicContentOptimized = ({
       }
     }
   }, [content, section, contentData]);
-  
+
   // Fetch content when component mounts or section changes
   useEffect(() => {
     // Skip if we're already fetching or if we already have data from context
     if (fetchInProgressRef.current || (hasContentInContext.current && contentData)) {
       return;
     }
-    
+
     const fetchContent = async () => {
       // Prevent concurrent fetches
       if (fetchInProgressRef.current) return;
       fetchInProgressRef.current = true;
-      
+
       // Only show loading state if we don't have content yet
       if (!contentData) {
         setIsLoading(true);
       }
-      
+
       try {
         console.log(`DynamicContentOptimized: Fetching content for section "${section}"...`);
         const data = await getContentBySection(section);
-        
+
         if (componentMounted.current) {
           if (data) {
             // Only update if the data is different from what we have
             const isNewData = !contentData || contentData._id !== data._id;
-            
+
             if (isNewData) {
               console.log(`DynamicContentOptimized: Setting content data for section "${section}"`);
               setContentData(data);
@@ -85,7 +86,7 @@ const DynamicContentOptimized = ({
           } else {
             console.log(`DynamicContentOptimized: No data found for section "${section}"`);
           }
-          
+
           // Mark that we've fetched content
           hasFetchedRef.current = true;
           setIsLoading(false);
@@ -101,40 +102,40 @@ const DynamicContentOptimized = ({
         fetchInProgressRef.current = false;
       }
     };
-    
+
     fetchContent();
-    
+
     // Cleanup function
     return () => {
       componentMounted.current = false;
     };
   }, [section, getContentBySection, contentData]);
-  
+
   // Manual refresh function that can be called from parent components
   const manualRefresh = useCallback(() => {
     if (fetchInProgressRef.current) {
       console.log(`DynamicContentOptimized: Refresh already in progress for "${section}"`);
       return;
     }
-    
+
     console.log(`DynamicContentOptimized: Manual refresh triggered for "${section}"`);
-    
+
     // Reset fetch status
     hasFetchedRef.current = false;
     hasContentInContext.current = false;
-    
+
     // Trigger a global content refresh
     if (refreshContent) {
       refreshContent();
     }
   }, [section, refreshContent]);
-  
+
   // Expose refresh function to global scope for debugging
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.refreshDynamicContent = window.refreshDynamicContent || {};
       window.refreshDynamicContent[section] = manualRefresh;
-      
+
       return () => {
         if (window.refreshDynamicContent?.[section]) {
           delete window.refreshDynamicContent[section];
@@ -142,32 +143,53 @@ const DynamicContentOptimized = ({
       };
     }
   }, [section, manualRefresh]);
-  
+
   // If custom render function is provided, use it
   if (renderContent && contentData) {
-    try {
-      // Create a copy of contentData to avoid modifying the original
-      const contentToRender = { ...contentData };
-      
-      // Parse JSON content if needed
-      if (contentToRender.content && typeof contentToRender.content === 'string') {
+    console.log(`DynamicContentOptimized: Using custom renderContent for section "${section}"`, {
+      hasRenderContent: !!renderContent,
+      hasContentData: !!contentData,
+      contentDataType: typeof contentData,
+      contentDataKeys: contentData ? Object.keys(contentData) : [],
+      renderContentType: typeof renderContent
+    });
+
+    // Create a copy of contentData to avoid modifying the original
+    const contentToRender = { ...contentData };
+
+    // Parse the content if it's JSON before passing to renderContent
+    if (contentToRender.content && typeof contentToRender.content === 'string') {
+      try {
+        // Check if it looks like JSON
         if ((contentToRender.content.trim().startsWith('{') && contentToRender.content.trim().endsWith('}')) ||
             (contentToRender.content.trim().startsWith('[') && contentToRender.content.trim().endsWith(']'))) {
           try {
-            contentToRender.content = JSON.parse(contentToRender.content);
-          } catch (error) {
-            console.error(`DynamicContentOptimized: Error parsing JSON for "${section}"`, error);
+            const parsedContent = JSON.parse(contentToRender.content);
+            console.log(`DynamicContentOptimized: Parsed JSON content for section "${section}"`, parsedContent);
+
+            // Update the content with the parsed version
+            contentToRender.content = parsedContent;
+          } catch (parseError) {
+            console.error(`DynamicContentOptimized: Error parsing JSON content for section "${section}"`, parseError);
+            // Continue with the original string content if parsing fails
           }
         }
+      } catch (error) {
+        console.error(`DynamicContentOptimized: Error processing content for section "${section}"`, error);
       }
-      
-      return renderContent(contentToRender);
+    }
+
+    console.log(`DynamicContentOptimized: Rendering content for section "${section}" with custom renderer`, contentToRender);
+    try {
+      const renderedContent = renderContent(contentToRender);
+      console.log(`DynamicContentOptimized: Successfully rendered content for section "${section}"`);
+      return renderedContent;
     } catch (error) {
-      console.error(`DynamicContentOptimized: Error in custom renderer for "${section}"`, error);
-      // Fall back to default rendering
+      console.error(`DynamicContentOptimized: Error rendering content for section "${section}"`, error);
+      // Fall back to default rendering if custom rendering fails
     }
   }
-  
+
   // Show loading state only during initial load
   if (isLoading && !contentData) {
     return (
@@ -177,29 +199,43 @@ const DynamicContentOptimized = ({
       </div>
     );
   }
-  
+
   // Show error state
   if (error && !contentData) {
     return (
       <div className={`dynamic-content-error ${className}`}>
         <p>Error loading content: {error}</p>
-        <button onClick={manualRefresh}>Retry</button>
+        <button type="button" onClick={manualRefresh}>Retry</button>
       </div>
     );
   }
-  
+
   // If no content found, show fallback
   if (!contentData) {
     return fallback || null;
   }
-  
+
+  // Debug: Log the content data
+  console.log(`DynamicContentOptimized: Content data for section "${section}":`, contentData);
+
   // Default rendering
   return (
-    <div className={`dynamic-content ${className}`} data-section={section}>
+    <div className={`dynamic-content ${className}`} data-refresh-count={localRefreshCount} data-section={section}>
+      {/* Hidden debug info - only visible in development */}
+      {process.env.NODE_ENV !== 'production' && (
+        <div className="dynamic-content-debug" style={{ display: 'none' }}>
+          <p>Section: {section}</p>
+          <p>Refresh Count: {localRefreshCount}</p>
+          <p>Last Updated: {new Date(lastFetchTime).toLocaleTimeString()}</p>
+          <p>Content ID: {contentData._id}</p>
+          <button type="button" onClick={manualRefresh}>Force Refresh</button>
+        </div>
+      )}
+
       {showTitle && contentData.title && (
         <h2 className="dynamic-content-title">{contentData.title}</h2>
       )}
-      
+
       {showImage && contentData.image && (
         <div className="dynamic-content-image">
           <img
@@ -209,7 +245,7 @@ const DynamicContentOptimized = ({
           />
         </div>
       )}
-      
+
       {showContent && contentData.content && (
         <div className="dynamic-content-text">
           <ContentRendererFactory

@@ -27,6 +27,27 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // State to track which dropdown is active on mobile
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  // Close the menu when a link is clicked
+  const closeMenu = () => {
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+    // Also reset any active dropdown
+    setActiveDropdown(null);
+  };
+
+  // Toggle dropdown on mobile
+  const toggleDropdown = (dropdownName) => {
+    if (activeDropdown === dropdownName) {
+      setActiveDropdown(null);
+    } else {
+      setActiveDropdown(dropdownName);
+    }
+  };
+
   return (
     <header className={isScrolled ? 'scrolled' : ''}>
       <div className="container">
@@ -35,49 +56,69 @@ const Header = () => {
           <h1>Shekinah Church</h1>
         </div>
 
-        <div 
-          className={`hamburger ${isMenuOpen ? 'active' : ''}`} 
+        <button
+          type="button"
+          aria-label="Toggle navigation menu"
+          className={`hamburger ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
+          onKeyUp={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              toggleMenu();
+            }
+          }}
         >
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+          <span />
+          <span />
+          <span />
+        </button>
 
         <nav className={isMenuOpen ? 'active' : ''}>
           <ul>
             <li>
-              <NavLink to="/" end>Home</NavLink>
+              <NavLink to="/" end onClick={closeMenu}>Home</NavLink>
             </li>
-            <li className="dropdown">
-              <NavLink to="/about">
-                About Us <FontAwesomeIcon icon={faChevronDown} />
-              </NavLink>
+            <li className={`dropdown ${activeDropdown === 'about' ? 'active' : ''}`}>
+              <div className="nav-link-wrapper">
+                <NavLink to="/about" onClick={closeMenu}>
+                  About Us
+                </NavLink>
+                <button
+                  type="button"
+                  className="dropdown-toggle"
+                  aria-label="Toggle About dropdown"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleDropdown('about');
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </button>
+              </div>
               <div className="dropdown-content">
-                <Link to="/about#vision">Our Vision</Link>
-                <Link to="/about#mission">Our Mission</Link>
-                <Link to="/about#story">Our Story</Link>
-                <Link to="/about#motto">Our Motto</Link>
-                <Link to="/about#beliefs">Our Beliefs</Link>
+                <Link to="/about#vision" onClick={closeMenu}>Our Vision</Link>
+                <Link to="/about#mission" onClick={closeMenu}>Our Mission</Link>
+                <Link to="/about#story" onClick={closeMenu}>Our Story</Link>
+                <Link to="/about#motto" onClick={closeMenu}>Our Motto</Link>
+                <Link to="/about#beliefs" onClick={closeMenu}>Our Beliefs</Link>
               </div>
             </li>
             <li>
-              <NavLink to="/sermons">Sermons</NavLink>
+              <NavLink to="/sermons" onClick={closeMenu}>Sermons</NavLink>
             </li>
             <li>
-              <NavLink to="/events">Events</NavLink>
+              <NavLink to="/events" onClick={closeMenu}>Events</NavLink>
             </li>
             <li>
-              <NavLink to="/ministries">Ministries</NavLink>
+              <NavLink to="/ministries" onClick={closeMenu}>Ministries</NavLink>
             </li>
             <li>
-              <NavLink to="/gallery">Gallery</NavLink>
+              <NavLink to="/gallery" onClick={closeMenu}>Gallery</NavLink>
             </li>
             <li>
-              <NavLink to="/contact">Contact</NavLink>
+              <NavLink to="/contact" onClick={closeMenu}>Contact</NavLink>
             </li>
             <li>
-              <NavLink to="/give" className="btn-give">Give</NavLink>
+              <NavLink to="/give" className="btn-give" onClick={closeMenu}>Give</NavLink>
             </li>
           </ul>
         </nav>

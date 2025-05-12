@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, { useContext, useEffect, useState, useRef, useCallback } from 'react';
 import ContentContext from '../context/ContentContext';
 
 /**
@@ -31,7 +31,7 @@ const ContentDebugger = () => {
 
     try {
       // First check if we already have this content in the global context
-      if (content && content[selectedSection]) {
+      if (content?.[selectedSection]) {
         console.log(`ContentDebugger: Using cached content for section "${selectedSection}"`);
         setSectionContent(content[selectedSection]);
       } else {

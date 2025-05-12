@@ -15,10 +15,16 @@ export const ContentProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+  // Track if initial fetch has been done
+  const initialFetchDone = useRef(false);
+
   // Fetch all content on mount only
   useEffect(() => {
-    console.log('ContentContext: Initial content fetch on mount');
-    fetchAllContent();
+    if (!initialFetchDone.current) {
+      console.log('ContentContext: Initial content fetch on mount');
+      fetchAllContent();
+      initialFetchDone.current = true;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -250,6 +256,14 @@ export const ContentProvider = ({ children }) => {
     return staleTimestamp; // Return the timestamp for debugging purposes
   }, []);
 
+  // Debug function to check content state
+  const debugContent = useCallback(() => {
+    console.log('ContentContext: Current content state:', content);
+    console.log('ContentContext: Content keys:', Object.keys(content));
+    console.log('ContentContext: Current refresh trigger:', refreshTrigger);
+    return { content, refreshTrigger };
+  }, [content, refreshTrigger]);
+
   return (
     <ContentContext.Provider
       value={{
@@ -260,7 +274,8 @@ export const ContentProvider = ({ children }) => {
         getContentBySection,
         createOrUpdateContent,
         deleteContent,
-        refreshContent
+        refreshContent,
+        debugContent
       }}
     >
       {children}
