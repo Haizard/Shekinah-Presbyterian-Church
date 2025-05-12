@@ -20,7 +20,7 @@ const AdminSidebar = () => {
     <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <h2>Admin Panel</h2>
-        <button className="toggle-btn" onClick={toggleSidebar}>
+        <button type="button" className="toggle-btn" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={collapsed ? 'chevron-right' : 'chevron-left'} />
         </button>
       </div>
@@ -41,7 +41,7 @@ const AdminSidebar = () => {
           <li className={isActive('/admin/branches') ? 'active' : ''}>
             <Link to="/admin/branches">
               <FontAwesomeIcon icon="building" />
-              <span>Branches</span>
+              <span>Church Branches</span>
             </Link>
           </li>
           <li className={isActive('/admin/members') ? 'active' : ''}>
@@ -56,15 +56,10 @@ const AdminSidebar = () => {
               <span>Groups</span>
             </Link>
           </li>
-
-          {/* Finance */}
-          <li className="nav-section-title">
-            <span>Finance</span>
-          </li>
           <li className={isActive('/admin/finances') ? 'active' : ''}>
             <Link to="/admin/finances">
               <FontAwesomeIcon icon="money-bill-alt" />
-              <span>Income & Expenses</span>
+              <span>Finance</span>
             </Link>
           </li>
 

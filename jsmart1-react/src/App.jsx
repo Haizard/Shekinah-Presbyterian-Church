@@ -159,6 +159,7 @@ library.add(
   faCalendarAlt,
   faImages,
   faExclamationCircle,
+  faInfoCircle,
   faExternalLinkAlt,
   faArrowRight,
   faSpinner,
@@ -224,6 +225,8 @@ import BranchManager from './pages/admin/BranchManager'
 import FinanceManager from './pages/admin/FinanceManager'
 import MemberManager from './pages/admin/MemberManager'
 import GroupManager from './pages/admin/GroupManager'
+import TestSidebar from './pages/admin/TestSidebar'
+import DirectSidebar from './pages/admin/DirectSidebar'
 
 // This component will force a re-render when the location changes
 const LocationAwareRoutes = () => {
@@ -298,6 +301,8 @@ const LocationAwareRoutes = () => {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/test-sidebar" element={<TestSidebar />} />
+            <Route path="/admin/direct-sidebar" element={<DirectSidebar />} />
 
             {/* Church Management Routes */}
             <Route path="/admin/branches" element={<BranchManager />} />
