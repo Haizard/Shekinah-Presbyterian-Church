@@ -338,6 +338,28 @@ textarea:focus {
   color: #7f8c8d;
 }
 
+/* Info Message */
+.info-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #f0f7ff;
+  border-left: 4px solid #3498db;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.info-message svg {
+  color: #3498db;
+  font-size: 1.25rem;
+}
+
+.info-message p {
+  margin: 0;
+  color: #2c3e50;
+}
+
 /* Gallery Grid */
 .gallery-grid {
   display: grid;

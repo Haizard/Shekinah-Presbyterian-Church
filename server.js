@@ -81,6 +81,10 @@ const galleryRoutes = require('./routes/gallery');
 const contentRoutes = require('./routes/content');
 const contactRoutes = require('./routes/contact');
 const uploadRoutes = require('./routes/upload');
+const branchRoutes = require('./routes/branches');
+const financeRoutes = require('./routes/finances');
+const memberRoutes = require('./routes/members');
+const groupRoutes = require('./routes/groups');
 
 // Health check endpoint for Render
 app.get('/api/health', (req, res) => {
@@ -96,6 +100,10 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/branches', branchRoutes);
+app.use('/api/finances', financeRoutes);
+app.use('/api/members', memberRoutes);
+app.use('/api/groups', groupRoutes);
 
 // Serve React app for any other routes in production
 if (process.env.NODE_ENV === 'production') {

@@ -24,7 +24,7 @@ const AdminSidebar = () => {
           <FontAwesomeIcon icon={collapsed ? 'chevron-right' : 'chevron-left'} />
         </button>
       </div>
-      
+
       <nav className="sidebar-nav">
         <ul>
           <li className={isActive('/admin') ? 'active' : ''}>
@@ -32,6 +32,45 @@ const AdminSidebar = () => {
               <FontAwesomeIcon icon="tachometer-alt" />
               <span>Dashboard</span>
             </Link>
+          </li>
+
+          {/* Church Management */}
+          <li className="nav-section-title">
+            <span>Church Management</span>
+          </li>
+          <li className={isActive('/admin/branches') ? 'active' : ''}>
+            <Link to="/admin/branches">
+              <FontAwesomeIcon icon="building" />
+              <span>Branches</span>
+            </Link>
+          </li>
+          <li className={isActive('/admin/members') ? 'active' : ''}>
+            <Link to="/admin/members">
+              <FontAwesomeIcon icon="users" />
+              <span>Members</span>
+            </Link>
+          </li>
+          <li className={isActive('/admin/groups') ? 'active' : ''}>
+            <Link to="/admin/groups">
+              <FontAwesomeIcon icon="user-friends" />
+              <span>Groups</span>
+            </Link>
+          </li>
+
+          {/* Finance */}
+          <li className="nav-section-title">
+            <span>Finance</span>
+          </li>
+          <li className={isActive('/admin/finances') ? 'active' : ''}>
+            <Link to="/admin/finances">
+              <FontAwesomeIcon icon="money-bill-alt" />
+              <span>Income & Expenses</span>
+            </Link>
+          </li>
+
+          {/* Content Management */}
+          <li className="nav-section-title">
+            <span>Content Management</span>
           </li>
           <li className={isActive('/admin/ministries') ? 'active' : ''}>
             <Link to="/admin/ministries">
@@ -63,11 +102,21 @@ const AdminSidebar = () => {
               <span>Content</span>
             </Link>
           </li>
+
+          {/* Communication */}
+          <li className="nav-section-title">
+            <span>Communication</span>
+          </li>
           <li className={isActive('/admin/contact') ? 'active' : ''}>
             <Link to="/admin/contact">
               <FontAwesomeIcon icon="envelope" />
               <span>Contact Messages</span>
             </Link>
+          </li>
+
+          {/* System */}
+          <li className="nav-section-title">
+            <span>System</span>
           </li>
           <li className={isActive('/admin/settings') ? 'active' : ''}>
             <Link to="/admin/settings">
@@ -77,7 +126,7 @@ const AdminSidebar = () => {
           </li>
         </ul>
       </nav>
-      
+
       <div className="sidebar-footer">
         <Link to="/" className="view-site">
           <FontAwesomeIcon icon="external-link-alt" />

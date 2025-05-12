@@ -63,6 +63,7 @@ import {
   faCalendarAlt,
   faImages,
   faExclamationCircle,
+  faInfoCircle,
   faExternalLinkAlt,
   faArrowRight,
   faSpinner,
@@ -74,7 +75,28 @@ import {
   faReply,
   faFileUpload,
   faFileCode,
-  faSync
+  faSync,
+  // New feature icons
+  faBuilding,
+  faUserFriends,
+  faMoneyBillAlt,
+  faChartPie,
+  faChartLine,
+  faChartBar,
+  faReceipt,
+  faHandHoldingUsd,
+  faDollarSign,
+  faCoins,
+  faIdCard,
+  faAddressCard,
+  faUserPlus,
+  faUserMinus,
+  faUserCog,
+  faUserCheck,
+  faUserSlash,
+  faUsersGear,
+  faUsersSlash,
+  faUsersCog
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -148,7 +170,28 @@ library.add(
   faReply,
   faFileUpload,
   faFileCode,
-  faSync
+  faSync,
+  // New feature icons
+  faBuilding,
+  faUserFriends,
+  faMoneyBillAlt,
+  faChartPie,
+  faChartLine,
+  faChartBar,
+  faReceipt,
+  faHandHoldingUsd,
+  faDollarSign,
+  faCoins,
+  faIdCard,
+  faAddressCard,
+  faUserPlus,
+  faUserMinus,
+  faUserCog,
+  faUserCheck,
+  faUserSlash,
+  faUsersGear,
+  faUsersSlash,
+  faUsersCog
 )
 
 // Components
@@ -175,6 +218,12 @@ import EventManager from './pages/admin/EventManager'
 import GalleryManager from './pages/admin/GalleryManager'
 import ContactManager from './pages/admin/ContactManager'
 import ContentManager from './pages/admin/ContentManager'
+
+// New Admin Pages
+import BranchManager from './pages/admin/BranchManager'
+import FinanceManager from './pages/admin/FinanceManager'
+import MemberManager from './pages/admin/MemberManager'
+import GroupManager from './pages/admin/GroupManager'
 
 // This component will force a re-render when the location changes
 const LocationAwareRoutes = () => {
@@ -249,11 +298,23 @@ const LocationAwareRoutes = () => {
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+            {/* Church Management Routes */}
+            <Route path="/admin/branches" element={<BranchManager />} />
+            <Route path="/admin/members" element={<MemberManager />} />
+            <Route path="/admin/groups" element={<GroupManager />} />
+
+            {/* Finance Routes */}
+            <Route path="/admin/finances" element={<FinanceManager />} />
+
+            {/* Content Management Routes */}
             <Route path="/admin/ministries" element={<MinistryManager />} />
             <Route path="/admin/sermons" element={<SermonManager />} />
             <Route path="/admin/events" element={<EventManager />} />
             <Route path="/admin/gallery" element={<GalleryManager />} />
             <Route path="/admin/content" element={<ContentManager />} />
+
+            {/* Communication Routes */}
             <Route path="/admin/contact" element={<ContactManager />} />
           </Routes>
     </div>

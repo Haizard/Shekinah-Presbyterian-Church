@@ -52,6 +52,24 @@
   margin-bottom: 0.25rem;
 }
 
+.sidebar-nav li.nav-section-title {
+  padding: 1rem 1.5rem 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  letter-spacing: 0.05rem;
+  margin-top: 0.5rem;
+}
+
+.sidebar-nav li.nav-section-title:first-of-type {
+  margin-top: 1rem;
+}
+
+.admin-sidebar.collapsed .sidebar-nav li.nav-section-title {
+  display: none;
+}
+
 .sidebar-nav a {
   display: flex;
   align-items: center;
@@ -116,11 +134,11 @@
     width: 100%;
     position: relative;
   }
-  
+
   .admin-sidebar.collapsed {
     width: 100%;
   }
-  
+
   .admin-sidebar.collapsed .sidebar-nav a span,
   .admin-sidebar.collapsed .sidebar-header h2,
   .admin-sidebar.collapsed .view-site span {

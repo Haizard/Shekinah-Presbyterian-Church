@@ -300,6 +300,91 @@ const api = {
     }),
   },
 
+  // Branch endpoints
+  branches: {
+    getAll: () => apiRequest('/api/branches'),
+    getById: (id) => apiRequest(`/api/branches/${id}`),
+    create: (branchData) => apiRequest('/api/branches', {
+      method: 'POST',
+      body: JSON.stringify(branchData),
+    }),
+    update: (id, branchData) => apiRequest(`/api/branches/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(branchData),
+    }),
+    delete: (id) => apiRequest(`/api/branches/${id}`, {
+      method: 'DELETE',
+    }),
+  },
+
+  // Finance endpoints
+  finances: {
+    getAll: () => apiRequest('/api/finances'),
+    getSummary: () => apiRequest('/api/finances/summary'),
+    getByBranch: (branchId) => apiRequest(`/api/finances/branch/${branchId}`),
+    getById: (id) => apiRequest(`/api/finances/${id}`),
+    create: (financeData) => apiRequest('/api/finances', {
+      method: 'POST',
+      body: JSON.stringify(financeData),
+    }),
+    update: (id, financeData) => apiRequest(`/api/finances/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(financeData),
+    }),
+    delete: (id) => apiRequest(`/api/finances/${id}`, {
+      method: 'DELETE',
+    }),
+  },
+
+  // Member endpoints
+  members: {
+    getAll: () => apiRequest('/api/members'),
+    getStats: () => apiRequest('/api/members/stats'),
+    getByBranch: (branchId) => apiRequest(`/api/members/branch/${branchId}`),
+    getById: (id) => apiRequest(`/api/members/${id}`),
+    create: (memberData) => apiRequest('/api/members', {
+      method: 'POST',
+      body: JSON.stringify(memberData),
+    }),
+    update: (id, memberData) => apiRequest(`/api/members/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(memberData),
+    }),
+    delete: (id) => apiRequest(`/api/members/${id}`, {
+      method: 'DELETE',
+    }),
+  },
+
+  // Group endpoints
+  groups: {
+    getAll: () => apiRequest('/api/groups'),
+    getByBranch: (branchId) => apiRequest(`/api/groups/branch/${branchId}`),
+    getById: (id) => apiRequest(`/api/groups/${id}`),
+    create: (groupData) => apiRequest('/api/groups', {
+      method: 'POST',
+      body: JSON.stringify(groupData),
+    }),
+    update: (id, groupData) => apiRequest(`/api/groups/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(groupData),
+    }),
+    delete: (id) => apiRequest(`/api/groups/${id}`, {
+      method: 'DELETE',
+    }),
+    getMembers: (id) => apiRequest(`/api/groups/${id}/members`),
+    addMember: (id, memberData) => apiRequest(`/api/groups/${id}/members`, {
+      method: 'POST',
+      body: JSON.stringify(memberData),
+    }),
+    updateMember: (id, memberData) => apiRequest(`/api/groups/members/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(memberData),
+    }),
+    removeMember: (id) => apiRequest(`/api/groups/members/${id}`, {
+      method: 'DELETE',
+    }),
+  },
+
   // Upload endpoint
   upload: {
     uploadFile: async (formData) => {
