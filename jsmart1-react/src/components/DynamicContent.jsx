@@ -56,8 +56,21 @@ const DynamicContent = ({
     }
   }, [section, manualRefresh]);
 
+  // Track if we've already fetched content for this section
+  const hasFetchedRef = useRef(false);
+
   // Fetch content when component mounts, section changes, or refreshTrigger changes
   useEffect(() => {
+    // Skip unnecessary re-fetches if we already have data and refreshTrigger hasn't changed
+    const shouldSkipFetch = contentData &&
+                           hasFetchedRef.current &&
+                           refreshTrigger === 0;
+
+    if (shouldSkipFetch) {
+      console.log(`DynamicContent: Skipping fetch for section "${section}" - already have data and no refresh triggered`);
+      return;
+    }
+
     console.log(`DynamicContent: Effect triggered for section "${section}" (refreshTrigger: ${refreshTrigger})`);
 
     // Set a timeout to ensure loading state doesn't get stuck
@@ -69,27 +82,46 @@ const DynamicContent = ({
     }, 5000); // 5 second timeout
 
     const fetchContent = async () => {
-      try {
+      // Only show loading state if we don't already have content
+      if (!contentData) {
         setIsLoading(true);
+      }
+
+      try {
         console.log(`DynamicContent: Fetching content for section "${section}"...`);
         const data = await getContentBySection(section);
 
         // Always update state regardless of data to ensure we exit loading state
         if (componentMounted.current) {
-          console.log(`DynamicContent: Setting content data for section "${section}":`, data);
-          setContentData(data || null);
-          // Force a re-render by updating the last fetch time
-          setLastFetchTime(Date.now());
-          // Update the local refresh count to trigger any dependent components
-          setLocalRefreshCount(prev => prev + 1);
+          // Only update if the data is different or we don't have data yet
+          const isNewData = !contentData ||
+                           (data && contentData && data._id !== contentData._id);
+
+          if (isNewData) {
+            console.log(`DynamicContent: Setting content data for section "${section}":`, data);
+            setContentData(data || null);
+            // Force a re-render by updating the last fetch time
+            setLastFetchTime(Date.now());
+            // Update the local refresh count to trigger any dependent components
+            setLocalRefreshCount(prev => prev + 1);
+          } else {
+            console.log(`DynamicContent: No changes for section "${section}", skipping update`);
+          }
+
+          // Mark that we've fetched content for this section
+          hasFetchedRef.current = true;
+
+          // Exit loading state after data is set
+          setIsLoading(false);
         }
       } catch (err) {
         console.error(`DynamicContent: Error fetching content for section ${section}:`, err);
-        // Set content data to null to show fallback
-        setContentData(null);
-      } finally {
+        // Set content data to null to show fallback only if we don't already have data
+        if (!contentData) {
+          setContentData(null);
+        }
+        // Make sure to exit loading state even on error
         if (componentMounted.current) {
-          console.log(`DynamicContent: Exiting loading state for section "${section}"`);
           setIsLoading(false);
         }
       }
@@ -101,59 +133,58 @@ const DynamicContent = ({
     return () => {
       clearTimeout(loadingTimeout);
     };
-  }, [section, getContentBySection, refreshTrigger, isLoading]);
+  }, [section, getContentBySection, refreshTrigger, contentData]); // Added contentData to dependencies
 
-  // Refresh content periodically (every 2 minutes)
+  // Refresh content periodically (every 5 minutes)
   useEffect(() => {
+    // Skip periodic refresh for components that don't have data yet
+    if (!contentData) {
+      return;
+    }
+
     // Stagger the refresh intervals to prevent all components from refreshing at the same time
-    // Generate a random offset between 0 and 30 seconds
-    const randomOffset = Math.floor(Math.random() * 30000);
+    // Generate a random offset between 0 and 60 seconds
+    const randomOffset = Math.floor(Math.random() * 60000);
 
-    // Use a longer refresh interval (2 minutes) to reduce server load
+    // Use a longer refresh interval (5 minutes) to reduce server load
     const refreshInterval = setInterval(() => {
-      // Only refresh if it's been more than 2 minutes since the last fetch
-      if (Date.now() - lastFetchTime > 120000) {
-        console.log(`DynamicContent: Periodic refresh for section "${section}"`);
+      // Only refresh if it's been more than 5 minutes since the last fetch
+      if (Date.now() - lastFetchTime > 300000) {
+        console.log(`DynamicContent: Periodic refresh check for section "${section}"`);
 
-        // Use a debounced refresh function to prevent too many simultaneous requests
-        const refreshData = async () => {
-          try {
-            // Check if we already have content data before making a new request
-            if (!contentData) {
-              console.log(`DynamicContent: Fetching fresh data for section "${section}"...`);
-              const data = await getContentBySection(section);
-              if (componentMounted.current) {
-                // Only update if we got valid data
-                if (data) {
-                  console.log(`DynamicContent: Updating content data for section "${section}"`, data);
-                  setContentData(data);
-                  setLastFetchTime(Date.now());
-                  setLocalRefreshCount(prev => prev + 1);
-                } else {
-                  console.log(`DynamicContent: No data found for section "${section}" during refresh`);
-                  // Still update the last fetch time to prevent too frequent retries
-                  setLastFetchTime(Date.now());
-                }
+        // Don't refresh if the component is already in a loading state
+        if (!isLoading) {
+          // Use a debounced refresh function to prevent too many simultaneous requests
+          const refreshData = async () => {
+            try {
+              console.log(`DynamicContent: Performing periodic refresh for section "${section}"...`);
+
+              // Just update the last fetch time without actually fetching new data
+              // This prevents unnecessary API calls but still keeps track of refresh attempts
+              setLastFetchTime(Date.now());
+
+              // Instead of fetching directly, increment the refresh trigger in the parent context
+              // This will cause a coordinated refresh of all components
+              if (refreshContent && typeof refreshContent === 'function') {
+                console.log(`DynamicContent: Triggering global content refresh from section "${section}"`);
+                refreshContent();
               }
-            } else {
-              // If we already have content, just update the last fetch time
-              // This prevents unnecessary API calls when we already have data
-              console.log(`DynamicContent: Skipping refresh for section "${section}" - already have data`);
+            } catch (err) {
+              console.error(`DynamicContent: Error during periodic refresh for section ${section}:`, err);
+              // Still update the last fetch time to prevent too frequent retries on error
               setLastFetchTime(Date.now());
             }
-          } catch (err) {
-            console.error(`DynamicContent: Error refreshing content for section ${section}:`, err);
-            // Still update the last fetch time to prevent too frequent retries on error
-            setLastFetchTime(Date.now());
-          }
-        };
+          };
 
-        refreshData();
+          refreshData();
+        } else {
+          console.log(`DynamicContent: Skipping periodic refresh for section "${section}" - already loading`);
+        }
       }
-    }, 120000 + randomOffset); // 2 minutes + random offset to stagger requests
+    }, 300000 + randomOffset); // 5 minutes + random offset to stagger requests
 
     return () => clearInterval(refreshInterval);
-  }, [section, getContentBySection, lastFetchTime, contentData]);
+  }, [section, refreshContent, lastFetchTime, contentData, isLoading]);
 
   // If custom render function is provided, use it
   if (renderContent && contentData) {
@@ -201,8 +232,9 @@ const DynamicContent = ({
     }
   }
 
-  // Show loading state, but only for a reasonable amount of time
-  if (isLoading && Date.now() - lastFetchTime < 10000) { // Only show loading for max 10 seconds
+  // Show loading state only during initial load and only for a reasonable amount of time
+  // Never show loading state if we already have content data to avoid flickering
+  if (isLoading && !contentData && Date.now() - lastFetchTime < 10000) { // Only show loading for max 10 seconds and only during initial load
     console.log(`DynamicContent: Showing loading state for section "${section}"`);
     return (
       <div className={`dynamic-content-loading ${className}`}>
@@ -211,6 +243,9 @@ const DynamicContent = ({
       </div>
     );
   }
+
+  // If we have content data, always show it even if we're refreshing in the background
+  // This prevents flickering between content and loading states
 
   // If no content found, show fallback
   if (!contentData) {

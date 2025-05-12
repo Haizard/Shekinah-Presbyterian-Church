@@ -6,15 +6,29 @@ const ContentContext = createContext();
 // Create a Map to track pending requests globally
 const pendingRequests = new Map();
 
+// Create a Map to track content versions to prevent unnecessary updates
+const contentVersions = new Map();
+
 export const ContentProvider = ({ children }) => {
   const [content, setContent] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Fetch all content on mount and when refreshTrigger changes
+  // Fetch all content on mount only
   useEffect(() => {
+    console.log('ContentContext: Initial content fetch on mount');
     fetchAllContent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Separate effect to handle refresh trigger changes
+  useEffect(() => {
+    // Skip the initial render (when refreshTrigger is 0)
+    if (refreshTrigger > 0) {
+      console.log(`ContentContext: Refresh trigger changed to ${refreshTrigger}, fetching fresh content`);
+      fetchAllContent();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshTrigger]);
 
@@ -109,19 +123,29 @@ export const ContentProvider = ({ children }) => {
         return null;
       }
 
-      // Update state with the new content
-      setContent(prev => {
-        console.log(`ContentContext: Updating content state for section "${section}"`);
-        const newContent = {
-          ...prev,
-          [section]: data
-        };
-        console.log('ContentContext: New content state:', newContent);
-        return newContent;
-      });
+      // Check if the data is different from what we already have
+      const isNewData = !content[section] ||
+        data._id !== content[section]._id ||
+        data.updatedAt !== content[section].updatedAt;
 
-      // Force a refresh trigger update to ensure components re-render
-      setRefreshTrigger(prev => prev + 1);
+      if (isNewData) {
+        // Update state with the new content
+        setContent(prev => {
+          console.log(`ContentContext: Updating content state for section "${section}"`);
+          const newContent = {
+            ...prev,
+            [section]: data
+          };
+          console.log('ContentContext: New content state:', newContent);
+          return newContent;
+        });
+
+        // Only increment the refresh trigger if we actually got new data
+        console.log(`ContentContext: New data received for "${section}", incrementing refresh trigger`);
+        setRefreshTrigger(prev => prev + 1);
+      } else {
+        console.log(`ContentContext: Data for "${section}" hasn't changed, not updating state`);
+      }
 
       // Remove the request from our pending requests map
       pendingRequests.delete(section);
@@ -187,13 +211,28 @@ export const ContentProvider = ({ children }) => {
     }
   }, []);
 
-  // Refresh content with improved efficiency
+  // Track the last time we refreshed content to prevent too frequent refreshes
+  const lastRefreshTimeRef = useRef(0);
+
+  // Refresh content with improved efficiency and rate limiting
   const refreshContent = useCallback(() => {
+    // Prevent refreshing more than once every 10 seconds
+    const now = Date.now();
+    const timeSinceLastRefresh = now - lastRefreshTimeRef.current;
+
+    if (timeSinceLastRefresh < 10000) {
+      console.log(`ContentContext: Refresh requested but skipped (last refresh was ${timeSinceLastRefresh}ms ago)`);
+      return false;
+    }
+
     console.log('ContentContext: Refreshing content cache...');
+
+    // Update the last refresh time
+    lastRefreshTimeRef.current = now;
 
     // Instead of clearing the entire cache, mark it as stale
     // This way we still have data to display while fetching fresh data
-    const staleTimestamp = Date.now();
+    const staleTimestamp = now;
 
     // Increment the refresh trigger to force a re-fetch
     setRefreshTrigger(prev => {
@@ -202,16 +241,14 @@ export const ContentProvider = ({ children }) => {
       return newValue;
     });
 
-    // Force a fetch of all content, but don't clear the cache first
-    // This prevents the UI from flickering while data is being refreshed
-    console.log('ContentContext: Fetching fresh content data');
-    fetchAllContent();
+    // We don't need to call fetchAllContent() here because the useEffect will handle that
+    // This prevents duplicate API calls
 
     // Clear any pending requests to ensure we get fresh data
     pendingRequests.clear();
 
     return staleTimestamp; // Return the timestamp for debugging purposes
-  }, [fetchAllContent]);
+  }, []);
 
   return (
     <ContentContext.Provider

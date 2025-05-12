@@ -13,7 +13,7 @@ import {
   faFileAlt
 } from '@fortawesome/free-solid-svg-icons';
 import '../styles/Home.css';
-import DynamicContent from '../components/DynamicContent';
+import DynamicContent from '../components/DynamicContentWrapper';
 import ContentContext from '../context/ContentContext';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
@@ -64,14 +64,31 @@ const Home = () => {
     fetchData();
   }, []);
 
-  // Force a re-render of the component when the content context changes
-  const { refreshTrigger, content } = useContext(ContentContext);
+  // Get content from context but don't re-render on every change
+  const { content } = useContext(ContentContext);
+
+  // Use a ref to track if content has been loaded at least once
+  const contentLoaded = useRef(false);
   const [localRefreshTrigger, setLocalRefreshTrigger] = useState(0);
 
+  // Only update local trigger when content actually changes in a meaningful way
   useEffect(() => {
-    console.log('Home: Content context refresh trigger changed, updating local trigger');
-    setLocalRefreshTrigger(refreshTrigger);
-  }, [refreshTrigger]);
+    // Check if we have content and it has sections
+    if (content && Object.keys(content).length > 0) {
+      // Mark that we've loaded content at least once
+      contentLoaded.current = true;
+
+      // Only update the local trigger if this isn't the first load
+      // This prevents unnecessary re-renders on initial load
+      if (localRefreshTrigger > 0) {
+        console.log('Home: Content has changed, updating local trigger');
+        setLocalRefreshTrigger(prev => prev + 1);
+      } else if (localRefreshTrigger === 0) {
+        // First load, set to 1
+        setLocalRefreshTrigger(1);
+      }
+    }
+  }, [content, localRefreshTrigger]);
 
   // Log the available content sections
   useEffect(() => {

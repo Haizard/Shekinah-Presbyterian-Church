@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import DynamicContent from '../components/DynamicContent';
+import DynamicContent from '../components/DynamicContentWrapper';
 import VideoGallery from '../components/VideoGallery';
 import '../styles/Ministries.css';
 import api from '../services/api';
