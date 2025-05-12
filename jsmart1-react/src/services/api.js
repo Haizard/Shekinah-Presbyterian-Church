@@ -1,7 +1,23 @@
 // API service for making requests to the backend
 
-// Always use the explicit backend URL for development
-const API_BASE_URL = 'http://localhost:5002';
+// Determine the API base URL based on the environment
+let API_BASE_URL;
+
+// Check if we're in production (deployed) or development environment
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  // Development - use localhost with the specific port
+  // This is the port where your backend server is running locally
+  API_BASE_URL = 'http://localhost:5002';
+} else {
+  // Production - since backend and frontend are deployed together on Render,
+  // we can use a relative URL to the current domain
+  // This will make requests to the same domain where the app is hosted
+  API_BASE_URL = '';
+}
+
+// Log the API base URL for debugging
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Hostname:', window.location.hostname);
 
 console.log('API Base URL:', API_BASE_URL);
 
@@ -41,7 +57,7 @@ const apiRequest = async (url, options = {}) => {
   };
 
   // Add authorization header if user is logged in
-  if (user && user.token) {
+  if (user?.token) {
     headers.Authorization = `Bearer ${user.token}`;
   }
 
@@ -51,8 +67,8 @@ const apiRequest = async (url, options = {}) => {
     headers,
   };
 
-  // Prepend the API base URL to the provided URL
-  const fullUrl = `${API_BASE_URL}${url}`;
+  // Prepend the API base URL to the provided URL if it's not empty
+  const fullUrl = API_BASE_URL ? `${API_BASE_URL}${url}` : url;
 
   // Generate cache key
   const cacheKey = getCacheKey(url, requestOptions);
@@ -69,10 +85,10 @@ const apiRequest = async (url, options = {}) => {
     if (age < ERROR_CACHE_TTL) {
       console.log(`API Request to ${fullUrl} skipped due to recent error (${age}ms ago)`);
       throw error;
-    } else {
-      // Error cache expired, remove it
-      errorCache.delete(cacheKey);
     }
+
+    // Error cache expired, remove it
+    errorCache.delete(cacheKey);
   }
 
   // For GET requests, check if we have a cached response
@@ -293,9 +309,10 @@ const api = {
           throw new Error('Authentication required');
         }
 
-        console.log('Uploading file to:', `${API_BASE_URL}/api/upload`);
+        const uploadUrl = API_BASE_URL ? `${API_BASE_URL}/api/upload` : '/api/upload';
+        console.log('Uploading file to:', uploadUrl);
 
-        const response = await fetch(`${API_BASE_URL}/api/upload`, {
+        const response = await fetch(uploadUrl, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${user.token}`,

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import './App.css'
 import { AuthProvider } from './context/AuthContext'
 import { ContentProvider } from './context/ContentContext'
@@ -176,16 +176,17 @@ import GalleryManager from './pages/admin/GalleryManager'
 import ContactManager from './pages/admin/ContactManager'
 import ContentManager from './pages/admin/ContentManager'
 
-function App() {
-  return (
-    <AuthProvider>
-      <ContentProvider>
-        <Router>
-          <div className="App">
-            {/* Debug Panel - only visible in development */}
-            {process.env.NODE_ENV !== 'production' && <ContentDebugPanel />}
+// This component will force a re-render when the location changes
+const LocationAwareRoutes = () => {
+  const location = useLocation();
 
-            <Routes>
+  return (
+    <div className="App">
+      {/* Debug Panel - only visible in development */}
+      {process.env.NODE_ENV !== 'production' && <ContentDebugPanel />}
+
+      {/* Use the location.key as a key to force re-rendering when location changes */}
+      <Routes key={location.key}>
             {/* Public Routes */}
             <Route path="/" element={
               <>
@@ -255,8 +256,17 @@ function App() {
             <Route path="/admin/content" element={<ContentManager />} />
             <Route path="/admin/contact" element={<ContactManager />} />
           </Routes>
-        </div>
-      </Router>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <ContentProvider>
+        <BrowserRouter>
+          <LocationAwareRoutes />
+        </BrowserRouter>
       </ContentProvider>
     </AuthProvider>
   )

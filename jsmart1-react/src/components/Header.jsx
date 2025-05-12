@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import ForceNavLink from './ForceNavLink';
 import '../styles/Header.css';
 
 const Header = () => {
@@ -75,13 +76,13 @@ const Header = () => {
         <nav className={isMenuOpen ? 'active' : ''}>
           <ul>
             <li>
-              <NavLink to="/" end onClick={closeMenu}>Home</NavLink>
+              <ForceNavLink to="/" onClick={closeMenu}>Home</ForceNavLink>
             </li>
             <li className={`dropdown ${activeDropdown === 'about' ? 'active' : ''}`}>
               <div className="nav-link-wrapper">
-                <NavLink to="/about" onClick={closeMenu}>
+                <ForceNavLink to="/about" onClick={closeMenu}>
                   About Us
-                </NavLink>
+                </ForceNavLink>
                 <button
                   type="button"
                   className="dropdown-toggle"
@@ -95,30 +96,30 @@ const Header = () => {
                 </button>
               </div>
               <div className="dropdown-content">
-                <Link to="/about#vision" onClick={closeMenu}>Our Vision</Link>
-                <Link to="/about#mission" onClick={closeMenu}>Our Mission</Link>
-                <Link to="/about#story" onClick={closeMenu}>Our Story</Link>
-                <Link to="/about#motto" onClick={closeMenu}>Our Motto</Link>
-                <Link to="/about#beliefs" onClick={closeMenu}>Our Beliefs</Link>
+                <ForceNavLink to="/about#vision" onClick={closeMenu}>Our Vision</ForceNavLink>
+                <ForceNavLink to="/about#mission" onClick={closeMenu}>Our Mission</ForceNavLink>
+                <ForceNavLink to="/about#story" onClick={closeMenu}>Our Story</ForceNavLink>
+                <ForceNavLink to="/about#motto" onClick={closeMenu}>Our Motto</ForceNavLink>
+                <ForceNavLink to="/about#beliefs" onClick={closeMenu}>Our Beliefs</ForceNavLink>
               </div>
             </li>
             <li>
-              <NavLink to="/sermons" onClick={closeMenu}>Sermons</NavLink>
+              <ForceNavLink to="/sermons" onClick={closeMenu}>Sermons</ForceNavLink>
             </li>
             <li>
-              <NavLink to="/events" onClick={closeMenu}>Events</NavLink>
+              <ForceNavLink to="/events" onClick={closeMenu}>Events</ForceNavLink>
             </li>
             <li>
-              <NavLink to="/ministries" onClick={closeMenu}>Ministries</NavLink>
+              <ForceNavLink to="/ministries" onClick={closeMenu}>Ministries</ForceNavLink>
             </li>
             <li>
-              <NavLink to="/gallery" onClick={closeMenu}>Gallery</NavLink>
+              <ForceNavLink to="/gallery" onClick={closeMenu}>Gallery</ForceNavLink>
             </li>
             <li>
-              <NavLink to="/contact" onClick={closeMenu}>Contact</NavLink>
+              <ForceNavLink to="/contact" onClick={closeMenu}>Contact</ForceNavLink>
             </li>
             <li>
-              <NavLink to="/give" className="btn-give" onClick={closeMenu}>Give</NavLink>
+              <ForceNavLink to="/give" className="btn-give" onClick={closeMenu}>Give</ForceNavLink>
             </li>
           </ul>
         </nav>

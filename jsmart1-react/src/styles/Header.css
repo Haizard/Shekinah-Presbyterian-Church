@@ -52,16 +52,26 @@ nav ul li {
   position: relative;
 }
 
-nav ul li a {
+nav ul li a,
+nav ul li button {
   color: var(--light-color);
   padding: 0.5rem 1rem;
   font-weight: 500;
   font-family: 'Montserrat', sans-serif;
   transition: var(--transition);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: block;
+  width: 100%;
+  text-decoration: none;
 }
 
 nav ul li a:hover,
-nav ul li a.active {
+nav ul li a.active,
+nav ul li button:hover,
+nav ul li button.active {
   color: #f3c623;
 }
 
@@ -120,15 +130,23 @@ nav ul li a.active {
   transform: translateY(0);
 }
 
-.dropdown-content a {
+.dropdown-content a,
+.dropdown-content button {
   color: var(--text-color) !important;
   padding: 0.7rem 1.5rem !important;
   display: block;
   font-weight: 400 !important;
   font-size: 0.9rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  text-decoration: none;
 }
 
-.dropdown-content a:hover {
+.dropdown-content a:hover,
+.dropdown-content button:hover {
   background-color: var(--light-bg);
   color: var(--primary-color) !important;
 }
@@ -234,12 +252,14 @@ nav ul li a.active {
     display: none;
   }
 
-  .dropdown-content a {
+  .dropdown-content a,
+  .dropdown-content button {
     color: var(--light-color) !important;
     padding: 0.5rem 0 !important;
   }
 
-  .dropdown-content a:hover {
+  .dropdown-content a:hover,
+  .dropdown-content button:hover {
     background-color: transparent;
     color: #f3c623 !important;
   }
