@@ -17,6 +17,7 @@ import DynamicContent from '../components/DynamicContent';
 import ContentContext from '../context/ContentContext';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
+import ContentDebugger from '../components/ContentDebugger';
 
 const Home = () => {
   const [latestSermons, setLatestSermons] = useState([]);
@@ -34,6 +35,8 @@ const Home = () => {
           api.sermons.getAll(),
           api.events.getAll()
         ]);
+
+        console.log('Home: Fetched sermons and events', { sermons, events });
 
         // Sort sermons by date (newest first) and take the first 2
         const sortedSermons = sermons
@@ -61,11 +64,38 @@ const Home = () => {
     fetchData();
   }, []);
 
+  // Force a re-render of the component when the content context changes
+  const { refreshTrigger, content } = useContext(ContentContext);
+  const [localRefreshTrigger, setLocalRefreshTrigger] = useState(0);
+
+  useEffect(() => {
+    console.log('Home: Content context refresh trigger changed, updating local trigger');
+    setLocalRefreshTrigger(refreshTrigger);
+  }, [refreshTrigger]);
+
+  // Log the available content sections
+  useEffect(() => {
+    if (content) {
+      console.log('Home: Available content sections:', Object.keys(content));
+      // Log each section's content
+      Object.entries(content).forEach(([section, data]) => {
+        console.log(`Home: Content for section "${section}":`, {
+          title: data.title,
+          contentType: typeof data.content,
+          contentPreview: typeof data.content === 'string'
+            ? data.content.substring(0, 50) + '...'
+            : JSON.stringify(data.content).substring(0, 50) + '...'
+        });
+      });
+    }
+  }, [content]);
+
   return (
     <main>
       {/* Hero Section */}
       <section id="home" className="hero">
         <DynamicContent
+          key={`hero-${localRefreshTrigger}`}
           section="hero"
           fallback={
             <div className="hero-content">
@@ -81,20 +111,25 @@ const Home = () => {
               </div>
             </div>
           }
-          renderContent={(content) => (
-            <div className="hero-content">
-              <h2>{content.title}</h2>
-              <div dangerouslySetInnerHTML={{ __html: content.content }} />
-              <div className="hero-buttons">
-                <a href="#about" className="btn btn-primary">Learn More</a>
-                <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
+          renderContent={(content) => {
+            console.log('Hero renderContent called with:', content);
+            return (
+              <div className="hero-content">
+                <h2>{content.title}</h2>
+                {typeof content.content === 'string' && (
+                  <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                )}
+                <div className="hero-buttons">
+                  <a href="#about" className="btn btn-primary">Learn More</a>
+                  <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
+                </div>
+                <div className="service-times">
+                  <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
+                  <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
+                </div>
               </div>
-              <div className="service-times">
-                <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
-                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
-              </div>
-            </div>
-          )}
+            );
+          }}
         />
       </section>
 
@@ -106,6 +141,7 @@ const Home = () => {
             <div className="divider" />
           </div>
           <DynamicContent
+            key={`about-${localRefreshTrigger}`}
             section="about"
             className="about-content"
             fallback={
@@ -119,20 +155,25 @@ const Home = () => {
                 </div>
               </div>
             }
-            renderContent={(content) => (
-              <div className="about-content">
-                <div className="about-text">
-                  <div dangerouslySetInnerHTML={{ __html: content.content }} />
+            renderContent={(content) => {
+              console.log('About renderContent called with:', content);
+              return (
+                <div className="about-content">
+                  <div className="about-text">
+                    {typeof content.content === 'string' && (
+                      <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                    )}
+                  </div>
+                  <div className="about-image">
+                    <img
+                      src={getImageUrl(content.image)}
+                      alt={content.title}
+                      onError={(e) => handleImageError(e)}
+                    />
+                  </div>
                 </div>
-                <div className="about-image">
-                  <img
-                    src={getImageUrl(content.image)}
-                    alt={content.title}
-                    onError={(e) => handleImageError(e)}
-                  />
-                </div>
-              </div>
-            )}
+              );
+            }}
           />
         </div>
       </section>
@@ -145,6 +186,7 @@ const Home = () => {
             <div className="divider" />
           </div>
           <DynamicContent
+            key={`vision-${localRefreshTrigger}`}
             section="vision"
             className="vision-content"
             fallback={
@@ -158,20 +200,25 @@ const Home = () => {
                 </div>
               </div>
             }
-            renderContent={(content) => (
-              <div className="vision-content">
-                <div className="vision-image">
-                  <img
-                    src={getImageUrl(content.image)}
-                    alt={content.title}
-                    onError={(e) => handleImageError(e)}
-                  />
+            renderContent={(content) => {
+              console.log('Vision renderContent called with:', content);
+              return (
+                <div className="vision-content">
+                  <div className="vision-image">
+                    <img
+                      src={getImageUrl(content.image)}
+                      alt={content.title}
+                      onError={(e) => handleImageError(e)}
+                    />
+                  </div>
+                  <div className="vision-text">
+                    {typeof content.content === 'string' && (
+                      <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                    )}
+                  </div>
                 </div>
-                <div className="vision-text">
-                  <div dangerouslySetInnerHTML={{ __html: content.content }} />
-                </div>
-              </div>
-            )}
+              );
+            }}
           />
         </div>
       </section>
@@ -181,9 +228,10 @@ const Home = () => {
         <div className="container">
           <div className="section-header">
             <h2>Our Mission</h2>
-            <div className="divider"></div>
+            <div className="divider" />
           </div>
           <DynamicContent
+            key={`mission-${localRefreshTrigger}`}
             section="mission"
             className="mission-content"
             fallback={
@@ -219,20 +267,25 @@ const Home = () => {
                 </div>
               </div>
             }
-            renderContent={(content) => (
-              <div className="mission-content">
-                <div className="mission-text">
-                  <div dangerouslySetInnerHTML={{ __html: content.content }} />
+            renderContent={(content) => {
+              console.log('Mission renderContent called with:', content);
+              return (
+                <div className="mission-content">
+                  <div className="mission-text">
+                    {typeof content.content === 'string' && (
+                      <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                    )}
+                  </div>
+                  <div className="mission-image">
+                    <img
+                      src={getImageUrl(content.image)}
+                      alt={content.title}
+                      onError={(e) => handleImageError(e)}
+                    />
+                  </div>
                 </div>
-                <div className="mission-image">
-                  <img
-                    src={getImageUrl(content.image)}
-                    alt={content.title}
-                    onError={(e) => handleImageError(e)}
-                  />
-                </div>
-              </div>
-            )}
+              );
+            }}
           />
         </div>
       </section>
@@ -355,6 +408,17 @@ const Home = () => {
               </div>
             </>
           )}
+        </div>
+      </section>
+
+      {/* Content Debugger Section */}
+      <section id="debug" className="section bg-light">
+        <div className="container">
+          <div className="section-header">
+            <h2>Content Debugger</h2>
+            <div className="divider" />
+          </div>
+          <ContentDebugger />
         </div>
       </section>
     </main>

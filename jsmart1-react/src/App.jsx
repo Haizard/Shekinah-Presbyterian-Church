@@ -154,6 +154,7 @@ library.add(
 // Components
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ContentDebugPanel from './components/debug/ContentDebugPanel'
 
 // Pages
 import Home from './pages/Home'
@@ -181,6 +182,9 @@ function App() {
       <ContentProvider>
         <Router>
           <div className="App">
+            {/* Debug Panel - only visible in development */}
+            {process.env.NODE_ENV !== 'production' && <ContentDebugPanel />}
+
             <Routes>
             {/* Public Routes */}
             <Route path="/" element={

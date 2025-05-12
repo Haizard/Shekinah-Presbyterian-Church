@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
 import ContentContext from '../context/ContentContext';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
+import { parseContent, isHtmlContent } from '../utils/contentUtils';
+import ContentRendererFactory from './structured/ContentRendererFactory';
 
 const DynamicContent = ({
   section,
@@ -47,7 +49,7 @@ const DynamicContent = ({
 
       return () => {
         componentMounted.current = false;
-        if (window.refreshDynamicContent && window.refreshDynamicContent[section]) {
+        if (window.refreshDynamicContent?.[section]) {
           delete window.refreshDynamicContent[section];
         }
       };
@@ -57,55 +59,87 @@ const DynamicContent = ({
   // Fetch content when component mounts, section changes, or refreshTrigger changes
   useEffect(() => {
     console.log(`DynamicContent: Effect triggered for section "${section}" (refreshTrigger: ${refreshTrigger})`);
+
+    // Set a timeout to ensure loading state doesn't get stuck
+    const loadingTimeout = setTimeout(() => {
+      if (isLoading) {
+        console.log(`DynamicContent: Loading timeout for section "${section}", forcing loading state to false`);
+        setIsLoading(false);
+      }
+    }, 5000); // 5 second timeout
+
     const fetchContent = async () => {
       try {
         setIsLoading(true);
         console.log(`DynamicContent: Fetching content for section "${section}"...`);
         const data = await getContentBySection(section);
+
+        // Always update state regardless of data to ensure we exit loading state
         if (componentMounted.current) {
-          if (data) {
-            console.log(`DynamicContent: Setting content data for section "${section}":`, data);
-            setContentData(data);
-          } else {
-            console.log(`DynamicContent: No data found for section "${section}". Using fallback.`);
-            // We'll use the fallback content, which is handled in the render logic
-          }
+          console.log(`DynamicContent: Setting content data for section "${section}":`, data);
+          setContentData(data || null);
+          // Force a re-render by updating the last fetch time
           setLastFetchTime(Date.now());
+          // Update the local refresh count to trigger any dependent components
+          setLocalRefreshCount(prev => prev + 1);
         }
       } catch (err) {
         console.error(`DynamicContent: Error fetching content for section ${section}:`, err);
+        // Set content data to null to show fallback
+        setContentData(null);
       } finally {
         if (componentMounted.current) {
+          console.log(`DynamicContent: Exiting loading state for section "${section}"`);
           setIsLoading(false);
         }
       }
     };
 
     fetchContent();
-  }, [section, getContentBySection, refreshTrigger]);
 
-  // Refresh content periodically (every 30 seconds)
+    // Clean up the timeout
+    return () => {
+      clearTimeout(loadingTimeout);
+    };
+  }, [section, getContentBySection, refreshTrigger, isLoading]);
+
+  // Refresh content periodically (every 2 minutes)
   useEffect(() => {
+    // Stagger the refresh intervals to prevent all components from refreshing at the same time
+    // Generate a random offset between 0 and 30 seconds
+    const randomOffset = Math.floor(Math.random() * 30000);
+
+    // Use a longer refresh interval (2 minutes) to reduce server load
     const refreshInterval = setInterval(() => {
-      // Only refresh if it's been more than 30 seconds since the last fetch
-      if (Date.now() - lastFetchTime > 30000) {
+      // Only refresh if it's been more than 2 minutes since the last fetch
+      if (Date.now() - lastFetchTime > 120000) {
         console.log(`DynamicContent: Periodic refresh for section "${section}"`);
+
+        // Use a debounced refresh function to prevent too many simultaneous requests
         const refreshData = async () => {
           try {
-            console.log(`DynamicContent: Fetching fresh data for section "${section}"...`);
-            const data = await getContentBySection(section);
-            if (componentMounted.current) {
-              // Only update if we got valid data
-              if (data) {
-                console.log(`DynamicContent: Updating content data for section "${section}"`, data);
-                setContentData(data);
-                setLastFetchTime(Date.now());
-                setLocalRefreshCount(prev => prev + 1);
-              } else {
-                console.log(`DynamicContent: No data found for section "${section}" during refresh`);
-                // Still update the last fetch time to prevent too frequent retries
-                setLastFetchTime(Date.now());
+            // Check if we already have content data before making a new request
+            if (!contentData) {
+              console.log(`DynamicContent: Fetching fresh data for section "${section}"...`);
+              const data = await getContentBySection(section);
+              if (componentMounted.current) {
+                // Only update if we got valid data
+                if (data) {
+                  console.log(`DynamicContent: Updating content data for section "${section}"`, data);
+                  setContentData(data);
+                  setLastFetchTime(Date.now());
+                  setLocalRefreshCount(prev => prev + 1);
+                } else {
+                  console.log(`DynamicContent: No data found for section "${section}" during refresh`);
+                  // Still update the last fetch time to prevent too frequent retries
+                  setLastFetchTime(Date.now());
+                }
               }
+            } else {
+              // If we already have content, just update the last fetch time
+              // This prevents unnecessary API calls when we already have data
+              console.log(`DynamicContent: Skipping refresh for section "${section}" - already have data`);
+              setLastFetchTime(Date.now());
             }
           } catch (err) {
             console.error(`DynamicContent: Error refreshing content for section ${section}:`, err);
@@ -116,29 +150,76 @@ const DynamicContent = ({
 
         refreshData();
       }
-    }, 30000); // Back to 30 seconds to reduce server load
+    }, 120000 + randomOffset); // 2 minutes + random offset to stagger requests
 
     return () => clearInterval(refreshInterval);
-  }, [section, getContentBySection, lastFetchTime]);
+  }, [section, getContentBySection, lastFetchTime, contentData]);
 
   // If custom render function is provided, use it
   if (renderContent && contentData) {
-    return renderContent(contentData);
+    console.log(`DynamicContent: Using custom renderContent for section "${section}"`, {
+      hasRenderContent: !!renderContent,
+      hasContentData: !!contentData,
+      contentDataType: typeof contentData,
+      contentDataKeys: contentData ? Object.keys(contentData) : [],
+      renderContentType: typeof renderContent
+    });
+
+    // Create a copy of contentData to avoid modifying the original
+    const contentToRender = { ...contentData };
+
+    // Parse the content if it's JSON before passing to renderContent
+    if (contentToRender.content && typeof contentToRender.content === 'string') {
+      try {
+        // Check if it looks like JSON
+        if ((contentToRender.content.trim().startsWith('{') && contentToRender.content.trim().endsWith('}')) ||
+            (contentToRender.content.trim().startsWith('[') && contentToRender.content.trim().endsWith(']'))) {
+          try {
+            const parsedContent = JSON.parse(contentToRender.content);
+            console.log(`DynamicContent: Parsed JSON content for section "${section}"`, parsedContent);
+
+            // Update the content with the parsed version
+            contentToRender.content = parsedContent;
+          } catch (parseError) {
+            console.error(`DynamicContent: Error parsing JSON content for section "${section}"`, parseError);
+            // Continue with the original string content if parsing fails
+          }
+        }
+      } catch (error) {
+        console.error(`DynamicContent: Error processing content for section "${section}"`, error);
+      }
+    }
+
+    console.log(`DynamicContent: Rendering content for section "${section}" with custom renderer`, contentToRender);
+    try {
+      const renderedContent = renderContent(contentToRender);
+      console.log(`DynamicContent: Successfully rendered content for section "${section}"`);
+      return renderedContent;
+    } catch (error) {
+      console.error(`DynamicContent: Error rendering content for section "${section}"`, error);
+      // Fall back to default rendering if custom rendering fails
+    }
   }
 
-  // Show loading state
-  if (isLoading) {
+  // Show loading state, but only for a reasonable amount of time
+  if (isLoading && Date.now() - lastFetchTime < 10000) { // Only show loading for max 10 seconds
+    console.log(`DynamicContent: Showing loading state for section "${section}"`);
     return (
       <div className={`dynamic-content-loading ${className}`}>
         <div className="spinner-small" />
+        <p>Loading {section} content...</p>
       </div>
     );
   }
 
   // If no content found, show fallback
   if (!contentData) {
+    console.log(`DynamicContent: No content data for section "${section}", showing fallback`);
     return fallback || null;
   }
+
+  // Debug: Log the content data
+  console.log(`DynamicContent: Content data for section "${section}":`, contentData);
 
   // Default rendering
   return (
@@ -150,7 +231,7 @@ const DynamicContent = ({
           <p>Refresh Count: {localRefreshCount}</p>
           <p>Last Updated: {new Date(lastFetchTime).toLocaleTimeString()}</p>
           <p>Content ID: {contentData._id}</p>
-          <button onClick={manualRefresh}>Force Refresh</button>
+          <button type="button" onClick={manualRefresh}>Force Refresh</button>
         </div>
       )}
 
@@ -169,10 +250,12 @@ const DynamicContent = ({
       )}
 
       {showContent && contentData.content && (
-        <div
-          className="dynamic-content-text"
-          dangerouslySetInnerHTML={{ __html: contentData.content }}
-        />
+        <div className="dynamic-content-text">
+          <ContentRendererFactory
+            section={section}
+            content={contentData.content}
+          />
+        </div>
       )}
     </div>
   );

@@ -11,7 +11,25 @@ const getUser = () => {
   return userString ? JSON.parse(userString) : null;
 };
 
-// Base API request function
+// Request cache to prevent duplicate in-flight requests
+const requestCache = new Map();
+// Error cache to prevent hammering endpoints that are failing
+const errorCache = new Map();
+// Response cache for quick access to previously fetched data
+const responseCache = new Map();
+
+// Cache TTL in milliseconds (5 minutes)
+const CACHE_TTL = 5 * 60 * 1000;
+// Error cache TTL (30 seconds)
+const ERROR_CACHE_TTL = 30 * 1000;
+
+// Function to generate a cache key from URL and options
+const getCacheKey = (url, options) => {
+  const method = options.method || 'GET';
+  return `${method}:${url}:${options.body || ''}`;
+};
+
+// Base API request function with deduplication and caching
 const apiRequest = async (url, options = {}) => {
   // Get the user token if available
   const user = getUser();
@@ -36,40 +54,117 @@ const apiRequest = async (url, options = {}) => {
   // Prepend the API base URL to the provided URL
   const fullUrl = `${API_BASE_URL}${url}`;
 
-  try {
-    console.log(`API Request to: ${fullUrl}`, { method: requestOptions.method || 'GET' });
+  // Generate cache key
+  const cacheKey = getCacheKey(url, requestOptions);
 
-    const response = await fetch(fullUrl, requestOptions);
-    console.log(`API Response status: ${response.status} ${response.statusText}`);
+  // Check if this is a GET request that can be cached
+  const isGetRequest = !options.method || options.method === 'GET';
 
-    // Check if the response is ok before trying to parse JSON
-    if (!response.ok) {
-      let errorData;
-      try {
-        errorData = await response.json();
-        console.error(`API Error (${fullUrl}):`, errorData);
-        throw new Error(errorData.message || `Server responded with status: ${response.status}`);
-      } catch (jsonError) {
-        // If we can't parse JSON from the error response
-        console.error(`API Error (${fullUrl}): Could not parse error response`, jsonError);
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
+  // Check if we have a cached error for this request
+  if (errorCache.has(cacheKey)) {
+    const { error, timestamp } = errorCache.get(cacheKey);
+    const age = Date.now() - timestamp;
+
+    // If the error is still fresh, don't retry yet
+    if (age < ERROR_CACHE_TTL) {
+      console.log(`API Request to ${fullUrl} skipped due to recent error (${age}ms ago)`);
+      throw error;
+    } else {
+      // Error cache expired, remove it
+      errorCache.delete(cacheKey);
     }
-
-    // Parse JSON response
-    try {
-      const data = await response.json();
-      console.log('API Response data:', data);
-      return data;
-    } catch (jsonError) {
-      console.error(`API Error (${fullUrl}): Could not parse JSON response`, jsonError);
-      throw new Error('Invalid response format from server');
-    }
-  } catch (error) {
-    console.error(`API Error (${fullUrl}):`, error);
-    console.error('Request options:', JSON.stringify(requestOptions, null, 2));
-    throw error;
   }
+
+  // For GET requests, check if we have a cached response
+  if (isGetRequest && responseCache.has(cacheKey)) {
+    const { data, timestamp } = responseCache.get(cacheKey);
+    const age = Date.now() - timestamp;
+
+    // If the cache is still fresh, return the cached data
+    if (age < CACHE_TTL) {
+      console.log(`API Request to ${fullUrl} served from cache (${age}ms old)`);
+      return data;
+    }
+  }
+
+  // Check if we already have an in-flight request for this URL
+  if (requestCache.has(cacheKey)) {
+    console.log(`API Request to ${fullUrl} already in progress, reusing promise`);
+    return requestCache.get(cacheKey);
+  }
+
+  // Create a new request promise
+  const requestPromise = (async () => {
+    try {
+      console.log(`API Request to: ${fullUrl}`, { method: requestOptions.method || 'GET' });
+
+      const response = await fetch(fullUrl, requestOptions);
+      console.log(`API Response status: ${response.status} ${response.statusText}`);
+
+      // Check if the response is ok before trying to parse JSON
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+          console.error(`API Error (${fullUrl}):`, errorData);
+          const error = new Error(errorData.message || `Server responded with status: ${response.status}`);
+
+          // Cache the error
+          errorCache.set(cacheKey, { error, timestamp: Date.now() });
+
+          throw error;
+        } catch (jsonError) {
+          // If we can't parse JSON from the error response
+          console.error(`API Error (${fullUrl}): Could not parse error response`, jsonError);
+          const error = new Error(`Server responded with status: ${response.status}`);
+
+          // Cache the error
+          errorCache.set(cacheKey, { error, timestamp: Date.now() });
+
+          throw error;
+        }
+      }
+
+      // Parse JSON response
+      try {
+        const data = await response.json();
+        console.log('API Response data:', data);
+
+        // Cache the response for GET requests
+        if (isGetRequest) {
+          responseCache.set(cacheKey, { data, timestamp: Date.now() });
+        }
+
+        return data;
+      } catch (jsonError) {
+        console.error(`API Error (${fullUrl}): Could not parse JSON response`, jsonError);
+        const error = new Error('Invalid response format from server');
+
+        // Cache the error
+        errorCache.set(cacheKey, { error, timestamp: Date.now() });
+
+        throw error;
+      }
+    } catch (error) {
+      console.error(`API Error (${fullUrl}):`, error);
+      console.error('Request options:', JSON.stringify(requestOptions, null, 2));
+
+      // Cache the error if it's a network error
+      if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+        errorCache.set(cacheKey, { error, timestamp: Date.now() });
+      }
+
+      throw error;
+    } finally {
+      // Remove this request from the cache when it completes
+      requestCache.delete(cacheKey);
+    }
+  })();
+
+  // Store the promise in the request cache
+  requestCache.set(cacheKey, requestPromise);
+
+  return requestPromise;
 };
 
 // API functions for different endpoints
