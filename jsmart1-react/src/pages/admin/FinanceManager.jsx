@@ -210,9 +210,11 @@ const FinanceManager = () => {
   };
 
   // Delete finance record
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!confirmDelete) return;
+
     try {
-      await api.finances.delete(id);
+      await api.finances.delete(confirmDelete._id);
       setConfirmDelete(null);
       fetchData();
     } catch (err) {
@@ -362,6 +364,278 @@ const FinanceManager = () => {
             </select>
           </div>
         </div>
+
+        {/* Transactions Table */}
+        <div className="data-table-container">
+          {loading ? (
+            <div className="loading-spinner">
+              <FontAwesomeIcon icon="spinner" spin />
+              <span>Loading transactions...</span>
+            </div>
+          ) : finances.length === 0 ? (
+            <div className="empty-state">
+              <FontAwesomeIcon icon="receipt" />
+              <p>No transactions found. Add your first transaction to get started.</p>
+            </div>
+          ) : (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Description</th>
+                  <th>Branch</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {finances.map(finance => (
+                  <tr key={finance._id} className={finance.type === 'income' ? 'income-row' : 'expense-row'}>
+                    <td>{formatDate(finance.date)}</td>
+                    <td>
+                      <span className={`type-badge ${finance.type}`}>
+                        {finance.type === 'income' ? 'Income' : 'Expense'}
+                      </span>
+                    </td>
+                    <td>{finance.category}</td>
+                    <td className={`amount ${finance.type}`}>
+                      {formatCurrency(finance.amount)}
+                    </td>
+                    <td>{finance.description || '-'}</td>
+                    <td>{getBranchName(finance.branchId)}</td>
+                    <td className="actions">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-edit"
+                        onClick={() => handleEdit(finance)}
+                      >
+                        <FontAwesomeIcon icon="edit" /> Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-delete"
+                        onClick={() => handleDeleteConfirm(finance)}
+                      >
+                        <FontAwesomeIcon icon="trash-alt" /> Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Finance Form Modal */}
+        {showForm && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h2>{editMode ? 'Edit Transaction' : 'Add New Transaction'}</h2>
+                <button
+                  type="button"
+                  className="close-btn"
+                  onClick={() => setShowForm(false)}
+                >
+                  <FontAwesomeIcon icon="times" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                {formError && (
+                  <div className="alert alert-danger">
+                    <FontAwesomeIcon icon="exclamation-circle" />
+                    {formError}
+                  </div>
+                )}
+
+                {formSuccess && (
+                  <div className="alert alert-success">
+                    <FontAwesomeIcon icon="check-circle" />
+                    {formSuccess}
+                  </div>
+                )}
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="type">Transaction Type *</label>
+                    <div className="radio-group">
+                      <label className="radio-label">
+                        <input
+                          type="radio"
+                          name="type"
+                          value="income"
+                          checked={formData.type === 'income'}
+                          onChange={handleInputChange}
+                        />
+                        Income
+                      </label>
+                      <label className="radio-label">
+                        <input
+                          type="radio"
+                          name="type"
+                          value="expense"
+                          checked={formData.type === 'expense'}
+                          onChange={handleInputChange}
+                        />
+                        Expense
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="date">Date *</label>
+                    <input
+                      type="date"
+                      id="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="category">Category *</label>
+                    <select
+                      id="category"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      {formData.type === 'income' ? (
+                        incomeCategories.map(category => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))
+                      ) : (
+                        expenseCategories.map(category => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="amount">Amount *</label>
+                    <input
+                      type="number"
+                      id="amount"
+                      name="amount"
+                      value={formData.amount}
+                      onChange={handleInputChange}
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="branchId">Branch</label>
+                    <select
+                      id="branchId"
+                      name="branchId"
+                      value={formData.branchId}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Main Church</option>
+                      {branches.map(branch => (
+                        <option key={branch._id} value={branch._id}>
+                          {branch.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="reference">Reference/Receipt #</label>
+                    <input
+                      type="text"
+                      id="reference"
+                      name="reference"
+                      value={formData.reference}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="description">Description</label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows="3"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="approvedBy">Approved By</label>
+                  <input
+                    type="text"
+                    id="approvedBy"
+                    name="approvedBy"
+                    value={formData.approvedBy}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    {editMode ? 'Update Transaction' : 'Add Transaction'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {confirmDelete && (
+          <div className="modal-overlay">
+            <div className="modal-content confirm-dialog">
+              <div className="modal-header">
+                <h2>Confirm Delete</h2>
+                <button
+                  type="button"
+                  className="close-btn"
+                  onClick={handleDeleteCancel}
+                >
+                  <FontAwesomeIcon icon="times" />
+                </button>
+              </div>
+
+              <div className="confirm-message">
+                <FontAwesomeIcon icon="exclamation-triangle" />
+                <p>Are you sure you want to delete this {confirmDelete.type} transaction of {formatCurrency(confirmDelete.amount)}? This action cannot be undone.</p>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn btn-secondary" onClick={handleDeleteCancel}>
+                  Cancel
+                </button>
+                <button type="button" className="btn btn-danger" onClick={handleDelete}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );

@@ -78,6 +78,7 @@ import {
   faFileUpload,
   faFileCode,
   faSync,
+  faExclamationTriangle,
   // New feature icons
   faBuilding,
   faUserFriends,
@@ -99,7 +100,18 @@ import {
   faUsersGear,
   faUsersSlash,
   faUsersCog,
-  faBalanceScale
+  faBalanceScale,
+  faCalendar,
+  faList,
+  faListAlt,
+  faTable,
+  faTag,
+  faTags,
+  faClipboard,
+  faClipboardList,
+  faClipboardCheck,
+  faMoneyCheck,
+  faMoneyCheckAlt
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -176,6 +188,7 @@ library.add(
   faFileUpload,
   faFileCode,
   faSync,
+  faExclamationTriangle,
   // New feature icons
   faBuilding,
   faUserFriends,
@@ -197,7 +210,18 @@ library.add(
   faUsersGear,
   faUsersSlash,
   faUsersCog,
-  faBalanceScale
+  faBalanceScale,
+  faCalendar,
+  faList,
+  faListAlt,
+  faTable,
+  faTag,
+  faTags,
+  faClipboard,
+  faClipboardList,
+  faClipboardCheck,
+  faMoneyCheck,
+  faMoneyCheckAlt
 )
 
 // Components

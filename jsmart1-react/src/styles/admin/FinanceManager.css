@@ -133,70 +133,103 @@
 }
 
 /* Finance Table */
-.finance-table .income-row {
+.data-table .income-row {
   background-color: rgba(76, 175, 80, 0.05);
 }
 
-.finance-table .expense-row {
+.data-table .expense-row {
   background-color: rgba(244, 67, 54, 0.05);
 }
 
-.finance-table .amount-cell {
+.data-table .amount {
   font-weight: 600;
 }
 
-.finance-table .income-amount {
+.data-table .amount.income {
   color: #4caf50;
 }
 
-.finance-table .expense-amount {
+.data-table .amount.expense {
   color: #f44336;
 }
 
-.finance-table .category-badge {
+.type-badge {
   display: inline-block;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 500;
-  background-color: #f5f5f5;
+  text-align: center;
+  min-width: 80px;
+}
+
+.type-badge.income {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.type-badge.expense {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #f44336;
 }
 
 /* Finance Form */
-.finance-form .form-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
 }
 
-.type-selector {
+.radio-label {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+  margin: 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
-.type-option {
-  flex: 1;
-  padding: 1rem;
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
+  font-size: 1rem;
 }
 
-.type-option.selected.income {
-  border-color: #4caf50;
-  background-color: rgba(76, 175, 80, 0.1);
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
 }
 
-.type-option.selected.expense {
-  border-color: #f44336;
-  background-color: rgba(244, 67, 54, 0.1);
-}
-
-.type-option:hover {
-  border-color: #2c3e50;
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 /* Responsive */
@@ -205,20 +238,20 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .tabs {
     width: 100%;
   }
-  
+
   .tab {
     flex: 1;
     text-align: center;
   }
-  
+
   .branch-filter {
     width: 100%;
   }
-  
+
   .branch-filter select {
     flex: 1;
   }
