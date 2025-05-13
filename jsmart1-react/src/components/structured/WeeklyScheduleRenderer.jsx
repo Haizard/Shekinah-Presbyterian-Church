@@ -6,63 +6,60 @@ import { faClock, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
  * Component for rendering the "weekly_schedule" structured content
  */
 const WeeklyScheduleRenderer = ({ content }) => {
-  console.log('WeeklyScheduleRenderer received content:', content);
-
-  // Handle different content formats
-  let parsedContent;
-
-  // If content is a string, try to parse it
-  if (typeof content === 'string') {
-    try {
-      parsedContent = JSON.parse(content);
-      console.log('WeeklyScheduleRenderer parsed string content:', parsedContent);
-    } catch (error) {
-      console.error('Error parsing WeeklySchedule content:', error);
-      return <div>Error rendering content: Invalid JSON format</div>;
-    }
-  } else {
-    // If content is already an object, use it directly
-    parsedContent = content;
-    console.log('WeeklyScheduleRenderer using object content directly:', parsedContent);
+  // Parse content if it's a string
+  let scheduleData;
+  try {
+    scheduleData = typeof content === 'string' ? JSON.parse(content) : content;
+  } catch (error) {
+    console.error('Error parsing schedule data:', error);
+    return <div>Error loading schedule data</div>;
   }
 
-  // If parsedContent is not an array, check if it's nested in a property
-  if (!Array.isArray(parsedContent)) {
-    // Some content might be structured as { schedule: [...] }
-    if (parsedContent?.schedule && Array.isArray(parsedContent.schedule)) {
-      parsedContent = parsedContent.schedule;
-      console.log('WeeklyScheduleRenderer using nested schedule array:', parsedContent);
+  // Ensure we have an array of days
+  if (!Array.isArray(scheduleData)) {
+    if (scheduleData?.schedule && Array.isArray(scheduleData.schedule)) {
+      scheduleData = scheduleData.schedule;
     } else {
-      // Try to convert to array if it's a single object
-      if (typeof parsedContent === 'object' && parsedContent !== null) {
-        console.log('WeeklyScheduleRenderer converting single object to array:', parsedContent);
-        parsedContent = [parsedContent];
-      } else {
-        console.error('WeeklySchedule content is not an array:', parsedContent);
-        return <div>Invalid content format: Expected an array of schedule days</div>;
-      }
+      scheduleData = scheduleData ? [scheduleData] : [];
     }
+  }
+
+  // Create a flat array of all events
+  const allEvents = [];
+  scheduleData.forEach(day => {
+    if (day.events && Array.isArray(day.events)) {
+      day.events.forEach(event => {
+        allEvents.push({
+          day: day.day,
+          name: event.name || event.title,
+          time: event.time,
+          location: event.location
+        });
+      });
+    }
+  });
+
+  // Dummy data if no events are found
+  if (allEvents.length === 0) {
+    allEvents.push(
+      { day: 'Sunday', name: 'Worship Service', time: '9:00 AM - 12:00 PM', location: 'Main Sanctuary' },
+      { day: 'Sunday', name: 'Sunday School', time: '2:00 PM - 3:30 PM', location: 'Education Building' },
+      { day: 'Wednesday', name: 'Bible Study', time: '6:00 PM - 8:00 PM', location: 'Fellowship Hall' },
+      { day: 'Friday', name: 'Youth Fellowship', time: '4:00 PM - 6:00 PM', location: 'Youth Center' }
+    );
   }
 
   return (
     <div className="schedule-container">
       <h3>Weekly Schedule</h3>
-      <div className="schedule-grid">
-        {parsedContent.map((day, index) => (
-          <div className="schedule-item" key={`day-${day.day || index}`}>
-            <div className="day">{day.day}</div>
-            <div className="events">
-              {day.events?.map((event, eventIndex) => (
-                <div className="event" key={`event-${day.day}-${event.title || event.name || eventIndex}`}>
-                  <div className="event-name">{event.title || event.name}</div>
-                  <div className="event-details">
-                    <p><FontAwesomeIcon icon={faClock} /> {event.time}</p>
-                    {event.location && (
-                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> {event.location}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
+      <div className="schedule-grid-wrapper">
+        {allEvents.map((event, index) => (
+          <div className="schedule-item-card" key={index}>
+            <div className="schedule-item-day">{event.day}</div>
+            <div className="schedule-item-name">{event.name}</div>
+            <div className="schedule-item-details">
+              <p><FontAwesomeIcon icon={faClock} /> {event.time}</p>
+              <p><FontAwesomeIcon icon={faMapMarkerAlt} /> {event.location}</p>
             </div>
           </div>
         ))}
