@@ -98,6 +98,62 @@ const db = {
       title: 'Who We Are',
       content: '<p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond.</p>',
       image: '/images/SPCT/CHURCH.jpg'
+    },
+    {
+      _id: 'content2',
+      section: 'leadership',
+      title: 'Our Leadership',
+      content: JSON.stringify({
+        introduction: 'Meet the dedicated leaders who guide our church.',
+        leaders: [
+          {
+            name: 'Pastor John Doe',
+            position: 'Senior Pastor',
+            bio: 'Pastor John has been serving our church for over 10 years.',
+            image: '/images/SPCT/CHURCH.jpg'
+          },
+          {
+            name: 'Elder Jane Smith',
+            position: 'Elder',
+            bio: 'Elder Jane oversees our children\'s ministry.',
+            image: '/images/SPCT/CHURCH.jpg'
+          }
+        ]
+      }),
+      image: '/images/SPCT/CHURCH.jpg'
+    },
+    {
+      _id: 'content3',
+      section: 'weekly_schedule',
+      title: 'Weekly Schedule',
+      content: JSON.stringify([
+        {
+          day: 'Sunday',
+          events: [
+            {
+              name: 'Sunday School',
+              time: '9:00 AM - 10:00 AM',
+              location: 'Education Building'
+            },
+            {
+              name: 'Worship Service',
+              time: '10:30 AM - 12:00 PM',
+              location: 'Main Sanctuary'
+            }
+          ]
+        },
+        {
+          day: 'Wednesday',
+          events: [
+            {
+              name: 'Bible Study',
+              time: '7:00 PM - 8:30 PM',
+              location: 'Fellowship Hall'
+            }
+          ]
+        }
+      ]),
+      image: ''
     }
   ],
   contacts: []
@@ -203,15 +259,51 @@ app.get('/api/gallery/:id', (req, res) => {
 
 // Content routes
 app.get('/api/content', (req, res) => {
+  console.log('GET /api/content - Returning all content:', db.content.length, 'items');
   res.json(db.content);
 });
 
 app.get('/api/content/:section', (req, res) => {
+  console.log(`GET /api/content/${req.params.section} - Looking for content section`);
   const contentItem = db.content.find(c => c.section === req.params.section);
   if (contentItem) {
+    console.log(`Content section "${req.params.section}" found:`, contentItem);
     res.json(contentItem);
   } else {
+    console.log(`Content section "${req.params.section}" not found`);
     res.status(404).json({ message: 'Content not found' });
+  }
+});
+
+app.post('/api/content', (req, res) => {
+  console.log('POST /api/content - Creating or updating content:', req.body);
+  const { section, title, content, image } = req.body;
+
+  // Check if content exists
+  const existingIndex = db.content.findIndex(c => c.section === section);
+
+  if (existingIndex !== -1) {
+    // Update existing content
+    console.log(`Updating existing content section "${section}"`);
+    db.content[existingIndex] = {
+      ...db.content[existingIndex],
+      title: title || db.content[existingIndex].title,
+      content: content || db.content[existingIndex].content,
+      image: image || db.content[existingIndex].image
+    };
+    res.json(db.content[existingIndex]);
+  } else {
+    // Create new content
+    console.log(`Creating new content section "${section}"`);
+    const newContent = {
+      _id: `content${db.content.length + 1}`,
+      section,
+      title,
+      content,
+      image: image || ''
+    };
+    db.content.push(newContent);
+    res.status(201).json(newContent);
   }
 });
 

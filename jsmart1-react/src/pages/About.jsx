@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DynamicContent from '../components/DynamicContent';
 import WeeklySchedule from '../components/WeeklySchedule';
 import FeaturedEvent from '../components/FeaturedEvent';
+import Leadership from '../components/Leadership';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import '../styles/About.css';
 
@@ -175,66 +176,7 @@ const About = () => {
             <h2>Our Leadership</h2>
             <div className="divider" />
           </div>
-          <DynamicContent
-            section="leadership"
-            className="leadership-content"
-            fallback={
-              <div className="leadership-content">
-                <div className="leadership-intro">
-                  <p>Our church is led by a team of dedicated pastors and elders who are committed to serving Christ and His people with integrity and compassion.</p>
-                </div>
-                <div className="leadership-grid">
-                  <div className="leader-card">
-                    <div className="leader-image">
-                      <img src="/images/SPCT/Rev. Dr. Daniel John Seni (senior pastor, and one of the founder).jpg" alt="Senior Pastor" />
-                    </div>
-                    <div className="leader-details">
-                      <h3>Dr. Daniel John</h3>
-                      <p className="leader-title">Senior Pastor</p>
-                      <p className="leader-bio">Dr. Daniel John Seni (senior pastor, and one of the founder).</p>
-                      <div className="leader-social">
-                        <a href="/" aria-label="Facebook"><FontAwesomeIcon icon={['fab', 'facebook-f']} /></a>
-                        <a href="/" aria-label="Twitter"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
-                        <a href="/" aria-label="Instagram"><FontAwesomeIcon icon={['fab', 'instagram']} /></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="leader-card">
-                    <div className="leader-image">
-                      <img src="/images/SPCT/Mwl. Boyeon Lee (Missionary and one of the founder).jpg" alt="Associate Pastor" />
-                    </div>
-                    <div className="leader-details">
-                      <h3>Mwl. Boyeon Lee </h3>
-                      <p className="leader-title">MWALIMU LEE</p>
-                      <p className="leader-bio">Mwl. Boyeon Lee (Missionary and one of the founder).</p>
-                      <div className="leader-social">
-                        <a href="/" aria-label="Facebook"><FontAwesomeIcon icon={['fab', 'facebook-f']} /></a>
-                        <a href="/" aria-label="Instagram"><FontAwesomeIcon icon={['fab', 'instagram']} /></a>
-                        <a href="/" aria-label="LinkedIn"><FontAwesomeIcon icon={['fab', 'linkedin-in']} /></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="leader-card">
-                    <div className="leader-image">
-                      <img src="/images/SPCT/Rev. Emanuel Nzelah (deputy overseer).jpg" alt="Youth Pastor" />
-                    </div>
-                    <div className="leader-details">
-                      <h3>Rev. Emanuel Nzelah</h3>
-                      <p className="leader-title">REV</p>
-                      <p className="leader-bio">Rev. Emanuel Nzelah (deputy overseer).</p>
-                      <div className="leader-social">
-                        <a href="/" aria-label="Facebook"><FontAwesomeIcon icon={['fab', 'facebook-f']} /></a>
-                        <a href="/" aria-label="Twitter"><FontAwesomeIcon icon={['fab', 'twitter']} /></a>
-                        <a href="/" aria-label="Instagram"><FontAwesomeIcon icon={['fab', 'instagram']} /></a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
-          />
+          <Leadership />
         </div>
       </section>
 

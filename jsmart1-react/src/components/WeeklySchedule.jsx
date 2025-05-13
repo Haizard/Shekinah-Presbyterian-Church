@@ -66,15 +66,8 @@ const WeeklySchedule = () => {
             </div>
           </div>
         }
-        renderContent={(content) => (
-          <div className="schedule-container">
-            <h3>{content.title}</h3>
-            <div dangerouslySetInnerHTML={{ __html: content.content }} />
-          </div>
-        )}
       />
     </div>
   );
 };
-
 export default WeeklySchedule;

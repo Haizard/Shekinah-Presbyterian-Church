@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
 import api from '../services/api';
+import { ensureContentSectionsExist } from '../utils/contentUtils';
 
 const ContentContext = createContext();
 
@@ -21,7 +22,7 @@ export const ContentProvider = ({ children }) => {
   // Fetch all content on mount only
   useEffect(() => {
     if (!initialFetchDone.current) {
-      console.log('ContentContext: Initial content fetch on mount');
+      // Removed console log to prevent browser overload
       fetchAllContent();
       initialFetchDone.current = true;
     }
@@ -56,6 +57,14 @@ export const ContentProvider = ({ children }) => {
     try {
       // Removed console log to prevent browser overload
       setLoading(true);
+
+      // Ensure required content sections exist
+      console.log('Ensuring required content sections exist...');
+      const result = await ensureContentSectionsExist([
+        'hero', 'about', 'vision', 'mission', 'leadership', 'weekly_schedule', 'featured_event'
+      ]);
+      console.log('Result of ensuring content sections exist:', result);
+
       const data = await api.content.getAll();
       // Removed console log to prevent browser overload
 

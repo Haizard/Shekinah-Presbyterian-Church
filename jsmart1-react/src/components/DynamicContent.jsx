@@ -76,7 +76,7 @@ const DynamicContent = ({
     // Set a timeout to ensure loading state doesn't get stuck
     const loadingTimeout = setTimeout(() => {
       if (isLoading) {
-        console.log(`DynamicContent: Loading timeout for section "${section}", forcing loading state to false`);
+        // Removed console log to prevent browser overload
         setIsLoading(false);
       }
     }, 5000); // 5 second timeout
@@ -98,14 +98,14 @@ const DynamicContent = ({
                            (data && contentData && data._id !== contentData._id);
 
           if (isNewData) {
-            console.log(`DynamicContent: Setting content data for section "${section}":`, data);
+            // Removed console log to prevent browser overload
             setContentData(data || null);
             // Force a re-render by updating the last fetch time
             setLastFetchTime(Date.now());
             // Update the local refresh count to trigger any dependent components
             setLocalRefreshCount(prev => prev + 1);
           } else {
-            console.log(`DynamicContent: No changes for section "${section}", skipping update`);
+            // Removed console log to prevent browser overload
           }
 
           // Mark that we've fetched content for this section
@@ -115,7 +115,7 @@ const DynamicContent = ({
           setIsLoading(false);
         }
       } catch (err) {
-        console.error(`DynamicContent: Error fetching content for section ${section}:`, err);
+        // Removed console error to prevent browser overload
         // Set content data to null to show fallback only if we don't already have data
         if (!contentData) {
           setContentData(null);
@@ -150,14 +150,14 @@ const DynamicContent = ({
     const refreshInterval = setInterval(() => {
       // Only refresh if it's been more than 5 minutes since the last fetch
       if (Date.now() - lastFetchTime > 300000) {
-        console.log(`DynamicContent: Periodic refresh check for section "${section}"`);
+        // Removed console log to prevent browser overload
 
         // Don't refresh if the component is already in a loading state
         if (!isLoading) {
           // Use a debounced refresh function to prevent too many simultaneous requests
           const refreshData = async () => {
             try {
-              console.log(`DynamicContent: Performing periodic refresh for section "${section}"...`);
+              // Removed console log to prevent browser overload
 
               // Just update the last fetch time without actually fetching new data
               // This prevents unnecessary API calls but still keeps track of refresh attempts
@@ -166,11 +166,11 @@ const DynamicContent = ({
               // Instead of fetching directly, increment the refresh trigger in the parent context
               // This will cause a coordinated refresh of all components
               if (refreshContent && typeof refreshContent === 'function') {
-                console.log(`DynamicContent: Triggering global content refresh from section "${section}"`);
+                // Removed console log to prevent browser overload
                 refreshContent();
               }
             } catch (err) {
-              console.error(`DynamicContent: Error during periodic refresh for section ${section}:`, err);
+              // Removed console error to prevent browser overload
               // Still update the last fetch time to prevent too frequent retries on error
               setLastFetchTime(Date.now());
             }
@@ -178,7 +178,7 @@ const DynamicContent = ({
 
           refreshData();
         } else {
-          console.log(`DynamicContent: Skipping periodic refresh for section "${section}" - already loading`);
+          // Removed console log to prevent browser overload
         }
       }
     }, 300000 + randomOffset); // 5 minutes + random offset to stagger requests
@@ -188,13 +188,7 @@ const DynamicContent = ({
 
   // If custom render function is provided, use it
   if (renderContent && contentData) {
-    console.log(`DynamicContent: Using custom renderContent for section "${section}"`, {
-      hasRenderContent: !!renderContent,
-      hasContentData: !!contentData,
-      contentDataType: typeof contentData,
-      contentDataKeys: contentData ? Object.keys(contentData) : [],
-      renderContentType: typeof renderContent
-    });
+    // Removed console log to prevent browser overload
 
     // Create a copy of contentData to avoid modifying the original
     const contentToRender = { ...contentData };
@@ -207,27 +201,27 @@ const DynamicContent = ({
             (contentToRender.content.trim().startsWith('[') && contentToRender.content.trim().endsWith(']'))) {
           try {
             const parsedContent = JSON.parse(contentToRender.content);
-            console.log(`DynamicContent: Parsed JSON content for section "${section}"`, parsedContent);
+            // Removed console log to prevent browser overload
 
             // Update the content with the parsed version
             contentToRender.content = parsedContent;
           } catch (parseError) {
-            console.error(`DynamicContent: Error parsing JSON content for section "${section}"`, parseError);
+            // Removed console error to prevent browser overload
             // Continue with the original string content if parsing fails
           }
         }
       } catch (error) {
-        console.error(`DynamicContent: Error processing content for section "${section}"`, error);
+        // Removed console error to prevent browser overload
       }
     }
 
-    console.log(`DynamicContent: Rendering content for section "${section}" with custom renderer`, contentToRender);
+    // Removed console log to prevent browser overload
     try {
       const renderedContent = renderContent(contentToRender);
-      console.log(`DynamicContent: Successfully rendered content for section "${section}"`);
+      // Removed console log to prevent browser overload
       return renderedContent;
     } catch (error) {
-      console.error(`DynamicContent: Error rendering content for section "${section}"`, error);
+      // Removed console error to prevent browser overload
       // Fall back to default rendering if custom rendering fails
     }
   }

@@ -16,8 +16,8 @@ if (!isLocalhost) {
   // Removed console log to prevent browser overload
 } else {
   // Development - use localhost with the specific port
-  API_BASE_URL = 'http://localhost:5002';
-  // Removed console log to prevent browser overload
+  API_BASE_URL = 'http://localhost:5001';
+  console.log('API_BASE_URL set to:', API_BASE_URL);
 }
 
 // Removed environment logging to prevent browser overload
@@ -272,15 +272,79 @@ const api = {
 
   // Content endpoints
   content: {
-    getAll: () => apiRequest('/api/content'),
-    getBySection: (section) => apiRequest(`/api/content/${section}`),
-    createOrUpdate: (contentData) => apiRequest('/api/content', {
-      method: 'POST',
-      body: JSON.stringify(contentData),
-    }),
-    delete: (section) => apiRequest(`/api/content/${section}`, {
-      method: 'DELETE',
-    }),
+    getAll: () => {
+      console.log('API: Getting all content');
+      return apiRequest('/api/content');
+    },
+    getBySection: async (section) => {
+      console.log(`API: Getting content for section "${section}"`);
+      try {
+        // Use a custom implementation to handle 404 errors silently
+        const fullUrl = API_BASE_URL ? `${API_BASE_URL}/api/content/${section}` : `/api/content/${section}`;
+        console.log(`API: Full URL for section "${section}": ${fullUrl}`);
+
+        // Check if we have a cached response
+        const cacheKey = `GET:${fullUrl}:`;
+        if (responseCache.has(cacheKey)) {
+          const { data, timestamp } = responseCache.get(cacheKey);
+          const age = Date.now() - timestamp;
+
+          // If the cache is still fresh, return the cached data
+          if (age < CACHE_TTL) {
+            console.log(`API: Returning cached data for section "${section}"`);
+            return data;
+          }
+        }
+
+        // Make the request
+        console.log(`API: Making fetch request for section "${section}"`);
+        const response = await fetch(fullUrl, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        console.log(`API: Response status for section "${section}": ${response.status}`);
+
+        // If it's a 404, return null instead of throwing an error
+        if (response.status === 404) {
+          console.log(`API: Section "${section}" not found (404)`);
+          return null;
+        }
+
+        // For other errors, handle normally
+        if (!response.ok) {
+          console.error(`API: Error fetching section "${section}": ${response.status}`);
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+
+        // Parse the response
+        const data = await response.json();
+        console.log(`API: Successfully fetched data for section "${section}":`, data);
+
+        // Cache the response
+        responseCache.set(cacheKey, { data, timestamp: Date.now() });
+
+        return data;
+      } catch (error) {
+        // Log the error but return null
+        console.error(`API: Error in getBySection for "${section}":`, error);
+        return null;
+      }
+    },
+    createOrUpdate: (contentData) => {
+      console.log('API: Creating or updating content:', contentData);
+      return apiRequest('/api/content', {
+        method: 'POST',
+        body: JSON.stringify(contentData),
+      });
+    },
+    delete: (section) => {
+      console.log(`API: Deleting content section "${section}"`);
+      return apiRequest(`/api/content/${section}`, {
+        method: 'DELETE',
+      });
+    },
   },
 
   // Contact endpoints
