@@ -3,6 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AdminLayout from '../../components/admin/AdminLayout';
 import FinanceLayout from '../../components/finance/FinanceLayout';
 import AuthContext from '../../context/AuthContext';
+import BudgetInsights from '../../components/finance/BudgetInsights';
+import AdvancedFilters from '../../components/finance/AdvancedFilters';
+import BudgetForecast from '../../components/finance/BudgetForecast';
 import api from '../../services/api';
 import '../../styles/admin/DataManager.css';
 import '../../styles/admin/FinanceManager.css';
@@ -27,6 +30,18 @@ const BudgetReport = () => {
   const [currentBudget, setCurrentBudget] = useState(null);
   const [previousBudget, setPreviousBudget] = useState(null);
   const [showComparison, setShowComparison] = useState(false);
+  const [showInsights, setShowInsights] = useState(true);
+  const [showForecast, setShowForecast] = useState(false);
+  const [filters, setFilters] = useState({
+    categoryTypes: [],
+    categories: [],
+    minAmount: '',
+    maxAmount: '',
+    varianceThreshold: 0,
+    sortBy: 'category',
+    sortDirection: 'asc'
+  });
+  const [filteredItems, setFilteredItems] = useState([]);
   const reportRef = useRef(null);
 
   const { userRole } = useContext(AuthContext);
@@ -50,6 +65,83 @@ const BudgetReport = () => {
       fetchPreviousBudget();
     }
   }, [currentYear, previousYear, selectedBranch, showComparison]);
+
+  // Apply filters to budget items
+  useEffect(() => {
+    if (!currentBudget || !currentBudget.items) {
+      setFilteredItems([]);
+      return;
+    }
+
+    let filtered = [...currentBudget.items];
+
+    // Filter by category type
+    if (filters.categoryTypes.length > 0) {
+      filtered = filtered.filter(item => filters.categoryTypes.includes(item.type));
+    }
+
+    // Filter by category
+    if (filters.categories.length > 0) {
+      filtered = filtered.filter(item => filters.categories.includes(item.category));
+    }
+
+    // Filter by amount
+    if (filters.minAmount !== '') {
+      filtered = filtered.filter(item => item.amount >= parseFloat(filters.minAmount));
+    }
+
+    if (filters.maxAmount !== '') {
+      filtered = filtered.filter(item => item.amount <= parseFloat(filters.maxAmount));
+    }
+
+    // Filter by variance threshold
+    if (filters.varianceThreshold > 0) {
+      filtered = filtered.filter(item => {
+        const variance = Math.abs(item.actual - item.amount);
+        const variancePercentage = item.amount > 0 ? (variance / item.amount) * 100 : 0;
+        return variancePercentage >= filters.varianceThreshold;
+      });
+    }
+
+    // Sort items
+    filtered.sort((a, b) => {
+      let valueA, valueB;
+
+      switch (filters.sortBy) {
+        case 'category':
+          valueA = a.category.toLowerCase();
+          valueB = b.category.toLowerCase();
+          break;
+        case 'amount':
+          valueA = a.amount;
+          valueB = b.amount;
+          break;
+        case 'actual':
+          valueA = a.actual;
+          valueB = b.actual;
+          break;
+        case 'variance':
+          valueA = Math.abs(a.actual - a.amount);
+          valueB = Math.abs(b.actual - b.amount);
+          break;
+        case 'variancePercentage':
+          valueA = a.amount > 0 ? Math.abs(a.actual - a.amount) / a.amount : 0;
+          valueB = b.amount > 0 ? Math.abs(b.actual - b.amount) / b.amount : 0;
+          break;
+        default:
+          valueA = a.category.toLowerCase();
+          valueB = b.category.toLowerCase();
+      }
+
+      if (filters.sortDirection === 'asc') {
+        return valueA > valueB ? 1 : -1;
+      } else {
+        return valueA < valueB ? 1 : -1;
+      }
+    });
+
+    setFilteredItems(filtered);
+  }, [currentBudget, filters]);
 
   // Fetch branches from API
   const fetchBranches = async () => {
@@ -175,6 +267,21 @@ const BudgetReport = () => {
     setShowComparison(!showComparison);
   };
 
+  // Toggle insights view
+  const handleToggleInsights = () => {
+    setShowInsights(!showInsights);
+  };
+
+  // Toggle forecast view
+  const handleToggleForecast = () => {
+    setShowForecast(!showForecast);
+  };
+
+  // Handle filter changes
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
   // Generate PDF report
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -271,6 +378,14 @@ const BudgetReport = () => {
               <FontAwesomeIcon icon={showComparison ? "chart-line" : "chart-bar"} />
               {showComparison ? ' Hide Comparison' : ' Show Comparison'}
             </button>
+            <button type="button" className="btn btn-info" onClick={handleToggleInsights}>
+              <FontAwesomeIcon icon={showInsights ? "lightbulb" : "lightbulb"} />
+              {showInsights ? ' Hide Insights' : ' Show Insights'}
+            </button>
+            <button type="button" className="btn btn-warning" onClick={handleToggleForecast}>
+              <FontAwesomeIcon icon={showForecast ? "chart-line" : "chart-line"} />
+              {showForecast ? ' Hide Forecast' : ' Show Forecast'}
+            </button>
             <button type="button" className="btn btn-primary" onClick={generatePDF}>
               <FontAwesomeIcon icon="file-pdf" /> Export PDF
             </button>
@@ -356,6 +471,13 @@ const BudgetReport = () => {
             </div>
           ) : (
             <>
+              {/* Advanced Filters */}
+              <AdvancedFilters
+                budget={currentBudget}
+                onFilterChange={handleFilterChange}
+                initialFilters={filters}
+              />
+
               {/* Budget Summary */}
               <div className="budget-summary-report">
                 <h2>Budget Summary for {currentYear}</h2>
@@ -425,6 +547,16 @@ const BudgetReport = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Automated Insights */}
+              {showInsights && (
+                <BudgetInsights
+                  currentBudget={currentBudget}
+                  previousBudget={previousBudget}
+                  currentTotals={currentTotals}
+                  previousTotals={previousTotals}
+                />
+              )}
 
               {/* Chart visualizations */}
               <div className="chart-section">
@@ -576,6 +708,15 @@ const BudgetReport = () => {
                   </div>
                 )}
               </div>
+
+              {/* Budget Forecast */}
+              {showForecast && (
+                <BudgetForecast
+                  currentBudget={currentBudget}
+                  previousBudget={previousBudget}
+                  currentYear={currentYear}
+                />
+              )}
 
               {/* Comparison section */}
               {showComparison && previousBudget && (
