@@ -73,4 +73,13 @@ const admin = (req, res, next) => {
   }
 };
 
-module.exports = { protect, admin };
+// Finance middleware - allows access to finance users and admins
+const finance = (req, res, next) => {
+  if (req.user && (req.user.isAdmin || req.user.role === 'finance')) {
+    next();
+  } else {
+    res.status(401).json({ message: 'Not authorized to access finance features' });
+  }
+};
+
+module.exports = { protect, admin, finance };

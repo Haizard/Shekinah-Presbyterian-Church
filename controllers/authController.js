@@ -6,7 +6,7 @@ const { generateToken } = require('../config/auth');
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -15,12 +15,16 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Determine if user should be admin based on role
+    const isAdmin = role === 'admin';
+
     // Create user
     const user = await User.create({
       name,
       email,
       password,
-      isAdmin: false, // Default to non-admin
+      isAdmin, // Set based on role
+      role: role || 'user', // Default to 'user' if not specified
     });
 
     if (user) {
@@ -29,7 +33,8 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
-        token: generateToken(user._id, user.email),
+        role: user.role,
+        token: generateToken(user._id, user.email, user.role),
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -60,14 +65,15 @@ const loginUser = async (req, res) => {
         // Log the user ID to see what we're working with
         console.log('User ID for token:', user._id, 'Type:', typeof user._id);
 
-        const token = generateToken(user._id, user.email);
-        console.log('Token generated successfully with email included');
+        const token = generateToken(user._id, user.email, user.role);
+        console.log('Token generated successfully with email and role included');
 
         const userData = {
           _id: user._id,
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
+          role: user.role,
           token: token,
         };
 
@@ -100,6 +106,7 @@ const getUserProfile = async (req, res) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        role: user.role,
       });
     } else {
       res.status(404).json({ message: 'User not found' });
@@ -121,6 +128,13 @@ const updateUserProfile = async (req, res) => {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
 
+      // Only allow admin to update role
+      if (req.user.isAdmin && req.body.role) {
+        user.role = req.body.role;
+        // Update isAdmin based on role
+        user.isAdmin = req.body.role === 'admin';
+      }
+
       if (req.body.password) {
         user.password = req.body.password;
       }
@@ -132,7 +146,8 @@ const updateUserProfile = async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
-        token: generateToken(updatedUser._id, updatedUser.email),
+        role: updatedUser.role,
+        token: generateToken(updatedUser._id, updatedUser.email, updatedUser.role),
       });
     } else {
       res.status(404).json({ message: 'User not found' });

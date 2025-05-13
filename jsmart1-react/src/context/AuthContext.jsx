@@ -75,6 +75,8 @@ export const AuthProvider = ({ children }) => {
         updateProfile,
         isAuthenticated: !!user,
         isAdmin: user?.isAdmin,
+        isFinance: user?.role === 'finance' || user?.isAdmin,
+        userRole: user?.role || 'user',
       }}
     >
       {children}

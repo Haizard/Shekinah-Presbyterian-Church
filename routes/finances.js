@@ -1,35 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const { 
-  getFinances, 
+const {
+  getFinances,
   getFinancesByBranch,
-  getFinanceById, 
-  createFinance, 
-  updateFinance, 
+  getFinanceById,
+  createFinance,
+  updateFinance,
   deleteFinance,
   getFinanceSummary
 } = require('../controllers/financeController');
-const { protect, admin } = require('../middleware/auth');
+const { protect, admin, finance } = require('../middleware/auth');
 
 // Get all finances
-router.get('/', protect, admin, getFinances);
+router.get('/', protect, finance, getFinances);
 
 // Get finance summary
-router.get('/summary', protect, admin, getFinanceSummary);
+router.get('/summary', protect, finance, getFinanceSummary);
 
 // Get finances by branch
-router.get('/branch/:branchId', protect, admin, getFinancesByBranch);
+router.get('/branch/:branchId', protect, finance, getFinancesByBranch);
 
 // Get finance by ID
-router.get('/:id', protect, admin, getFinanceById);
+router.get('/:id', protect, finance, getFinanceById);
 
 // Create a finance record
-router.post('/', protect, admin, createFinance);
+router.post('/', protect, finance, createFinance);
 
 // Update a finance record
-router.put('/:id', protect, admin, updateFinance);
+router.put('/:id', protect, finance, updateFinance);
 
 // Delete a finance record
-router.delete('/:id', protect, admin, deleteFinance);
+router.delete('/:id', protect, finance, deleteFinance);
 
 module.exports = router;

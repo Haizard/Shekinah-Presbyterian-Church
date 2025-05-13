@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AdminLayout from '../../components/admin/AdminLayout';
+import FinanceLayout from '../../components/finance/FinanceLayout';
+import AuthContext from '../../context/AuthContext';
 import api from '../../services/api';
 import '../../styles/admin/DataManager.css';
 import '../../styles/admin/FinanceManager.css';
@@ -270,8 +272,13 @@ const FinanceManager = () => {
     return branch ? branch.name : 'Unknown Branch';
   };
 
+  const { userRole } = useContext(AuthContext);
+
+  // Choose the appropriate layout based on user role
+  const Layout = userRole === 'finance' ? FinanceLayout : AdminLayout;
+
   return (
-    <AdminLayout>
+    <Layout>
       <div className="data-manager finance-manager">
         <div className="manager-header">
           <h1>Finance Manager</h1>
