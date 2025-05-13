@@ -177,11 +177,6 @@ const BudgetReport = () => {
 
   // Generate PDF report
   const generatePDF = () => {
-    // This will be implemented after installing jsPDF
-    alert('PDF generation will be available after installing the required packages.');
-
-    // Implementation would look like this:
-    /*
     const doc = new jsPDF();
 
     // Add title
@@ -234,9 +229,33 @@ const BudgetReport = () => {
       headStyles: { fillColor: [66, 66, 66] }
     });
 
+    // If comparison is shown, add comparison data
+    if (showComparison && previousBudget) {
+      const previousTotals = calculateTotals(previousBudget);
+
+      // Add a new page for comparison
+      doc.addPage();
+
+      // Add title
+      doc.setFontSize(18);
+      doc.text('Budget Comparison', 14, 22);
+
+      // Add subtitle
+      doc.setFontSize(12);
+      doc.text(`Comparing ${previousYear} vs ${currentYear} | Branch: ${branchName}`, 14, 32);
+
+      // Add comparison summary
+      doc.text('Comparison Summary', 14, 42);
+      doc.text(`Income Change: ${formatCurrency(currentTotals.incomeBudget - previousTotals.incomeBudget)} (Budget)`, 14, 52);
+      doc.text(`Income Change: ${formatCurrency(currentTotals.incomeActual - previousTotals.incomeActual)} (Actual)`, 14, 62);
+      doc.text(`Expenses Change: ${formatCurrency(currentTotals.expenseBudget - previousTotals.expenseBudget)} (Budget)`, 14, 72);
+      doc.text(`Expenses Change: ${formatCurrency(currentTotals.expenseActual - previousTotals.expenseActual)} (Actual)`, 14, 82);
+      doc.text(`Balance Change: ${formatCurrency(currentTotals.balanceBudget - previousTotals.balanceBudget)} (Budget)`, 14, 92);
+      doc.text(`Balance Change: ${formatCurrency(currentTotals.balanceActual - previousTotals.balanceActual)} (Actual)`, 14, 102);
+    }
+
     // Save the PDF
     doc.save(`Budget_Report_${currentYear}_${branchName.replace(/\s+/g, '_')}.pdf`);
-    */
   };
 
   const currentTotals = calculateTotals(currentBudget);
@@ -407,22 +426,234 @@ const BudgetReport = () => {
                 </div>
               </div>
 
-              {/* Chart placeholders - will be replaced with actual charts after installing packages */}
+              {/* Chart visualizations */}
               <div className="chart-section">
                 <h2>Budget Visualization</h2>
                 <div className="chart-container">
-                  <div className="chart-placeholder">
-                    <FontAwesomeIcon icon="chart-pie" size="3x" />
-                    <p>Income vs Expenses Chart</p>
-                    <p className="note">Charts will be available after installing Chart.js</p>
+                  <div className="chart-item">
+                    <h3>Income vs Expenses (Budget)</h3>
+                    <Pie
+                      data={{
+                        labels: ['Income', 'Expenses'],
+                        datasets: [
+                          {
+                            data: [currentTotals.incomeBudget, currentTotals.expenseBudget],
+                            backgroundColor: ['rgba(39, 174, 96, 0.6)', 'rgba(231, 76, 60, 0.6)'],
+                            borderColor: ['#27ae60', '#e74c3c'],
+                            borderWidth: 1,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                  label += ': ';
+                                }
+                                label += formatCurrency(context.raw);
+                                return label;
+                              }
+                            }
+                          }
+                        },
+                      }}
+                    />
+                  </div>
+
+                  <div className="chart-item">
+                    <h3>Income vs Expenses (Actual)</h3>
+                    <Pie
+                      data={{
+                        labels: ['Income', 'Expenses'],
+                        datasets: [
+                          {
+                            data: [currentTotals.incomeActual, currentTotals.expenseActual],
+                            backgroundColor: ['rgba(39, 174, 96, 0.6)', 'rgba(231, 76, 60, 0.6)'],
+                            borderColor: ['#27ae60', '#e74c3c'],
+                            borderWidth: 1,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                  label += ': ';
+                                }
+                                label += formatCurrency(context.raw);
+                                return label;
+                              }
+                            }
+                          }
+                        },
+                      }}
+                    />
                   </div>
                 </div>
+
+                {currentBudget && currentBudget.items && currentBudget.items.length > 0 && (
+                  <div className="chart-container">
+                    <div className="chart-item full-width">
+                      <h3>Budget vs Actual by Category</h3>
+                      <Bar
+                        data={{
+                          labels: currentBudget.items.map(item => item.category),
+                          datasets: [
+                            {
+                              label: 'Budget',
+                              data: currentBudget.items.map(item => item.amount),
+                              backgroundColor: item =>
+                                item.dataIndex !== undefined && currentBudget.items[item.dataIndex].type === 'income'
+                                  ? 'rgba(39, 174, 96, 0.6)'
+                                  : 'rgba(231, 76, 60, 0.6)',
+                              borderColor: item =>
+                                item.dataIndex !== undefined && currentBudget.items[item.dataIndex].type === 'income'
+                                  ? '#27ae60'
+                                  : '#e74c3c',
+                              borderWidth: 1,
+                            },
+                            {
+                              label: 'Actual',
+                              data: currentBudget.items.map(item => item.actual),
+                              backgroundColor: item =>
+                                item.dataIndex !== undefined && currentBudget.items[item.dataIndex].type === 'income'
+                                  ? 'rgba(46, 204, 113, 0.6)'
+                                  : 'rgba(255, 99, 71, 0.6)',
+                              borderColor: item =>
+                                item.dataIndex !== undefined && currentBudget.items[item.dataIndex].type === 'income'
+                                  ? '#2ecc71'
+                                  : '#ff6347',
+                              borderWidth: 1,
+                            },
+                          ],
+                        }}
+                        options={{
+                          responsive: true,
+                          scales: {
+                            y: {
+                              beginAtZero: true,
+                              ticks: {
+                                callback: function(value) {
+                                  return formatCurrency(value);
+                                }
+                              }
+                            }
+                          },
+                          plugins: {
+                            legend: {
+                              position: 'bottom',
+                            },
+                            tooltip: {
+                              callbacks: {
+                                label: function(context) {
+                                  let label = context.dataset.label || '';
+                                  if (label) {
+                                    label += ': ';
+                                  }
+                                  label += formatCurrency(context.raw);
+                                  return label;
+                                }
+                              }
+                            }
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Comparison section */}
               {showComparison && previousBudget && (
                 <div className="comparison-section">
                   <h2>Year-over-Year Comparison</h2>
+
+                  {/* Comparison Chart */}
+                  <div className="chart-container">
+                    <div className="chart-item full-width">
+                      <h3>Budget Comparison: {previousYear} vs {currentYear}</h3>
+                      <Bar
+                        data={{
+                          labels: ['Income Budget', 'Income Actual', 'Expense Budget', 'Expense Actual', 'Balance Budget', 'Balance Actual'],
+                          datasets: [
+                            {
+                              label: previousYear.toString(),
+                              data: [
+                                previousTotals.incomeBudget,
+                                previousTotals.incomeActual,
+                                previousTotals.expenseBudget,
+                                previousTotals.expenseActual,
+                                previousTotals.balanceBudget,
+                                previousTotals.balanceActual
+                              ],
+                              backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                              borderColor: '#3498db',
+                              borderWidth: 1,
+                            },
+                            {
+                              label: currentYear.toString(),
+                              data: [
+                                currentTotals.incomeBudget,
+                                currentTotals.incomeActual,
+                                currentTotals.expenseBudget,
+                                currentTotals.expenseActual,
+                                currentTotals.balanceBudget,
+                                currentTotals.balanceActual
+                              ],
+                              backgroundColor: 'rgba(46, 204, 113, 0.6)',
+                              borderColor: '#2ecc71',
+                              borderWidth: 1,
+                            },
+                          ],
+                        }}
+                        options={{
+                          responsive: true,
+                          scales: {
+                            y: {
+                              beginAtZero: true,
+                              ticks: {
+                                callback: function(value) {
+                                  return formatCurrency(value);
+                                }
+                              }
+                            }
+                          },
+                          plugins: {
+                            legend: {
+                              position: 'bottom',
+                            },
+                            tooltip: {
+                              callbacks: {
+                                label: function(context) {
+                                  let label = context.dataset.label || '';
+                                  if (label) {
+                                    label += ': ';
+                                  }
+                                  label += formatCurrency(context.raw);
+                                  return label;
+                                }
+                              }
+                            }
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+
                   <div className="comparison-table-container">
                     <table className="comparison-table">
                       <thead>
