@@ -83,6 +83,7 @@ const contactRoutes = require('./routes/contact');
 const uploadRoutes = require('./routes/upload');
 const branchRoutes = require('./routes/branches');
 const financeRoutes = require('./routes/finances');
+const budgetRoutes = require('./routes/budgets');
 const memberRoutes = require('./routes/members');
 const groupRoutes = require('./routes/groups');
 
@@ -102,6 +103,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/finances', financeRoutes);
+app.use('/api/budgets', budgetRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/groups', groupRoutes);
 

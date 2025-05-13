@@ -342,6 +342,25 @@ const api = {
     }),
   },
 
+  // Budget endpoints
+  budgets: {
+    getAll: () => apiRequest('/api/budgets'),
+    getByYearAndBranch: (year, branchId) => apiRequest(`/api/budgets/year/${year}/branch/${branchId || 'null'}`),
+    getById: (id) => apiRequest(`/api/budgets/${id}`),
+    create: (budgetData) => apiRequest('/api/budgets', {
+      method: 'POST',
+      body: JSON.stringify(budgetData),
+    }),
+    update: (id, budgetData) => apiRequest(`/api/budgets/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(budgetData),
+    }),
+    delete: (id) => apiRequest(`/api/budgets/${id}`, {
+      method: 'DELETE',
+    }),
+    updateActuals: (year, branchId) => apiRequest(`/api/budgets/update-actuals/${year}/${branchId || 'null'}`),
+  },
+
   // Member endpoints
   members: {
     getAll: () => apiRequest('/api/members'),

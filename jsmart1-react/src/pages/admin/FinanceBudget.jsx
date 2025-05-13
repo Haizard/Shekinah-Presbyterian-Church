@@ -6,29 +6,28 @@ import AuthContext from '../../context/AuthContext';
 import api from '../../services/api';
 import '../../styles/admin/DataManager.css';
 import '../../styles/admin/FinanceManager.css';
+import '../../styles/admin/FinanceBudget.css';
 
 const FinanceBudget = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
   const [budgetYear, setBudgetYear] = useState(new Date().getFullYear());
-  const [budgetItems, setBudgetItems] = useState([
-    { category: 'Tithes', type: 'income', amount: 50000, actual: 45000 },
-    { category: 'Offerings', type: 'income', amount: 25000, actual: 22000 },
-    { category: 'Donations', type: 'income', amount: 15000, actual: 18000 },
-    { category: 'Salaries', type: 'expense', amount: 35000, actual: 35000 },
-    { category: 'Utilities', type: 'expense', amount: 12000, actual: 13500 },
-    { category: 'Maintenance', type: 'expense', amount: 8000, actual: 7200 },
-    { category: 'Missions', type: 'expense', amount: 15000, actual: 12000 },
-  ]);
+  const [budgetItems, setBudgetItems] = useState([]);
+  const [budgetId, setBudgetId] = useState(null);
+  const [budgetStatus, setBudgetStatus] = useState('draft');
+  const [budgetNotes, setBudgetNotes] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editItemIndex, setEditItemIndex] = useState(null);
   const [formData, setFormData] = useState({
     category: '',
     type: 'income',
     amount: 0,
     actual: 0
   });
+  const [saving, setSaving] = useState(false);
 
   const { userRole } = useContext(AuthContext);
 
@@ -44,6 +43,11 @@ const FinanceBudget = () => {
     fetchBranches();
   }, []);
 
+  // Fetch budget data when year or branch changes
+  useEffect(() => {
+    fetchBudget();
+  }, [budgetYear, selectedBranch]);
+
   // Fetch branches from API
   const fetchBranches = async () => {
     try {
@@ -54,6 +58,36 @@ const FinanceBudget = () => {
     } catch (err) {
       console.error('Error fetching branches:', err);
       setError('Failed to load branch data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch budget data from API
+  const fetchBudget = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setSuccess(null);
+
+      const budgetData = await api.budgets.getByYearAndBranch(budgetYear, selectedBranch);
+
+      if (budgetData._id) {
+        // Existing budget found
+        setBudgetId(budgetData._id);
+        setBudgetItems(budgetData.items || []);
+        setBudgetStatus(budgetData.status || 'draft');
+        setBudgetNotes(budgetData.notes || '');
+      } else {
+        // No existing budget, reset to defaults
+        setBudgetId(null);
+        setBudgetItems([]);
+        setBudgetStatus('draft');
+        setBudgetNotes('');
+      }
+    } catch (err) {
+      console.error('Error fetching budget:', err);
+      setError('Failed to load budget data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -114,8 +148,37 @@ const FinanceBudget = () => {
     });
   };
 
-  // Add new budget item
-  const handleAddItem = (e) => {
+  // Handle notes change
+  const handleNotesChange = (e) => {
+    setBudgetNotes(e.target.value);
+  };
+
+  // Handle status change
+  const handleStatusChange = (e) => {
+    setBudgetStatus(e.target.value);
+  };
+
+  // Open form for adding a new item
+  const handleOpenAddForm = () => {
+    setEditItemIndex(null);
+    setFormData({
+      category: '',
+      type: 'income',
+      amount: 0,
+      actual: 0
+    });
+    setShowForm(true);
+  };
+
+  // Open form for editing an existing item
+  const handleEditItem = (index) => {
+    setEditItemIndex(index);
+    setFormData({...budgetItems[index]});
+    setShowForm(true);
+  };
+
+  // Add or update budget item
+  const handleSubmitItem = (e) => {
     e.preventDefault();
 
     if (!formData.category || formData.amount <= 0) {
@@ -123,13 +186,24 @@ const FinanceBudget = () => {
       return;
     }
 
-    setBudgetItems([...budgetItems, { ...formData }]);
+    const newItems = [...budgetItems];
+
+    if (editItemIndex !== null) {
+      // Update existing item
+      newItems[editItemIndex] = { ...formData };
+    } else {
+      // Add new item
+      newItems.push({ ...formData });
+    }
+
+    setBudgetItems(newItems);
     setFormData({
       category: '',
       type: 'income',
       amount: 0,
       actual: 0
     });
+    setEditItemIndex(null);
     setShowForm(false);
   };
 
@@ -141,9 +215,46 @@ const FinanceBudget = () => {
   };
 
   // Save budget
-  const handleSaveBudget = () => {
-    // In a real implementation, this would save the budget to the database
-    alert('Budget saved successfully!');
+  const handleSaveBudget = async () => {
+    try {
+      setSaving(true);
+      setError(null);
+      setSuccess(null);
+
+      const budgetData = {
+        year: budgetYear,
+        branchId: selectedBranch || null,
+        items: budgetItems,
+        notes: budgetNotes,
+        status: budgetStatus
+      };
+
+      let result;
+
+      if (budgetId) {
+        // Update existing budget
+        result = await api.budgets.update(budgetId, budgetData);
+        setSuccess('Budget updated successfully!');
+      } else {
+        // Create new budget
+        result = await api.budgets.create(budgetData);
+        setBudgetId(result._id);
+        setSuccess('Budget created successfully!');
+      }
+
+      // Refresh budget data
+      fetchBudget();
+    } catch (err) {
+      console.error('Error saving budget:', err);
+      setError('Failed to save budget. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Refresh budget data
+  const handleRefresh = () => {
+    fetchBudget();
   };
 
   const totals = calculateTotals();
@@ -152,27 +263,60 @@ const FinanceBudget = () => {
     <Layout>
       <div className="data-manager finance-manager">
         <div className="manager-header">
-          <h1>{isAdminUser ? 'Budget Viewer' : 'Budget Planning'}</h1>
-          {isFinanceUser ? (
-            <div className="header-actions">
-              <button type="button" className="btn btn-secondary" onClick={() => setShowForm(true)}>
-                <FontAwesomeIcon icon="plus" /> Add Item
-              </button>
-              <button type="button" className="btn btn-primary" onClick={handleSaveBudget}>
-                <FontAwesomeIcon icon="save" /> Save Budget
-              </button>
-            </div>
-          ) : (
-            <div className="admin-view-badge">
-              <FontAwesomeIcon icon="eye" /> View Only Mode
-            </div>
-          )}
+          <h1>
+            {isAdminUser ? 'Budget Viewer' : 'Budget Planning'}
+            {budgetId && (
+              <span className={`budget-status ${budgetStatus}`}>
+                {budgetStatus.charAt(0).toUpperCase() + budgetStatus.slice(1)}
+              </span>
+            )}
+          </h1>
+          <div className="header-actions">
+            {isFinanceUser && (
+              <>
+                <button type="button" className="btn btn-secondary" onClick={handleOpenAddForm}>
+                  <FontAwesomeIcon icon="plus" /> Add Item
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSaveBudget}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <>
+                      <FontAwesomeIcon icon="spinner" spin /> Saving...
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon="save" /> Save Budget
+                    </>
+                  )}
+                </button>
+              </>
+            )}
+            <button type="button" className="btn btn-refresh" onClick={handleRefresh}>
+              <FontAwesomeIcon icon="sync" /> Refresh
+            </button>
+            {isAdminUser && (
+              <div className="admin-view-badge">
+                <FontAwesomeIcon icon="eye" /> View Only Mode
+              </div>
+            )}
+          </div>
         </div>
 
         {error && (
           <div className="alert alert-danger">
             <FontAwesomeIcon icon="exclamation-circle" />
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="alert alert-success">
+            <FontAwesomeIcon icon="check-circle" />
+            {success}
           </div>
         )}
 
@@ -299,23 +443,31 @@ const FinanceBudget = () => {
                     </td>
                     <td>{formatCurrency(item.amount)}</td>
                     <td>{formatCurrency(item.actual)}</td>
-                    <td className={item.actual >= item.amount ? 'positive' : 'negative'}>
+                    <td className={item.actual >= item.amount ? 'variance-positive' : 'variance-negative'}>
                       {formatCurrency(item.actual - item.amount)}
                     </td>
                     <td className="actions">
                       {isFinanceUser ? (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-delete"
-                          onClick={() => handleDeleteItem(index)}
-                        >
-                          <FontAwesomeIcon icon="trash-alt" /> Delete
-                        </button>
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-edit edit-item-button"
+                            onClick={() => handleEditItem(index)}
+                          >
+                            <FontAwesomeIcon icon="edit" /> Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-delete"
+                            onClick={() => handleDeleteItem(index)}
+                          >
+                            <FontAwesomeIcon icon="trash-alt" /> Delete
+                          </button>
+                        </>
                       ) : (
                         <button
                           type="button"
                           className="btn btn-sm btn-view"
-                          disabled
                         >
                           <FontAwesomeIcon icon="eye" /> View Only
                         </button>
@@ -328,12 +480,12 @@ const FinanceBudget = () => {
           )}
         </div>
 
-        {/* Add Budget Item Form */}
+        {/* Add/Edit Budget Item Form */}
         {showForm && (
           <div className="modal-overlay">
             <div className="modal-content">
               <div className="modal-header">
-                <h2>Add Budget Item</h2>
+                <h2>{editItemIndex !== null ? 'Edit Budget Item' : 'Add Budget Item'}</h2>
                 <button
                   type="button"
                   className="close-btn"
@@ -343,7 +495,7 @@ const FinanceBudget = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleAddItem}>
+              <form onSubmit={handleSubmitItem}>
                 <div className="form-group">
                   <label htmlFor="type">Type</label>
                   <div className="radio-group">
@@ -414,10 +566,36 @@ const FinanceBudget = () => {
                     Cancel
                   </button>
                   <button type="submit" className="btn btn-primary">
-                    Add Item
+                    {editItemIndex !== null ? 'Update Item' : 'Add Item'}
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Budget Notes and Status */}
+        {isFinanceUser && budgetItems.length > 0 && (
+          <div className="budget-manager">
+            <div className="budget-notes">
+              <h3>Budget Notes</h3>
+              <textarea
+                value={budgetNotes}
+                onChange={handleNotesChange}
+                placeholder="Add notes about this budget..."
+              />
+            </div>
+
+            <div className="budget-status-selector">
+              <h3>Budget Status</h3>
+              <select
+                value={budgetStatus}
+                onChange={handleStatusChange}
+              >
+                <option value="draft">Draft</option>
+                <option value="active">Active</option>
+                <option value="archived">Archived</option>
+              </select>
             </div>
           </div>
         )}
