@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AdminLayout from '../../components/admin/AdminLayout';
 import api from '../../services/api';
 import '../../styles/admin/DataManager.css';
 
 const MemberManager = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +50,16 @@ const MemberManager = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Check if we need to open the edit form (coming from MemberDetail page)
+  useEffect(() => {
+    if (location.state?.editMemberId && members.length > 0) {
+      const memberToEdit = members.find(m => m._id === location.state.editMemberId);
+      if (memberToEdit) {
+        handleEdit(memberToEdit);
+      }
+    }
+  }, [location.state, members]);
 
   // Fetch members and branches from API
   const fetchData = async () => {
@@ -392,7 +405,7 @@ const MemberManager = () => {
                       <button
                         type="button"
                         className="btn btn-sm btn-view"
-                        onClick={() => window.location.href = `/admin/members/${member._id}`}
+                        onClick={() => navigate(`/admin/members/${member._id}`)}
                       >
                         <FontAwesomeIcon icon="eye" /> View
                       </button>

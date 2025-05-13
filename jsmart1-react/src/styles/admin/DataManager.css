@@ -517,3 +517,69 @@ textarea:focus {
 .btn-view:hover {
   background-color: #27ae60;
 }
+
+/* Group Members Styles */
+.group-members-container {
+  padding: 1.5rem;
+}
+
+.members-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.members-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.members-list {
+  margin-bottom: 1.5rem;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.role-badge.leader {
+  background-color: #fef2d0;
+  color: #f39c12;
+}
+
+.role-badge.assistant {
+  background-color: #e8f4fd;
+  color: #3498db;
+}
+
+.role-badge.member {
+  background-color: #e8f8f5;
+  color: #2ecc71;
+}
+
+.member-form-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  border: 1px solid #ecf0f1;
+}
+
+.member-form-container h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.member-display {
+  padding: 0.75rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-weight: 500;
+}

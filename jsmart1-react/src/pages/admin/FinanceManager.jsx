@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AdminLayout from '../../components/admin/AdminLayout';
 import FinanceLayout from '../../components/finance/FinanceLayout';
@@ -8,6 +9,8 @@ import '../../styles/admin/DataManager.css';
 import '../../styles/admin/FinanceManager.css';
 
 const FinanceManager = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [finances, setFinances] = useState([]);
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +72,16 @@ const FinanceManager = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Check if we need to open the edit form (coming from FinanceDetail page)
+  useEffect(() => {
+    if (location.state?.editFinanceId && finances.length > 0) {
+      const financeToEdit = finances.find(f => f._id === location.state.editFinanceId);
+      if (financeToEdit) {
+        handleEdit(financeToEdit);
+      }
+    }
+  }, [location.state, finances]);
 
   // Fetch finances and branches from API
   const fetchData = async () => {
@@ -251,6 +264,11 @@ const FinanceManager = () => {
     }
   };
 
+  // Navigate to finance detail view
+  const handleViewFinance = (finance) => {
+    navigate(`/admin/finances/${finance._id}`);
+  };
+
   // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -286,16 +304,21 @@ const FinanceManager = () => {
       <div className="data-manager finance-manager">
         <div className="manager-header">
           <h1>{isAdminUser ? 'Finance Viewer' : 'Finance Manager'}</h1>
-          {isFinanceUser && (
-            <button type="button" className="btn btn-primary" onClick={handleAddNew}>
-              <FontAwesomeIcon icon="plus" /> Add New Transaction
+          <div className="header-actions">
+            {isFinanceUser && (
+              <button type="button" className="btn btn-primary" onClick={handleAddNew}>
+                <FontAwesomeIcon icon="plus" /> Add New Transaction
+              </button>
+            )}
+            <button type="button" className="btn btn-refresh" onClick={fetchData}>
+              <FontAwesomeIcon icon="sync" /> Refresh Data
             </button>
-          )}
-          {isAdminUser && (
-            <div className="admin-view-badge">
-              <FontAwesomeIcon icon="eye" /> View Only Mode
-            </div>
-          )}
+            {isAdminUser && (
+              <div className="admin-view-badge">
+                <FontAwesomeIcon icon="eye" /> View Only Mode
+              </div>
+            )}
+          </div>
         </div>
 
         {error && (
@@ -445,10 +468,9 @@ const FinanceManager = () => {
                         <button
                           type="button"
                           className="btn btn-sm btn-view"
-                          onClick={() => handleEdit(finance)}
-                          disabled
+                          onClick={() => handleViewFinance(finance)}
                         >
-                          <FontAwesomeIcon icon="eye" /> View Only
+                          <FontAwesomeIcon icon="eye" /> View Details
                         </button>
                       )}
                     </td>

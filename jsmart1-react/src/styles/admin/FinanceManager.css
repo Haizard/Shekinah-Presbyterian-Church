@@ -13,9 +13,30 @@
 }
 
 .btn-view {
-  background-color: #e2e3e5;
-  color: #383d41;
-  cursor: not-allowed;
+  background-color: #2ecc71;
+  color: white;
+}
+
+.btn-view:hover {
+  background-color: #27ae60;
+}
+
+.btn-refresh {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.btn-refresh:hover {
+  background-color: #e0e0e0;
 }
 .finance-manager {
   display: flex;

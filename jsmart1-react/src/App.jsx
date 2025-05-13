@@ -252,9 +252,11 @@ import ContentManager from './pages/admin/ContentManager'
 // New Admin Pages
 import BranchManager from './pages/admin/BranchManager'
 import FinanceManager from './pages/admin/FinanceManager'
+import FinanceDetail from './pages/admin/FinanceDetail'
 import FinanceReports from './pages/admin/FinanceReports'
 import FinanceBudget from './pages/admin/FinanceBudget'
 import MemberManager from './pages/admin/MemberManager'
+import MemberDetail from './pages/admin/MemberDetail'
 import GroupManager from './pages/admin/GroupManager'
 import TestSidebar from './pages/admin/TestSidebar'
 import DirectSidebar from './pages/admin/DirectSidebar'
@@ -342,10 +344,12 @@ const LocationAwareRoutes = () => {
             {/* Church Management Routes */}
             <Route path="/admin/branches" element={<BranchManager />} />
             <Route path="/admin/members" element={<MemberManager />} />
+            <Route path="/admin/members/:id" element={<MemberDetail />} />
             <Route path="/admin/groups" element={<GroupManager />} />
 
             {/* Admin Finance Routes - Only for admins */}
             <Route path="/admin/finances" element={<FinanceManager />} />
+            <Route path="/admin/finances/:id" element={<FinanceDetail />} />
             <Route path="/admin/finances/reports" element={<FinanceReports />} />
             <Route path="/admin/finances/budget" element={<FinanceBudget />} />
 
