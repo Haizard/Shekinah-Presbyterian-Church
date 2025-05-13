@@ -48,10 +48,16 @@ const FinanceSidebar = () => {
 
       <nav className="sidebar-nav">
         <ul>
-          <li className={isActive('/finance') || isActive('/finance/dashboard') ? 'active' : ''}>
+          <li className={isActive('/finance') || isActive('/finance/dashboard') || isActive('/finance/unified') ? 'active' : ''}>
             <Link to="/finance/dashboard">
               <FontAwesomeIcon icon="tachometer-alt" />
-              <span>Dashboard</span>
+              <span>Unified Dashboard</span>
+            </Link>
+          </li>
+          <li className={isActive('/finance/classic-dashboard') ? 'active' : ''}>
+            <Link to="/finance/classic-dashboard">
+              <FontAwesomeIcon icon="columns" />
+              <span>Classic Dashboard</span>
             </Link>
           </li>
 

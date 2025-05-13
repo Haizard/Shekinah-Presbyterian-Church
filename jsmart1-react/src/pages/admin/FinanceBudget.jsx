@@ -258,6 +258,30 @@ const FinanceBudget = () => {
     fetchBudget();
   };
 
+  // Update actuals from transactions
+  const handleUpdateActuals = async () => {
+    try {
+      setSaving(true);
+      setError(null);
+      setSuccess(null);
+
+      const result = await api.budgets.updateActuals(budgetYear, selectedBranch);
+
+      if (result.success) {
+        setSuccess(`Budget actuals updated successfully! ${result.transactionsProcessed} transactions processed.`);
+        // Refresh budget data
+        fetchBudget();
+      } else {
+        setError('Failed to update actuals from transactions.');
+      }
+    } catch (err) {
+      console.error('Error updating actuals:', err);
+      setError('Failed to update actuals from transactions. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const totals = calculateTotals();
 
   return (
@@ -299,6 +323,16 @@ const FinanceBudget = () => {
             <button type="button" className="btn btn-refresh" onClick={handleRefresh}>
               <FontAwesomeIcon icon="sync" /> Refresh
             </button>
+            {isFinanceUser && budgetId && (
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={handleUpdateActuals}
+                disabled={saving}
+              >
+                <FontAwesomeIcon icon="sync-alt" /> Update Actuals from Transactions
+              </button>
+            )}
             <Link
               to={isFinanceUser ? "/finance/budget/report" : "/admin/finances/budget/report"}
               className="btn btn-info"

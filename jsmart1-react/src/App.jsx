@@ -111,7 +111,9 @@ import {
   faClipboardList,
   faClipboardCheck,
   faMoneyCheck,
-  faMoneyCheckAlt
+  faMoneyCheckAlt,
+  faColumns,
+  faSyncAlt
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -221,7 +223,9 @@ library.add(
   faClipboardList,
   faClipboardCheck,
   faMoneyCheck,
-  faMoneyCheckAlt
+  faMoneyCheckAlt,
+  faColumns,
+  faSyncAlt
 )
 
 // Components
@@ -265,6 +269,7 @@ import DirectSidebar from './pages/admin/DirectSidebar'
 // Finance Pages
 import FinanceLogin from './pages/finance/Login'
 import FinanceDashboard from './pages/finance/Dashboard'
+import UnifiedDashboard from './pages/finance/UnifiedDashboard'
 
 // This component will force a re-render when the location changes
 const LocationAwareRoutes = () => {
@@ -357,8 +362,10 @@ const LocationAwareRoutes = () => {
 
             {/* Finance User Routes - Separate panel for finance users */}
             <Route path="/finance/login" element={<FinanceLogin />} />
-            <Route path="/finance" element={<FinanceDashboard />} />
-            <Route path="/finance/dashboard" element={<FinanceDashboard />} />
+            <Route path="/finance" element={<UnifiedDashboard />} />
+            <Route path="/finance/dashboard" element={<UnifiedDashboard />} />
+            <Route path="/finance/unified" element={<UnifiedDashboard />} />
+            <Route path="/finance/classic-dashboard" element={<FinanceDashboard />} />
             <Route path="/finance/transactions" element={<FinanceManager />} />
             <Route path="/finance/transactions/:id" element={<FinanceDetail />} />
             <Route path="/finance/reports" element={<FinanceReports />} />

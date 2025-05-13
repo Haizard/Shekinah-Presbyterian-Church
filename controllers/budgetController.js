@@ -19,15 +19,15 @@ const getBudgets = async (req, res) => {
 const getBudgetByYearAndBranch = async (req, res) => {
   try {
     const { year, branchId } = req.params;
-    
+
     // If branchId is 'null', search for null branchId (main church)
-    const query = { 
+    const query = {
       year: parseInt(year),
       branchId: branchId === 'null' ? null : branchId
     };
-    
+
     const budget = await Budget.findOne(query);
-    
+
     if (budget) {
       res.json(budget);
     } else {
@@ -71,14 +71,14 @@ const createBudget = async (req, res) => {
     const { year, branchId, items, notes, status } = req.body;
 
     // Check if a budget already exists for this year and branch
-    const existingBudget = await Budget.findOne({ 
-      year, 
-      branchId: branchId || null 
+    const existingBudget = await Budget.findOne({
+      year,
+      branchId: branchId || null
     });
 
     if (existingBudget) {
-      return res.status(400).json({ 
-        message: 'A budget already exists for this year and branch' 
+      return res.status(400).json({
+        message: 'A budget already exists for this year and branch'
       });
     }
 
@@ -156,24 +156,76 @@ const deleteBudget = async (req, res) => {
 const updateBudgetActuals = async (req, res) => {
   try {
     const { year, branchId } = req.params;
-    
+    const Finance = require('../models/Finance');
+
     // Find the budget
-    const query = { 
+    const query = {
       year: parseInt(year),
       branchId: branchId === 'null' ? null : branchId
     };
-    
+
     const budget = await Budget.findOne(query);
-    
+
     if (!budget) {
       return res.status(404).json({ message: 'Budget not found' });
     }
-    
-    // This would normally calculate actuals from transactions
-    // For now, we'll just return the budget
-    res.json(budget);
+
+    // Get all transactions for this year and branch
+    const startDate = `${year}-01-01`; // Jan 1
+    const endDate = `${year}-12-31`;   // Dec 31
+
+    const transactionQuery = {
+      date: { $gte: startDate, $lte: endDate }
+    };
+
+    // Add branch filter if specified
+    if (branchId !== 'null') {
+      transactionQuery.branchId = branchId;
+    } else {
+      // For main church (null branchId), only include transactions with null branchId
+      transactionQuery.branchId = null;
+    }
+
+    const transactions = await Finance.find(transactionQuery);
+
+    // Group transactions by category and type
+    const actualsByCategory = {};
+
+    transactions.forEach(transaction => {
+      const key = `${transaction.type}-${transaction.category}`;
+      if (!actualsByCategory[key]) {
+        actualsByCategory[key] = 0;
+      }
+      actualsByCategory[key] += transaction.amount;
+    });
+
+    // Update budget items with actual values
+    const updatedItems = budget.items.map(item => {
+      const key = `${item.type}-${item.category}`;
+      const actual = actualsByCategory[key] || 0;
+
+      // Create a new object to ensure the change is detected
+      return {
+        ...item.toObject(),
+        actual: actual
+      };
+    });
+
+    // Update the budget with new actuals
+    budget.items = updatedItems;
+    budget.updatedBy = req.user._id;
+
+    // Save updated budget
+    const updatedBudget = await budget.save();
+
+    res.json({
+      success: true,
+      message: 'Budget actuals updated successfully',
+      budget: updatedBudget,
+      transactionsProcessed: transactions.length
+    });
   } catch (error) {
-    console.error(error);
+    console.error('Error updating budget actuals:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
