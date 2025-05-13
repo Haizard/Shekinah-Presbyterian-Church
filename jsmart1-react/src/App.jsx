@@ -255,6 +255,7 @@ import FinanceManager from './pages/admin/FinanceManager'
 import FinanceDetail from './pages/admin/FinanceDetail'
 import FinanceReports from './pages/admin/FinanceReports'
 import FinanceBudget from './pages/admin/FinanceBudget'
+import BudgetReport from './pages/admin/BudgetReport'
 import MemberManager from './pages/admin/MemberManager'
 import MemberDetail from './pages/admin/MemberDetail'
 import GroupManager from './pages/admin/GroupManager'
@@ -352,14 +353,17 @@ const LocationAwareRoutes = () => {
             <Route path="/admin/finances/:id" element={<FinanceDetail />} />
             <Route path="/admin/finances/reports" element={<FinanceReports />} />
             <Route path="/admin/finances/budget" element={<FinanceBudget />} />
+            <Route path="/admin/finances/budget/report" element={<BudgetReport />} />
 
             {/* Finance User Routes - Separate panel for finance users */}
             <Route path="/finance/login" element={<FinanceLogin />} />
             <Route path="/finance" element={<FinanceDashboard />} />
             <Route path="/finance/dashboard" element={<FinanceDashboard />} />
             <Route path="/finance/transactions" element={<FinanceManager />} />
+            <Route path="/finance/transactions/:id" element={<FinanceDetail />} />
             <Route path="/finance/reports" element={<FinanceReports />} />
             <Route path="/finance/budget" element={<FinanceBudget />} />
+            <Route path="/finance/budget/report" element={<BudgetReport />} />
 
             {/* Content Management Routes */}
             <Route path="/admin/ministries" element={<MinistryManager />} />

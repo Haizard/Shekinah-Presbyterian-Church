@@ -77,6 +77,12 @@ const FinanceSidebar = () => {
               <span>Budget</span>
             </Link>
           </li>
+          <li className={isActive('/finance/budget/report') ? 'active' : ''}>
+            <Link to="/finance/budget/report">
+              <FontAwesomeIcon icon="chart-pie" />
+              <span>Budget Report</span>
+            </Link>
+          </li>
         </ul>
       </nav>
 

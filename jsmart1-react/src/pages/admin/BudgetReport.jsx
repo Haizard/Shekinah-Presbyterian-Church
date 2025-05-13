@@ -1,0 +1,492 @@
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AdminLayout from '../../components/admin/AdminLayout';
+import FinanceLayout from '../../components/finance/FinanceLayout';
+import AuthContext from '../../context/AuthContext';
+import api from '../../services/api';
+import '../../styles/admin/DataManager.css';
+import '../../styles/admin/FinanceManager.css';
+import '../../styles/admin/BudgetReport.css';
+
+// Chart.js and PDF imports
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
+import { Pie, Bar } from 'react-chartjs-2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+// Register ChartJS components
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
+
+const BudgetReport = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('');
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [previousYear, setPreviousYear] = useState(new Date().getFullYear() - 1);
+  const [currentBudget, setCurrentBudget] = useState(null);
+  const [previousBudget, setPreviousBudget] = useState(null);
+  const [showComparison, setShowComparison] = useState(false);
+  const reportRef = useRef(null);
+
+  const { userRole } = useContext(AuthContext);
+
+  // Check if user is a finance user or admin
+  const isFinanceUser = userRole === 'finance';
+  const isAdminUser = userRole === 'admin';
+
+  // Choose the appropriate layout based on user role
+  const Layout = isFinanceUser ? FinanceLayout : AdminLayout;
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchBranches();
+  }, []);
+
+  // Fetch budget data when year or branch changes
+  useEffect(() => {
+    fetchCurrentBudget();
+    if (showComparison) {
+      fetchPreviousBudget();
+    }
+  }, [currentYear, previousYear, selectedBranch, showComparison]);
+
+  // Fetch branches from API
+  const fetchBranches = async () => {
+    try {
+      setLoading(true);
+      const branchesData = await api.branches.getAll();
+      setBranches(branchesData);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching branches:', err);
+      setError('Failed to load branch data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch current budget data from API
+  const fetchCurrentBudget = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const budgetData = await api.budgets.getByYearAndBranch(currentYear, selectedBranch);
+
+      if (budgetData._id) {
+        setCurrentBudget(budgetData);
+      } else {
+        setCurrentBudget(null);
+      }
+    } catch (err) {
+      console.error('Error fetching current budget:', err);
+      setError('Failed to load current budget data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch previous budget data from API
+  const fetchPreviousBudget = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const budgetData = await api.budgets.getByYearAndBranch(previousYear, selectedBranch);
+
+      if (budgetData._id) {
+        setPreviousBudget(budgetData);
+      } else {
+        setPreviousBudget(null);
+      }
+    } catch (err) {
+      console.error('Error fetching previous budget:', err);
+      setError('Failed to load previous budget data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
+  // Calculate budget totals
+  const calculateTotals = (budget) => {
+    if (!budget || !budget.items || budget.items.length === 0) {
+      return {
+        incomeBudget: 0,
+        incomeActual: 0,
+        expenseBudget: 0,
+        expenseActual: 0,
+        balanceBudget: 0,
+        balanceActual: 0
+      };
+    }
+
+    const incomeBudget = budget.items
+      .filter(item => item.type === 'income')
+      .reduce((sum, item) => sum + item.amount, 0);
+
+    const incomeActual = budget.items
+      .filter(item => item.type === 'income')
+      .reduce((sum, item) => sum + item.actual, 0);
+
+    const expenseBudget = budget.items
+      .filter(item => item.type === 'expense')
+      .reduce((sum, item) => sum + item.amount, 0);
+
+    const expenseActual = budget.items
+      .filter(item => item.type === 'expense')
+      .reduce((sum, item) => sum + item.actual, 0);
+
+    return {
+      incomeBudget,
+      incomeActual,
+      expenseBudget,
+      expenseActual,
+      balanceBudget: incomeBudget - expenseBudget,
+      balanceActual: incomeActual - expenseActual
+    };
+  };
+
+  // Handle branch selection change
+  const handleBranchChange = (e) => {
+    setSelectedBranch(e.target.value);
+  };
+
+  // Handle current year change
+  const handleCurrentYearChange = (e) => {
+    setCurrentYear(parseInt(e.target.value));
+  };
+
+  // Handle previous year change
+  const handlePreviousYearChange = (e) => {
+    setPreviousYear(parseInt(e.target.value));
+  };
+
+  // Toggle comparison view
+  const handleToggleComparison = () => {
+    setShowComparison(!showComparison);
+  };
+
+  // Generate PDF report
+  const generatePDF = () => {
+    // This will be implemented after installing jsPDF
+    alert('PDF generation will be available after installing the required packages.');
+
+    // Implementation would look like this:
+    /*
+    const doc = new jsPDF();
+
+    // Add title
+    doc.setFontSize(18);
+    doc.text('Budget Report', 14, 22);
+
+    // Add subtitle with year and branch info
+    doc.setFontSize(12);
+    const branchName = selectedBranch
+      ? branches.find(b => b._id === selectedBranch)?.name || 'Selected Branch'
+      : 'Main Church';
+    doc.text(`Year: ${currentYear} | Branch: ${branchName}`, 14, 32);
+
+    // Add budget summary
+    const currentTotals = calculateTotals(currentBudget);
+
+    // Generate table data
+    const tableColumn = ["Category", "Type", "Budget Amount", "Actual Amount", "Variance"];
+    const tableRows = [];
+
+    if (currentBudget && currentBudget.items) {
+      currentBudget.items.forEach(item => {
+        const variance = item.actual - item.amount;
+        tableRows.push([
+          item.category,
+          item.type === 'income' ? 'Income' : 'Expense',
+          formatCurrency(item.amount),
+          formatCurrency(item.actual),
+          formatCurrency(variance)
+        ]);
+      });
+    }
+
+    // Add summary section
+    doc.text('Budget Summary', 14, 42);
+    doc.text(`Total Income (Budget): ${formatCurrency(currentTotals.incomeBudget)}`, 14, 52);
+    doc.text(`Total Income (Actual): ${formatCurrency(currentTotals.incomeActual)}`, 14, 62);
+    doc.text(`Total Expenses (Budget): ${formatCurrency(currentTotals.expenseBudget)}`, 14, 72);
+    doc.text(`Total Expenses (Actual): ${formatCurrency(currentTotals.expenseActual)}`, 14, 82);
+    doc.text(`Balance (Budget): ${formatCurrency(currentTotals.balanceBudget)}`, 14, 92);
+    doc.text(`Balance (Actual): ${formatCurrency(currentTotals.balanceActual)}`, 14, 102);
+
+    // Add table with budget items
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 112,
+      theme: 'grid',
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [66, 66, 66] }
+    });
+
+    // Save the PDF
+    doc.save(`Budget_Report_${currentYear}_${branchName.replace(/\s+/g, '_')}.pdf`);
+    */
+  };
+
+  const currentTotals = calculateTotals(currentBudget);
+  const previousTotals = calculateTotals(previousBudget);
+
+  return (
+    <Layout>
+      <div className="data-manager finance-manager" ref={reportRef}>
+        <div className="manager-header">
+          <h1>Budget Report</h1>
+          <div className="header-actions">
+            <button type="button" className="btn btn-secondary" onClick={handleToggleComparison}>
+              <FontAwesomeIcon icon={showComparison ? "chart-line" : "chart-bar"} />
+              {showComparison ? ' Hide Comparison' : ' Show Comparison'}
+            </button>
+            <button type="button" className="btn btn-primary" onClick={generatePDF}>
+              <FontAwesomeIcon icon="file-pdf" /> Export PDF
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className="alert alert-danger">
+            <FontAwesomeIcon icon="exclamation-circle" />
+            {error}
+          </div>
+        )}
+
+        {/* Report Filters */}
+        <div className="budget-filters">
+          <div className="filter-group">
+            <label htmlFor="branchSelect">Branch:</label>
+            <select
+              id="branchSelect"
+              value={selectedBranch}
+              onChange={handleBranchChange}
+            >
+              <option value="">Main Church</option>
+              {branches.map(branch => (
+                <option key={branch._id} value={branch._id}>
+                  {branch.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label htmlFor="currentYearSelect">Current Year:</label>
+            <select
+              id="currentYearSelect"
+              value={currentYear}
+              onChange={handleCurrentYearChange}
+            >
+              {[...Array(5)].map((_, i) => {
+                const year = new Date().getFullYear() - 2 + i;
+                return (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {showComparison && (
+            <div className="filter-group">
+              <label htmlFor="previousYearSelect">Compare with:</label>
+              <select
+                id="previousYearSelect"
+                value={previousYear}
+                onChange={handlePreviousYearChange}
+              >
+                {[...Array(5)].map((_, i) => {
+                  const year = new Date().getFullYear() - 4 + i;
+                  return (
+                    <option key={year} value={year} disabled={year === currentYear}>
+                      {year}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+        </div>
+
+        {/* Report Content */}
+        <div className="report-content">
+          {loading ? (
+            <div className="loading-spinner">
+              <FontAwesomeIcon icon="spinner" spin />
+              <span>Loading data...</span>
+            </div>
+          ) : !currentBudget ? (
+            <div className="empty-state">
+              <FontAwesomeIcon icon="chart-pie" size="3x" />
+              <h3>No Budget Data Available</h3>
+              <p>There is no budget data available for the selected year and branch. Please create a budget first.</p>
+            </div>
+          ) : (
+            <>
+              {/* Budget Summary */}
+              <div className="budget-summary-report">
+                <h2>Budget Summary for {currentYear}</h2>
+                <div className="summary-cards">
+                  <div className="summary-card income">
+                    <div className="card-content">
+                      <h3>Income</h3>
+                      <div className="budget-amounts">
+                        <div>
+                          <span>Budget:</span>
+                          <span className="amount">{formatCurrency(currentTotals.incomeBudget)}</span>
+                        </div>
+                        <div>
+                          <span>Actual:</span>
+                          <span className="amount">{formatCurrency(currentTotals.incomeActual)}</span>
+                        </div>
+                        <div>
+                          <span>Variance:</span>
+                          <span className={`amount ${currentTotals.incomeActual >= currentTotals.incomeBudget ? 'positive' : 'negative'}`}>
+                            {formatCurrency(currentTotals.incomeActual - currentTotals.incomeBudget)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="summary-card expenses">
+                    <div className="card-content">
+                      <h3>Expenses</h3>
+                      <div className="budget-amounts">
+                        <div>
+                          <span>Budget:</span>
+                          <span className="amount">{formatCurrency(currentTotals.expenseBudget)}</span>
+                        </div>
+                        <div>
+                          <span>Actual:</span>
+                          <span className="amount">{formatCurrency(currentTotals.expenseActual)}</span>
+                        </div>
+                        <div>
+                          <span>Variance:</span>
+                          <span className={`amount ${currentTotals.expenseActual <= currentTotals.expenseBudget ? 'positive' : 'negative'}`}>
+                            {formatCurrency(currentTotals.expenseBudget - currentTotals.expenseActual)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="summary-card balance">
+                    <div className="card-content">
+                      <h3>Balance</h3>
+                      <div className="budget-amounts">
+                        <div>
+                          <span>Budget:</span>
+                          <span className={`amount ${currentTotals.balanceBudget >= 0 ? 'positive' : 'negative'}`}>
+                            {formatCurrency(currentTotals.balanceBudget)}
+                          </span>
+                        </div>
+                        <div>
+                          <span>Actual:</span>
+                          <span className={`amount ${currentTotals.balanceActual >= 0 ? 'positive' : 'negative'}`}>
+                            {formatCurrency(currentTotals.balanceActual)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chart placeholders - will be replaced with actual charts after installing packages */}
+              <div className="chart-section">
+                <h2>Budget Visualization</h2>
+                <div className="chart-container">
+                  <div className="chart-placeholder">
+                    <FontAwesomeIcon icon="chart-pie" size="3x" />
+                    <p>Income vs Expenses Chart</p>
+                    <p className="note">Charts will be available after installing Chart.js</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Comparison section */}
+              {showComparison && previousBudget && (
+                <div className="comparison-section">
+                  <h2>Year-over-Year Comparison</h2>
+                  <div className="comparison-table-container">
+                    <table className="comparison-table">
+                      <thead>
+                        <tr>
+                          <th>Category</th>
+                          <th>{previousYear} Budget</th>
+                          <th>{previousYear} Actual</th>
+                          <th>{currentYear} Budget</th>
+                          <th>{currentYear} Actual</th>
+                          <th>Budget Change</th>
+                          <th>Actual Change</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Total Income</td>
+                          <td>{formatCurrency(previousTotals.incomeBudget)}</td>
+                          <td>{formatCurrency(previousTotals.incomeActual)}</td>
+                          <td>{formatCurrency(currentTotals.incomeBudget)}</td>
+                          <td>{formatCurrency(currentTotals.incomeActual)}</td>
+                          <td className={currentTotals.incomeBudget >= previousTotals.incomeBudget ? 'positive' : 'negative'}>
+                            {formatCurrency(currentTotals.incomeBudget - previousTotals.incomeBudget)}
+                          </td>
+                          <td className={currentTotals.incomeActual >= previousTotals.incomeActual ? 'positive' : 'negative'}>
+                            {formatCurrency(currentTotals.incomeActual - previousTotals.incomeActual)}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Total Expenses</td>
+                          <td>{formatCurrency(previousTotals.expenseBudget)}</td>
+                          <td>{formatCurrency(previousTotals.expenseActual)}</td>
+                          <td>{formatCurrency(currentTotals.expenseBudget)}</td>
+                          <td>{formatCurrency(currentTotals.expenseActual)}</td>
+                          <td className={currentTotals.expenseBudget <= previousTotals.expenseBudget ? 'positive' : 'negative'}>
+                            {formatCurrency(currentTotals.expenseBudget - previousTotals.expenseBudget)}
+                          </td>
+                          <td className={currentTotals.expenseActual <= previousTotals.expenseActual ? 'positive' : 'negative'}>
+                            {formatCurrency(currentTotals.expenseActual - previousTotals.expenseActual)}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Net Balance</td>
+                          <td>{formatCurrency(previousTotals.balanceBudget)}</td>
+                          <td>{formatCurrency(previousTotals.balanceActual)}</td>
+                          <td>{formatCurrency(currentTotals.balanceBudget)}</td>
+                          <td>{formatCurrency(currentTotals.balanceActual)}</td>
+                          <td className={currentTotals.balanceBudget >= previousTotals.balanceBudget ? 'positive' : 'negative'}>
+                            {formatCurrency(currentTotals.balanceBudget - previousTotals.balanceBudget)}
+                          </td>
+                          <td className={currentTotals.balanceActual >= previousTotals.balanceActual ? 'positive' : 'negative'}>
+                            {formatCurrency(currentTotals.balanceActual - previousTotals.balanceActual)}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
+export default BudgetReport;

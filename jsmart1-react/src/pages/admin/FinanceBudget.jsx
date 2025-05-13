@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AdminLayout from '../../components/admin/AdminLayout';
 import FinanceLayout from '../../components/finance/FinanceLayout';
@@ -298,6 +299,12 @@ const FinanceBudget = () => {
             <button type="button" className="btn btn-refresh" onClick={handleRefresh}>
               <FontAwesomeIcon icon="sync" /> Refresh
             </button>
+            <Link
+              to={isFinanceUser ? "/finance/budget/report" : "/admin/finances/budget/report"}
+              className="btn btn-info"
+            >
+              <FontAwesomeIcon icon="chart-pie" /> View Report
+            </Link>
             {isAdminUser && (
               <div className="admin-view-badge">
                 <FontAwesomeIcon icon="eye" /> View Only Mode

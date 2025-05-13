@@ -61,6 +61,12 @@ const AdminSidebar = () => {
               <span>Budget</span>
             </Link>
           </li>
+          <li className={isActive('/admin/finances/budget/report') ? 'active' : ''}>
+            <Link to="/admin/finances/budget/report">
+              <FontAwesomeIcon icon="chart-pie" />
+              <span>Budget Report</span>
+            </Link>
+          </li>
 
           {/* Admin-only sections */}
           {!isFinanceUser && (
