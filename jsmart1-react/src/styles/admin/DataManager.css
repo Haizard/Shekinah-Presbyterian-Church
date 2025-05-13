@@ -156,7 +156,7 @@
   max-width: 500px;
 }
 
-.confirm-content {
+.confirm-content, .confirm-message {
   padding: 1.5rem;
   text-align: center;
 }
@@ -164,6 +164,7 @@
 .warning {
   color: #e74c3c;
   font-weight: 600;
+  margin-top: 0.5rem;
 }
 
 /* Form Styles */
@@ -308,7 +309,7 @@ textarea:focus {
 }
 
 /* Loading and Error States */
-.loading-container {
+.loading-container, .loading-spinner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -316,14 +317,18 @@ textarea:focus {
   padding: 3rem 0;
 }
 
-.spinner-large {
+.spinner-large, .loading-spinner svg {
   width: 3rem;
   height: 3rem;
+  color: #3498db;
+  margin-bottom: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-large {
   border: 0.3rem solid rgba(52, 152, 219, 0.2);
   border-radius: 50%;
   border-top-color: #3498db;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
 }
 
 @keyframes spin {
@@ -332,10 +337,20 @@ textarea:focus {
   }
 }
 
-.no-data {
+.no-data, .empty-state {
   text-align: center;
   padding: 3rem 0;
   color: #7f8c8d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state svg {
+  font-size: 3rem;
+  color: #bdc3c7;
+  margin-bottom: 1rem;
 }
 
 /* Info Message */

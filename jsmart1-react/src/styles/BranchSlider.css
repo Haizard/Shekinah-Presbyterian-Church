@@ -1,0 +1,298 @@
+/* Branch Slider Styles */
+.branch-slider-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  position: relative;
+  z-index: 5;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 2rem 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.branch-slider-title {
+  color: var(--light-color);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.branch-slider-title svg {
+  margin-right: 0.8rem;
+  color: var(--accent-color);
+}
+
+.branch-slide {
+  outline: none;
+  padding: 0;
+  width: 100%;
+}
+
+.branch-slide-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2.5rem;
+  border: none;
+  min-height: 350px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.branch-info {
+  flex: 1;
+  text-align: left;
+}
+
+.branch-info h3 {
+  font-size: 2.5rem;
+  margin-bottom: 1.2rem;
+  color: var(--light-color);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.branch-location,
+.branch-pastor,
+.branch-contact,
+.branch-description,
+.branch-members {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: var(--light-color);
+  line-height: 1.5;
+}
+
+.branch-description {
+  margin-top: 1.5rem;
+  font-style: italic;
+  max-width: 90%;
+}
+
+.branch-members {
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.branch-info svg {
+  margin-right: 0.8rem;
+  color: var(--accent-color);
+  font-size: 1.2rem;
+}
+
+.branch-image {
+  flex: 1;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.branch-image img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.branch-image img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.5);
+}
+
+.branch-image-placeholder {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius);
+  color: var(--accent-color);
+  font-size: 1.5rem;
+}
+
+/* Slick slider custom styles */
+.branch-slider {
+  width: 100%;
+}
+
+.branch-slider .slick-list,
+.branch-slider .slick-track {
+  width: 100%;
+}
+
+.branch-slider .slick-dots {
+  bottom: 10px;
+}
+
+.branch-slider .slick-dots li button:before {
+  color: var(--light-color);
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+.branch-slider .slick-dots li.slick-active button:before {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+.branch-slider .slick-prev,
+.branch-slider .slick-next {
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.branch-slider .slick-prev:hover,
+.branch-slider .slick-next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.branch-slider .slick-prev {
+  left: -50px;
+}
+
+.branch-slider .slick-next {
+  right: -50px;
+}
+
+.branch-slider .slick-prev:before,
+.branch-slider .slick-next:before {
+  font-size: 30px;
+  color: var(--accent-color);
+}
+
+/* Responsive slider navigation */
+@media (max-width: 1300px) {
+  .branch-slider .slick-prev {
+    left: -30px;
+  }
+
+  .branch-slider .slick-next {
+    right: -30px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .branch-slider .slick-prev {
+    left: 10px;
+  }
+
+  .branch-slider .slick-next {
+    right: 10px;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .branch-slider-container {
+    padding: 1.5rem;
+  }
+
+  .branch-slider-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .branch-slide-content {
+    padding: 1.5rem;
+    min-height: 0;
+  }
+
+  .branch-info h3 {
+    font-size: 2rem;
+  }
+
+  .branch-location,
+  .branch-pastor,
+  .branch-contact,
+  .branch-description,
+  .branch-members {
+    font-size: 1.1rem;
+  }
+
+  .branch-image img,
+  .branch-image-placeholder {
+    height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .branch-slide-content {
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+    padding: 1.2rem;
+  }
+
+  .branch-info,
+  .branch-image {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .branch-info {
+    text-align: center;
+  }
+
+  .branch-info h3 {
+    font-size: 1.8rem;
+  }
+
+  .branch-image img,
+  .branch-image-placeholder {
+    height: 200px;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+
+  .branch-slider .slick-dots {
+    bottom: -30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .branch-slider-container {
+    padding: 1rem;
+  }
+
+  .branch-slider-title {
+    font-size: 1.5rem;
+  }
+
+  .branch-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .branch-location,
+  .branch-pastor,
+  .branch-contact,
+  .branch-description,
+  .branch-members {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .branch-image img,
+  .branch-image-placeholder {
+    height: 180px;
+  }
+}

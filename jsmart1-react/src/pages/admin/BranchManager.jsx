@@ -36,12 +36,16 @@ const BranchManager = () => {
   const fetchBranches = async () => {
     try {
       setLoading(true);
+      console.log('Fetching branches...');
       const data = await api.branches.getAll();
+      console.log('Branches data received:', data);
       setBranches(data);
       setError(null);
     } catch (err) {
       console.error('Error fetching branches:', err);
-      setError('Failed to load branches. Please try again.');
+      // More detailed error message to help diagnose issues
+      const errorMessage = err.message || 'Unknown error';
+      setError(`Failed to load branches: ${errorMessage}. This might be due to API connection issues.`);
     } finally {
       setLoading(false);
     }
@@ -73,6 +77,17 @@ const BranchManager = () => {
   const getImageUrl = (path) => {
     if (!path) return '';
     if (path.startsWith('http')) return path;
+
+    // For uploaded images, ensure we use the correct base URL
+    if (path.startsWith('/uploads')) {
+      // In production, use relative URL (same origin)
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        return path;
+      }
+      // In development, use the full URL with localhost
+      return `http://localhost:5002${path}`;
+    }
+
     return path;
   };
 
@@ -134,10 +149,10 @@ const BranchManager = () => {
     if (!imageFile) return formData.image;
 
     try {
-      const formData = new FormData();
-      formData.append('file', imageFile);
-      
-      const response = await api.upload.uploadFile(formData);
+      const formDataObj = new FormData();
+      formDataObj.append('file', imageFile);
+
+      const response = await api.upload.uploadFile(formDataObj);
       return response.filePath;
     } catch (err) {
       console.error('Error uploading image:', err);
@@ -148,7 +163,7 @@ const BranchManager = () => {
   // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setFormError(null);
       setFormSuccess(null);
@@ -210,9 +225,11 @@ const BranchManager = () => {
   };
 
   // Delete branch
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!confirmDelete) return;
+
     try {
-      await api.branches.delete(id);
+      await api.branches.delete(confirmDelete._id);
       setConfirmDelete(null);
       fetchBranches();
     } catch (err) {
@@ -226,7 +243,7 @@ const BranchManager = () => {
       <div className="data-manager">
         <div className="manager-header">
           <h1>Branch Manager</h1>
-          <button className="btn btn-primary" onClick={handleAddNew}>
+          <button type="button" className="btn btn-primary" onClick={handleAddNew}>
             <FontAwesomeIcon icon="plus" /> Add New Branch
           </button>
         </div>
@@ -272,12 +289,14 @@ const BranchManager = () => {
                         <td>{branch.memberCount || 0}</td>
                         <td className="actions">
                           <button
+                            type="button"
                             className="btn btn-sm btn-edit"
                             onClick={() => handleEdit(branch)}
                           >
                             <FontAwesomeIcon icon="edit" /> Edit
                           </button>
                           <button
+                            type="button"
                             className="btn btn-sm btn-delete"
                             onClick={() => handleDeleteConfirm(branch)}
                           >
@@ -299,7 +318,7 @@ const BranchManager = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h2>{editMode ? 'Edit Branch' : 'Add New Branch'}</h2>
-                <button className="close-btn" onClick={() => setShowForm(false)}>
+                <button type="button" className="close-btn" onClick={() => setShowForm(false)}>
                   <FontAwesomeIcon icon="times" />
                 </button>
               </div>
@@ -434,7 +453,7 @@ const BranchManager = () => {
             <div className="modal-content confirm-modal">
               <div className="modal-header">
                 <h2>Confirm Delete</h2>
-                <button className="close-btn" onClick={handleDeleteCancel}>
+                <button type="button" className="close-btn" onClick={handleDeleteCancel}>
                   <FontAwesomeIcon icon="times" />
                 </button>
               </div>
@@ -443,10 +462,10 @@ const BranchManager = () => {
                 <p className="warning">This action cannot be undone.</p>
               </div>
               <div className="form-actions">
-                <button className="btn btn-secondary" onClick={handleDeleteCancel}>
+                <button type="button" className="btn btn-secondary" onClick={handleDeleteCancel}>
                   Cancel
                 </button>
-                <button className="btn btn-danger" onClick={() => handleDelete(confirmDelete._id)}>
+                <button type="button" className="btn btn-danger" onClick={handleDelete}>
                   Delete Branch
                 </button>
               </div>

@@ -6,12 +6,17 @@
 const getBaseUrl = () => {
   // Check if we're in a browser environment
   if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+
     // In production, use the same origin as the frontend
-    if (window.location.hostname !== 'localhost') {
+    if (!isLocalhost) {
+      console.log('Using same origin for image URLs');
       return '';  // Empty string means use the same origin
     }
   }
   // In development, use localhost with the correct port (5002)
+  console.log('Using development server for image URLs: http://localhost:5002');
   return 'http://localhost:5002';
 };
 
@@ -29,12 +34,10 @@ export const getImageUrl = (imagePath, fallbackImage = '/images/SPCT/CHURCH.jpg'
 
   // If the image path starts with /uploads, it's a user-uploaded image
   if (imagePath.startsWith('/uploads')) {
-    // In development, prepend the API base URL
-    if (window.location.hostname === 'localhost') {
-      console.log('Using API base URL for image:', `${getBaseUrl()}${imagePath}`);
-      return `${getBaseUrl()}${imagePath}`;
-    }
-    return imagePath;
+    const baseUrl = getBaseUrl();
+    const fullUrl = baseUrl ? `${baseUrl}${imagePath}` : imagePath;
+    console.log('Image URL:', fullUrl);
+    return fullUrl;
   }
 
   // If the image path is a full URL, return it as is

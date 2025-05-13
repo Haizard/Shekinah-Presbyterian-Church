@@ -7,9 +7,14 @@
   background-position: center;
   color: var(--light-color);
   text-align: center;
-  padding: 10rem 1.5rem;
+  padding: 0;
   position: relative;
   overflow: hidden;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .hero::before {
@@ -36,11 +41,31 @@
 }
 
 .hero-content {
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: 1000px;
+  margin: 0;
   position: relative;
   z-index: 2;
   animation: fadeInUp 1s ease-out;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-content.branches-only {
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.hero-branch-slider {
+  width: 100%;
+}
+
+.hero-main-content {
+  width: 100%;
 }
 
 @keyframes fadeInUp {

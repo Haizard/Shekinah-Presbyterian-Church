@@ -3,9 +3,13 @@
 // Determine the API base URL based on the environment
 let API_BASE_URL;
 
+// Get the current hostname
+const hostname = window.location.hostname;
+const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+
 // Check if we're in production (deployed) or development environment
-if (process.env.NODE_ENV === 'production' ||
-    !(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+// Force empty base URL for any non-localhost domain to ensure it works in production
+if (!isLocalhost) {
   // Production - since backend and frontend are deployed together on Render,
   // we use a relative URL to the current domain
   API_BASE_URL = '';
@@ -18,7 +22,8 @@ if (process.env.NODE_ENV === 'production' ||
 
 // Log environment information for debugging
 console.log('Environment:', process.env.NODE_ENV);
-console.log('Hostname:', window.location.hostname);
+console.log('Hostname:', hostname);
+console.log('Is localhost:', isLocalhost);
 
 console.log('API Base URL:', API_BASE_URL);
 

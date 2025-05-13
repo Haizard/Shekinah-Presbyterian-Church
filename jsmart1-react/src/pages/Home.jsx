@@ -18,25 +18,29 @@ import ContentContext from '../context/ContentContext';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import ContentDebugger from '../components/ContentDebugger';
+import BranchSlider from '../components/BranchSlider';
 
 const Home = () => {
   const [latestSermons, setLatestSermons] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch latest sermons and upcoming events
+  // Fetch latest sermons, upcoming events, and church branches
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        // Fetch sermons and events
-        const [sermons, events] = await Promise.all([
+        // Fetch sermons, events, and branches
+        const [sermons, events, branchesData] = await Promise.all([
           api.sermons.getAll(),
-          api.events.getAll()
+          api.events.getAll(),
+          api.branches.getAll()
         ]);
 
-        console.log('Home: Fetched sermons and events', { sermons, events });
+        console.log('Home: Fetched sermons, events, and branches', { sermons, events, branches: branchesData });
+        console.log('BRANCHES DATA:', branchesData);
 
         // Sort sermons by date (newest first) and take the first 2
         const sortedSermons = sermons
@@ -54,6 +58,7 @@ const Home = () => {
 
         setLatestSermons(sortedSermons);
         setUpcomingEvents(sortedEvents);
+        setBranches(branchesData);
       } catch (err) {
         console.error('Error fetching data:', err);
       } finally {
@@ -132,13 +137,13 @@ const Home = () => {
           </button>
         </div>
       )}
-      {/* Hero Section */}
+      {/* Hero Section - Church Branches Slider */}
       <section id="home" className="hero">
-        <DynamicContent
-          key={`hero-${localRefreshTrigger}`}
-          section="hero"
-          fallback={
-            <div className="hero-content">
+        {branches && branches.length > 0 ? (
+          <BranchSlider branches={branches} />
+        ) : (
+          <div className="hero-content">
+            <div className="hero-main-content">
               <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
               <p>"The True Word, The True Gospel, and True Freedom"</p>
               <div className="hero-buttons">
@@ -150,27 +155,8 @@ const Home = () => {
                 <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
               </div>
             </div>
-          }
-          renderContent={(content) => {
-            console.log('Hero renderContent called with:', content);
-            return (
-              <div className="hero-content">
-                <h2>{content.title}</h2>
-                {typeof content.content === 'string' && (
-                  <div dangerouslySetInnerHTML={{ __html: content.content }} />
-                )}
-                <div className="hero-buttons">
-                  <a href="#about" className="btn btn-primary">Learn More</a>
-                  <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
-                </div>
-                <div className="service-times">
-                  <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
-                  <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
-                </div>
-              </div>
-            );
-          }}
-        />
+          </div>
+        )}
       </section>
 
       {/* About Section */}
