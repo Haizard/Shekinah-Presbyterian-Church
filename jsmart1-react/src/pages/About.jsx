@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DynamicContent from '../components/DynamicContent';
 import WeeklySchedule from '../components/WeeklySchedule';
@@ -9,6 +9,29 @@ import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import '../styles/About.css';
 
 const About = () => {
+  const location = useLocation();
+
+  // Scroll to section based on hash in URL
+  useEffect(() => {
+    // Get the hash from the URL (e.g., #vision, #mission)
+    const hash = location.hash;
+    if (hash) {
+      // Remove the # character
+      const sectionId = hash.substring(1);
+
+      // Find the element with that ID
+      const element = document.getElementById(sectionId);
+
+      // If the element exists, scroll to it
+      if (element) {
+        // Add a small delay to ensure the page is fully loaded
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    }
+  }, [location]);
+
   return (
     <main className="about-page">
       {/* Page Banner */}

@@ -96,11 +96,77 @@ const Header = () => {
                 </button>
               </div>
               <div className="dropdown-content">
-                <ForceNavLink to="/about#vision" onClick={closeMenu}>Our Vision</ForceNavLink>
-                <ForceNavLink to="/about#mission" onClick={closeMenu}>Our Mission</ForceNavLink>
-                <ForceNavLink to="/about#story" onClick={closeMenu}>Our Story</ForceNavLink>
-                <ForceNavLink to="/about#motto" onClick={closeMenu}>Our Motto</ForceNavLink>
-                <ForceNavLink to="/about#beliefs" onClick={closeMenu}>Our Beliefs</ForceNavLink>
+                <a href="/about#vision" onClick={(e) => {
+                  closeMenu();
+                  // If we're already on the about page, prevent default navigation and just scroll
+                  if (window.location.pathname === '/about') {
+                    e.preventDefault();
+                    const element = document.getElementById('vision');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}>Our Vision</a>
+                <a href="/about#mission" onClick={(e) => {
+                  closeMenu();
+                  if (window.location.pathname === '/about') {
+                    e.preventDefault();
+                    const element = document.getElementById('mission');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}>Our Mission</a>
+                <a href="/about#story" onClick={(e) => {
+                  closeMenu();
+                  if (window.location.pathname === '/about') {
+                    e.preventDefault();
+                    const element = document.getElementById('story');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}>Our Story</a>
+                <a href="/about#motto" onClick={(e) => {
+                  closeMenu();
+                  if (window.location.pathname === '/about') {
+                    e.preventDefault();
+                    const element = document.getElementById('motto');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}>Our Motto</a>
+                <a href="/about#beliefs" onClick={(e) => {
+                  closeMenu();
+                  if (window.location.pathname === '/about') {
+                    e.preventDefault();
+                    const element = document.getElementById('beliefs');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}>Our Beliefs</a>
+                <a href="/about#leadership" onClick={(e) => {
+                  closeMenu();
+                  if (window.location.pathname === '/about') {
+                    e.preventDefault();
+                    const element = document.getElementById('leadership');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}>Our Leadership</a>
+                <a href="/about#schedule" onClick={(e) => {
+                  closeMenu();
+                  if (window.location.pathname === '/about') {
+                    e.preventDefault();
+                    const element = document.getElementById('schedule');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}>Weekly Schedule</a>
               </div>
             </li>
             <li>

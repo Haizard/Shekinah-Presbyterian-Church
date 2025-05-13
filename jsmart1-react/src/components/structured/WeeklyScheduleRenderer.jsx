@@ -45,29 +45,28 @@ const WeeklyScheduleRenderer = ({ content }) => {
   }
 
   return (
-    <div className="weekly-schedule">
-      {parsedContent.map((day, index) => (
-        <div className="schedule-day" key={`day-${day.day || index}`}>
-          <h3 className="day-name">{day.day}</h3>
-          <div className="day-events">
-            {day.events?.map((event, eventIndex) => (
-              <div className="schedule-event" key={`event-${day.day}-${event.title || event.name || eventIndex}`}>
-                <div className="event-time">
-                  <FontAwesomeIcon icon={faClock} />
-                  <span>{event.time}</span>
-                </div>
-                {event.location && (
-                  <div className="event-location">
-                    <FontAwesomeIcon icon={faMapMarkerAlt} />
-                    <span>{event.location}</span>
+    <div className="schedule-container">
+      <h3>Weekly Schedule</h3>
+      <div className="schedule-grid">
+        {parsedContent.map((day, index) => (
+          <div className="schedule-item" key={`day-${day.day || index}`}>
+            <div className="day">{day.day}</div>
+            <div className="events">
+              {day.events?.map((event, eventIndex) => (
+                <div className="event" key={`event-${day.day}-${event.title || event.name || eventIndex}`}>
+                  <div className="event-name">{event.title || event.name}</div>
+                  <div className="event-details">
+                    <p><FontAwesomeIcon icon={faClock} /> {event.time}</p>
+                    {event.location && (
+                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> {event.location}</p>
+                    )}
                   </div>
-                )}
-                <div className="event-title">{event.title || event.name}</div>
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
