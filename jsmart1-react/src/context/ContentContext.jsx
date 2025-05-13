@@ -32,8 +32,21 @@ export const ContentProvider = ({ children }) => {
   useEffect(() => {
     // Skip the initial render (when refreshTrigger is 0)
     if (refreshTrigger > 0) {
-      console.log(`ContentContext: Refresh trigger changed to ${refreshTrigger}, fetching fresh content`);
-      fetchAllContent();
+      // Prevent too frequent refreshes by using a debounce mechanism
+      if (!window._lastRefreshTriggerTime) {
+        window._lastRefreshTriggerTime = 0;
+      }
+
+      const now = Date.now();
+      const timeSinceLastRefresh = now - window._lastRefreshTriggerTime;
+
+      // Only refresh if it's been at least 10 seconds since the last refresh
+      if (timeSinceLastRefresh > 10000) {
+        // Removed console log to prevent browser overload
+        window._lastRefreshTriggerTime = now;
+        fetchAllContent();
+      }
+      // Skip refresh if it's too soon after the last one
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshTrigger]);
@@ -41,14 +54,14 @@ export const ContentProvider = ({ children }) => {
   // Fetch all content
   const fetchAllContent = useCallback(async () => {
     try {
-      console.log('ContentContext: Fetching all content...');
+      // Removed console log to prevent browser overload
       setLoading(true);
       const data = await api.content.getAll();
-      console.log('ContentContext: Received content data:', data);
+      // Removed console log to prevent browser overload
 
       // Validate the data
       if (!Array.isArray(data)) {
-        console.error('ContentContext: Received invalid content data (not an array):', data);
+        console.error('ContentContext: Received invalid content data (not an array)');
         setError('Failed to load content. Invalid data format.');
         setLoading(false);
         return;
@@ -59,9 +72,7 @@ export const ContentProvider = ({ children }) => {
         item && typeof item === 'object' && 'section' in item && 'title' in item && 'content' in item
       );
 
-      if (validData.length !== data.length) {
-        console.warn(`ContentContext: Filtered out ${data.length - validData.length} invalid content items`);
-      }
+      // Removed warning log to prevent browser overload
 
       // Convert array to object with section as key
       const contentObj = {};
@@ -69,8 +80,7 @@ export const ContentProvider = ({ children }) => {
         contentObj[item.section] = item;
       }
 
-      console.log('ContentContext: Processed content object with sections:', Object.keys(contentObj));
-      console.log('ContentContext: Content object details:', contentObj);
+      // Removed console logs to prevent browser overload
 
       // Update the content state
       setContent(contentObj);
@@ -84,23 +94,23 @@ export const ContentProvider = ({ children }) => {
       setError('Failed to load content. Please try again.');
     } finally {
       setLoading(false);
-      console.log('ContentContext: Finished fetching all content');
+      // Removed console log to prevent browser overload
     }
   }, []);
 
   // Get content by section with improved error handling and caching
   const getContentBySection = useCallback(async (section) => {
-    console.log(`ContentContext: Fetching content for section "${section}"...`);
+    // Removed console logs to prevent browser overload
 
     // First check if we already have this content in our state
     if (content[section]) {
-      console.log(`ContentContext: Using cached content for section "${section}":`, content[section]);
+      // Removed console log to prevent browser overload
       return content[section];
     }
 
     // If we already have a pending request for this section, return that promise
     if (pendingRequests.has(section)) {
-      console.log(`ContentContext: Reusing pending request for section "${section}"`);
+      // Removed console log to prevent browser overload
       return pendingRequests.get(section);
     }
 
@@ -113,18 +123,18 @@ export const ContentProvider = ({ children }) => {
 
       // Wait for the request to complete
       const data = await requestPromise;
-      console.log(`ContentContext: Received data for section "${section}":`, data);
+      // Removed console log to prevent browser overload
 
       // Validate the data
       if (!data) {
-        console.error(`ContentContext: Received empty data for section "${section}"`);
+        // Removed console error to prevent browser overload
         pendingRequests.delete(section);
         return null;
       }
 
       // Ensure the data has the expected structure
       if (!data.section || !data.title || data.content === undefined) {
-        console.error(`ContentContext: Received malformed data for section "${section}"`, data);
+        // Removed console error to prevent browser overload
         pendingRequests.delete(section);
         return null;
       }
@@ -137,39 +147,38 @@ export const ContentProvider = ({ children }) => {
       if (isNewData) {
         // Update state with the new content
         setContent(prev => {
-          console.log(`ContentContext: Updating content state for section "${section}"`);
+          // Removed console log to prevent browser overload
           const newContent = {
             ...prev,
             [section]: data
           };
-          console.log('ContentContext: New content state:', newContent);
+          // Removed console log to prevent browser overload
           return newContent;
         });
 
         // Only increment the refresh trigger if we actually got new data
-        console.log(`ContentContext: New data received for "${section}", incrementing refresh trigger`);
+        // Removed console log to prevent browser overload
         setRefreshTrigger(prev => prev + 1);
-      } else {
-        console.log(`ContentContext: Data for "${section}" hasn't changed, not updating state`);
       }
+      // Removed console log to prevent browser overload
 
       // Remove the request from our pending requests map
       pendingRequests.delete(section);
 
       return data;
     } catch (err) {
-      console.error(`ContentContext: Error fetching content for section "${section}":`, err);
+      // Removed console error to prevent browser overload
 
       // Remove the request from our pending requests map
       pendingRequests.delete(section);
 
       // If API call fails but we have cached data, return that
       if (content[section]) {
-        console.log(`ContentContext: Returning cached content for section "${section}"`);
+        // Removed console log to prevent browser overload
         return content[section];
       }
 
-      console.log(`ContentContext: No cached data available for section "${section}"`);
+      // Removed console log to prevent browser overload
       return null;
     }
   }, [content]);
@@ -227,11 +236,11 @@ export const ContentProvider = ({ children }) => {
     const timeSinceLastRefresh = now - lastRefreshTimeRef.current;
 
     if (timeSinceLastRefresh < 10000) {
-      console.log(`ContentContext: Refresh requested but skipped (last refresh was ${timeSinceLastRefresh}ms ago)`);
+      // Removed console log to prevent browser overload
       return false;
     }
 
-    console.log('ContentContext: Refreshing content cache...');
+    // Removed console log to prevent browser overload
 
     // Update the last refresh time
     lastRefreshTimeRef.current = now;
@@ -243,7 +252,7 @@ export const ContentProvider = ({ children }) => {
     // Increment the refresh trigger to force a re-fetch
     setRefreshTrigger(prev => {
       const newValue = prev + 1;
-      console.log(`ContentContext: Refresh trigger updated: ${prev} -> ${newValue}`);
+      // Removed console log to prevent browser overload
       return newValue;
     });
 

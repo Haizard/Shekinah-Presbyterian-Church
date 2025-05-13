@@ -71,7 +71,7 @@ const DynamicContent = ({
       return;
     }
 
-    console.log(`DynamicContent: Effect triggered for section "${section}" (refreshTrigger: ${refreshTrigger})`);
+    // Removed effect trigger logging to prevent browser overload
 
     // Set a timeout to ensure loading state doesn't get stuck
     const loadingTimeout = setTimeout(() => {
@@ -88,7 +88,7 @@ const DynamicContent = ({
       }
 
       try {
-        console.log(`DynamicContent: Fetching content for section "${section}"...`);
+        // Removed fetch content logging to prevent browser overload
         const data = await getContentBySection(section);
 
         // Always update state regardless of data to ensure we exit loading state
@@ -235,7 +235,17 @@ const DynamicContent = ({
   // Show loading state only during initial load and only for a reasonable amount of time
   // Never show loading state if we already have content data to avoid flickering
   if (isLoading && !contentData && Date.now() - lastFetchTime < 10000) { // Only show loading for max 10 seconds and only during initial load
-    console.log(`DynamicContent: Showing loading state for section "${section}"`);
+    // Reduce console logging to prevent browser overload
+    if (!window._loadingLogCount) {
+      window._loadingLogCount = 0;
+    }
+
+    // Only log occasionally to reduce console spam
+    if (window._loadingLogCount % 5 === 0) {
+      console.log(`DynamicContent: Showing loading state for section "${section}"`);
+    }
+    window._loadingLogCount++;
+
     return (
       <div className={`dynamic-content-loading ${className}`}>
         <div className="spinner-small" />
@@ -249,12 +259,11 @@ const DynamicContent = ({
 
   // If no content found, show fallback
   if (!contentData) {
-    console.log(`DynamicContent: No content data for section "${section}", showing fallback`);
+    // Removed console log to prevent browser overload
     return fallback || null;
   }
 
-  // Debug: Log the content data
-  console.log(`DynamicContent: Content data for section "${section}":`, contentData);
+  // Removed debug logging to prevent browser overload
 
   // Default rendering
   return (

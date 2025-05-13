@@ -3,9 +3,9 @@ import ContentContext from '../../context/ContentContext';
 import { parseContent } from '../../utils/contentUtils';
 import './ContentDebugPanel.css';
 
-// Debug helper function
+// Debug helper function with logging removed to prevent browser overload
 const logDebugInfo = (message, data) => {
-  console.log(`ContentDebugPanel: ${message}`, data);
+  // Removed console log to prevent browser overload
 };
 
 /**
@@ -55,7 +55,8 @@ const ContentDebugPanel = () => {
     try {
       // Check if we already have this content in the context
       if (content?.[selectedSection]) {
-        console.log(`ContentDebugPanel: Using cached content for section "${selectedSection}"`);
+        // Use the logDebugInfo helper to reduce console spam
+        logDebugInfo(`Using cached content for section "${selectedSection}"`, null);
         setSectionContent(content[selectedSection]);
 
         // Parse the content
@@ -63,7 +64,8 @@ const ContentDebugPanel = () => {
           parseContentData(content[selectedSection].content);
         }
       } else {
-        console.log(`ContentDebugPanel: Fetching content for section "${selectedSection}"`);
+        // Use the logDebugInfo helper to reduce console spam
+        logDebugInfo(`Fetching content for section "${selectedSection}"`, null);
         const data = await getContentBySection(selectedSection);
         setSectionContent(data);
 

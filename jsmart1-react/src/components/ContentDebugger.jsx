@@ -32,12 +32,12 @@ const ContentDebugger = () => {
     try {
       // First check if we already have this content in the global context
       if (content?.[selectedSection]) {
-        console.log(`ContentDebugger: Using cached content for section "${selectedSection}"`);
+        // Removed console log to prevent browser overload
         setSectionContent(content[selectedSection]);
       } else {
-        console.log(`ContentDebugger: Fetching content for section "${selectedSection}"`);
+        // Removed console log to prevent browser overload
         const data = await getContentBySection(selectedSection);
-        console.log(`ContentDebugger: Fetched content for section "${selectedSection}":`, data);
+        // Removed console log to prevent browser overload
         setSectionContent(data);
       }
     } catch (err) {

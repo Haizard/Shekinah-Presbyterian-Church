@@ -10,8 +10,7 @@ import '../styles/BranchSlider.css';
 const BranchSlider = ({ branches }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Log branches data for debugging
-  console.log('BranchSlider received branches:', branches);
+  // Removed console log to prevent browser overload
 
   // Settings for the slider
   const settings = {
@@ -39,7 +38,7 @@ const BranchSlider = ({ branches }) => {
   return (
     <div className="branch-slider-container">
       <h2 className="branch-slider-title">
-        <FontAwesomeIcon icon={faChurch} /> Shekinah Presbyterian Church 
+        <FontAwesomeIcon icon={faChurch} /> Shekinah Presbyterian Church
       </h2>
       <Slider {...settings}>
         {branches.map((branch, index) => (

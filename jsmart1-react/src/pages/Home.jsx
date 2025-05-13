@@ -79,32 +79,17 @@ const Home = () => {
   useEffect(() => {
     // Check if we have content and it has sections
     if (content && Object.keys(content).length > 0) {
-      console.log('Home: Content is available, sections:', Object.keys(content));
+      // Removed console log to prevent browser overload
 
       // Only update if we haven't set the trigger yet
       if (localRefreshTrigger === 0) {
-        console.log('Home: Setting initial local trigger');
+        // Removed console log to prevent browser overload
         setLocalRefreshTrigger(1);
       }
     }
   }, [content, localRefreshTrigger]);
 
-  // Log the available content sections
-  useEffect(() => {
-    if (content) {
-      console.log('Home: Available content sections:', Object.keys(content));
-      // Log each section's content
-      Object.entries(content).forEach(([section, data]) => {
-        console.log(`Home: Content for section "${section}":`, {
-          title: data.title,
-          contentType: typeof data.content,
-          contentPreview: typeof data.content === 'string'
-            ? data.content.substring(0, 50) + '...'
-            : JSON.stringify(data.content).substring(0, 50) + '...'
-        });
-      });
-    }
-  }, [content]);
+  // Removed content sections logging to prevent browser overload
 
   // Debug function to check content state
   const handleDebugClick = () => {
@@ -233,7 +218,10 @@ const Home = () => {
               </div>
             }
             renderContent={(content) => {
-              console.log('About renderContent called with:', content);
+              // Only log in development mode and only occasionally
+              if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
+                console.log('About renderContent called');
+              }
               return (
                 <div className="about-content">
                   <div className="about-text">
@@ -278,7 +266,10 @@ const Home = () => {
               </div>
             }
             renderContent={(content) => {
-              console.log('Vision renderContent called with:', content);
+              // Only log in development mode and only occasionally
+              if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
+                console.log('Vision renderContent called');
+              }
               return (
                 <div className="vision-content">
                   <div className="vision-image">
@@ -345,7 +336,10 @@ const Home = () => {
               </div>
             }
             renderContent={(content) => {
-              console.log('Mission renderContent called with:', content);
+              // Only log in development mode and only occasionally
+              if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
+                console.log('Mission renderContent called');
+              }
               return (
                 <div className="mission-content">
                   <div className="mission-text">

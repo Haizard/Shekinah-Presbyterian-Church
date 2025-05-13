@@ -11,13 +11,25 @@ const getBaseUrl = () => {
 
     // In production, use the same origin as the frontend
     if (!isLocalhost) {
-      console.log('Using same origin for image URLs');
+      // Only log this once to avoid console spam
+      if (!window._loggedImageUrlConfig) {
+        console.log('Using same origin for image URLs');
+        window._loggedImageUrlConfig = true;
+      }
       return '';  // Empty string means use the same origin
     }
+
+    // In development, use localhost with the correct port (5002)
+    // Only log this once to avoid console spam
+    if (!window._loggedImageUrlConfig) {
+      console.log('Using development server for image URLs: http://localhost:5002');
+      window._loggedImageUrlConfig = true;
+    }
+    return 'http://localhost:5002';
   }
-  // In development, use localhost with the correct port (5002)
-  console.log('Using development server for image URLs: http://localhost:5002');
-  return 'http://localhost:5002';
+
+  // Fallback (should rarely happen)
+  return '';
 };
 
 /**
@@ -36,7 +48,18 @@ export const getImageUrl = (imagePath, fallbackImage = '/images/SPCT/CHURCH.jpg'
   if (imagePath.startsWith('/uploads')) {
     const baseUrl = getBaseUrl();
     const fullUrl = baseUrl ? `${baseUrl}${imagePath}` : imagePath;
-    console.log('Image URL:', fullUrl);
+
+    // Limit logging to avoid console spam - only log occasionally for debugging
+    if (!window._imageUrlLogCount) {
+      window._imageUrlLogCount = 0;
+    }
+
+    // Only log every 20th image URL to reduce console spam
+    if (window._imageUrlLogCount % 20 === 0) {
+      console.log('Image URL sample:', fullUrl);
+    }
+    window._imageUrlLogCount++;
+
     return fullUrl;
   }
 
