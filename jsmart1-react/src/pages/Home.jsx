@@ -138,25 +138,76 @@ const Home = () => {
         </div>
       )}
       {/* Hero Section - Church Branches Slider */}
-      <section id="home" className="hero">
-        {branches && branches.length > 0 ? (
-          <BranchSlider branches={branches} />
-        ) : (
-          <div className="hero-content">
-            <div className="hero-main-content">
-              <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
-              <p>"The True Word, The True Gospel, and True Freedom"</p>
-              <div className="hero-buttons">
-                <a href="#about" className="btn btn-primary">Learn More</a>
-                <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
-              </div>
-              <div className="service-times">
-                <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
-                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
+      <section id="home" className="hero" style={{
+        position: 'relative',
+        minHeight: '600px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        backgroundColor: '#000'
+      }}>
+        {/* Background Image */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 0
+        }}>
+          <img
+            src="/images/SPCT/CHURCH.jpg"
+            alt="Church Background"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center'
+            }}
+          />
+        </div>
+
+        {/* Overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.2)',
+          zIndex: 1
+        }}></div>
+
+        {/* Content */}
+        <div style={{
+          position: 'relative',
+          zIndex: 2,
+          width: '100%',
+          padding: '20px'
+        }}>
+          {branches && branches.length > 0 ? (
+            <BranchSlider branches={branches} />
+          ) : (
+            <div className="hero-content">
+              <div className="hero-main-content">
+                <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
+                <p>"The True Word, The True Gospel, and True Freedom"</p>
+                <div className="hero-buttons">
+                  <a href="#about" className="btn btn-primary">Learn More</a>
+                  <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
+                </div>
+                <div className="service-times">
+                  <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
+                  <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       {/* About Section */}

@@ -39,7 +39,7 @@ const BranchSlider = ({ branches }) => {
   return (
     <div className="branch-slider-container">
       <h2 className="branch-slider-title">
-        <FontAwesomeIcon icon={faChurch} /> Shekinah Presbyterian Church Branches
+        <FontAwesomeIcon icon={faChurch} /> Shekinah Presbyterian Church 
       </h2>
       <Slider {...settings}>
         {branches.map((branch, index) => (
