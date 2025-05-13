@@ -1,8 +1,27 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import DynamicContent from './DynamicContent';
+import ContentContext from '../context/ContentContext';
 import '../styles/Leadership.css';
 
 const Leadership = () => {
+  // Get the content context to check if leadership content exists
+  const { getContentBySection } = useContext(ContentContext);
+
+  // Check if leadership content exists when component mounts
+  useEffect(() => {
+    const checkLeadershipContent = async () => {
+      try {
+        // Try to get leadership content
+        const leadershipContent = await getContentBySection('leadership');
+        console.log('Leadership content:', leadershipContent);
+      } catch (error) {
+        console.error('Error checking leadership content:', error);
+      }
+    };
+
+    checkLeadershipContent();
+  }, [getContentBySection]);
+
   // Default leadership content for fallback
   const defaultLeadershipContent = {
     title: 'Our Leadership',
@@ -27,6 +46,10 @@ const Leadership = () => {
 
   return (
     <div className="leadership-section">
+      <div className="section-header">
+        <h2>Our Leadership</h2>
+        <div className="divider" />
+      </div>
       <DynamicContent
         section="leadership"
         className="leadership-content"

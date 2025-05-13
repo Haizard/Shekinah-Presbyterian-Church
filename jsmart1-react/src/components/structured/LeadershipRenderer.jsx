@@ -6,14 +6,19 @@ import { getImageUrl, handleImageError } from '../../utils/imageUtils';
  * Renders leadership team content from structured data
  */
 const LeadershipRenderer = ({ content }) => {
+  console.log('LeadershipRenderer received content:', content);
+
   // Parse the content if it's a string
   let leadershipData;
   try {
-    leadershipData = typeof content === 'string' 
-      ? JSON.parse(content) 
+    leadershipData = typeof content === 'string'
+      ? JSON.parse(content)
       : content;
+
+    console.log('LeadershipRenderer parsed content:', leadershipData);
   } catch (error) {
     console.error('LeadershipRenderer: Error parsing leadership data:', error);
+    console.error('Content that failed to parse:', content);
     return (
       <div className="leadership-content">
         <p>Error loading leadership data. Please try again later.</p>
@@ -40,9 +45,9 @@ const LeadershipRenderer = ({ content }) => {
         {leadershipData.leaders.map((leader, index) => (
           <div className="leader-card" key={index}>
             <div className="leader-image">
-              <img 
-                src={getImageUrl(leader.image)} 
-                alt={leader.name} 
+              <img
+                src={getImageUrl(leader.image)}
+                alt={leader.name}
                 onError={(e) => handleImageError(e)}
               />
             </div>
