@@ -57,7 +57,7 @@ const AdminSidebar = () => {
           </li>
           <li className={isActive('/admin/finances/budget') ? 'active' : ''}>
             <Link to="/admin/finances/budget">
-              <FontAwesomeIcon icon="file-invoice-dollar" />
+              <span style={{ fontWeight: 'bold', marginRight: '0.75rem' }}>Tsh</span>
               <span>Budget</span>
             </Link>
           </li>

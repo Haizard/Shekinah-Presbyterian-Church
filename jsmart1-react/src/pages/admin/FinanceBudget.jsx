@@ -98,7 +98,7 @@ const FinanceBudget = () => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'TZS'
     }).format(amount);
   };
 

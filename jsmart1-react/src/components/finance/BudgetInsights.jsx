@@ -7,7 +7,7 @@ const BudgetInsights = ({ currentBudget, previousBudget, currentTotals, previous
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'TZS'
     }).format(amount);
   };
 
@@ -25,7 +25,7 @@ const BudgetInsights = ({ currentBudget, previousBudget, currentTotals, previous
   // Generate insights based on budget data
   const generateInsights = () => {
     const insights = [];
-    
+
     // Only generate insights if we have current budget data
     if (!currentBudget || !currentBudget.items || currentBudget.items.length === 0) {
       return [
@@ -115,7 +115,7 @@ const BudgetInsights = ({ currentBudget, previousBudget, currentTotals, previous
         const varianceRatio = variance / item.amount;
         const isIncome = item.type === 'income';
         const isPositive = (isIncome && variance > 0) || (!isIncome && variance < 0);
-        
+
         insights.push({
           type: isPositive ? 'success' : 'warning',
           title: `Significant ${item.type.charAt(0).toUpperCase() + item.type.slice(1)} Variance: ${item.category}`,
@@ -130,7 +130,7 @@ const BudgetInsights = ({ currentBudget, previousBudget, currentTotals, previous
       const incomeChange = calculatePercentageChange(currentTotals.incomeActual, previousTotals.incomeActual);
       const expenseChange = calculatePercentageChange(currentTotals.expenseActual, previousTotals.expenseActual);
       const balanceChange = currentTotals.balanceActual - previousTotals.balanceActual;
-      
+
       if (Math.abs(incomeChange) > 0.1) { // 10% change
         insights.push({
           type: incomeChange > 0 ? 'success' : 'warning',
@@ -139,7 +139,7 @@ const BudgetInsights = ({ currentBudget, previousBudget, currentTotals, previous
           icon: incomeChange > 0 ? 'chart-line' : 'chart-line-down'
         });
       }
-      
+
       if (Math.abs(expenseChange) > 0.1) { // 10% change
         insights.push({
           type: expenseChange < 0 ? 'success' : 'warning',
@@ -148,7 +148,7 @@ const BudgetInsights = ({ currentBudget, previousBudget, currentTotals, previous
           icon: expenseChange > 0 ? 'chart-line' : 'chart-line-down'
         });
       }
-      
+
       if (Math.abs(balanceChange) > 5000) { // $5000 change
         insights.push({
           type: balanceChange > 0 ? 'success' : 'warning',
@@ -170,7 +170,7 @@ const BudgetInsights = ({ currentBudget, previousBudget, currentTotals, previous
         <FontAwesomeIcon icon="lightbulb" className="insight-icon" />
         Automated Insights
       </h2>
-      
+
       <div className="insights-container">
         {insights.map((insight, index) => (
           <div key={index} className={`insight-card ${insight.type}`}>

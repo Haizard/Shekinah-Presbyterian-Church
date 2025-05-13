@@ -15,7 +15,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'TZS'
     }).format(amount);
   };
 
@@ -48,9 +48,9 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
       const categoryRate = categoryGrowthRates[item.category] !== undefined
         ? categoryGrowthRates[item.category]
         : item.type === 'income' ? growthRate : expenseGrowthRate;
-      
+
       const growthFactor = 1 + (categoryRate / 100);
-      
+
       return {
         ...item,
         amount: Math.round(item.amount * growthFactor),
@@ -105,7 +105,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
   // Get unique categories from budget items
   const getUniqueCategories = () => {
     if (!currentBudget || !currentBudget.items || currentBudget.items.length === 0) return [];
-    
+
     return [...new Set(currentBudget.items.map(item => item.category))].sort();
   };
 
@@ -199,7 +199,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
                 max={currentYear + 5}
               />
             </div>
-            
+
             <div className="control-group">
               <label htmlFor="growthRate">Income Growth Rate (%)</label>
               <input
@@ -212,7 +212,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
                 step={0.5}
               />
             </div>
-            
+
             <div className="control-group">
               <label htmlFor="expenseGrowthRate">Expense Growth Rate (%)</label>
               <input
@@ -225,7 +225,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
                 step={0.5}
               />
             </div>
-            
+
             <button
               type="button"
               className="btn-advanced"
@@ -235,19 +235,19 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
               {showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}
             </button>
           </div>
-          
+
           {showAdvanced && (
             <div className="advanced-forecast-options">
               <h3>Category-Specific Growth Rates</h3>
               <p className="help-text">
                 Set custom growth rates for specific categories. If not set, the default growth rate for the category type will be used.
               </p>
-              
+
               <div className="category-rates">
                 {uniqueCategories.map(category => {
                   const categoryItem = currentBudget.items.find(item => item.category === category);
                   const isIncome = categoryItem && categoryItem.type === 'income';
-                  
+
                   return (
                     <div key={category} className="category-rate-item">
                       <label>
@@ -271,7 +271,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
                   );
                 })}
               </div>
-              
+
               <button
                 type="button"
                 className="btn-reset-rates"
@@ -282,7 +282,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
               </button>
             </div>
           )}
-          
+
           {forecastData && (
             <>
               <div className="forecast-summary">
@@ -293,7 +293,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
                     {growthRate >= 0 ? '+' : ''}{growthRate}% from {formatCurrency(forecastData.currentTotals.incomeBudget)}
                   </div>
                 </div>
-                
+
                 <div className="summary-card expenses">
                   <h3>Forecast Expenses</h3>
                   <div className="amount">{formatCurrency(forecastData.totals.expense)}</div>
@@ -301,7 +301,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
                     {expenseGrowthRate >= 0 ? '+' : ''}{expenseGrowthRate}% from {formatCurrency(forecastData.currentTotals.expenseBudget)}
                   </div>
                 </div>
-                
+
                 <div className="summary-card balance">
                   <h3>Forecast Balance</h3>
                   <div className={`amount ${forecastData.totals.balance >= 0 ? 'positive' : 'negative'}`}>
@@ -312,7 +312,7 @@ const BudgetForecast = ({ currentBudget, previousBudget, currentYear }) => {
                   </div>
                 </div>
               </div>
-              
+
               {trendData && (
                 <div className="trend-chart">
                   <h3>3-Year Financial Trend</h3>

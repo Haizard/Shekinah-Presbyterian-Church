@@ -124,7 +124,7 @@ const UnifiedDashboard = () => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'TZS'
     }).format(amount);
   };
 
@@ -237,7 +237,7 @@ const UnifiedDashboard = () => {
 
               <div className="summary-card balance">
                 <div className="card-icon">
-                  <FontAwesomeIcon icon="balance-scale" />
+                  <span style={{ fontWeight: 'bold' }}>Tsh</span>
                 </div>
                 <div className="card-content">
                   <h3>Balance</h3>

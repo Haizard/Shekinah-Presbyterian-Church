@@ -15,7 +15,7 @@ const MenuRow = () => {
         <span>View Reports</span>
       </Link>
       <Link to="/finance/budget" className="finance-menu-item">
-        <FontAwesomeIcon icon="file-invoice-dollar" />
+        <span style={{ fontWeight: 'bold', marginRight: '0.75rem' }}>Tsh</span>
         <span>Manage Budget</span>
       </Link>
     </div>

@@ -25,16 +25,16 @@ const FinanceDashboard = () => {
     try {
       setLoading(true);
       const summaryData = await api.finances.getSummary();
-      
+
       // Get recent transactions
       const transactions = await api.finances.getAll();
       const recentTransactions = transactions.slice(0, 5);
-      
+
       setSummary({
         ...summaryData,
         recentTransactions
       });
-      
+
       setError(null);
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -48,7 +48,7 @@ const FinanceDashboard = () => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'TZS'
     }).format(amount);
   };
 
@@ -62,14 +62,14 @@ const FinanceDashboard = () => {
     <FinanceLayout>
       <div className="admin-dashboard finance-dashboard">
         <h1>Finance Dashboard</h1>
-        
+
         {error && (
           <div className="alert alert-danger">
             <FontAwesomeIcon icon="exclamation-circle" />
             {error}
           </div>
         )}
-        
+
         {loading ? (
           <div className="loading-spinner">
             <FontAwesomeIcon icon="spinner" spin />
@@ -101,7 +101,7 @@ const FinanceDashboard = () => {
 
               <div className="summary-card balance">
                 <div className="card-icon">
-                  <FontAwesomeIcon icon="balance-scale" />
+                  <span style={{ fontWeight: 'bold' }}>Tsh</span>
                 </div>
                 <div className="card-content">
                   <h3>Balance</h3>
@@ -125,7 +125,7 @@ const FinanceDashboard = () => {
                   <span>View Reports</span>
                 </a>
                 <a href="/finance/budget" className="action-button">
-                  <FontAwesomeIcon icon="file-invoice-dollar" />
+                  <span style={{ fontWeight: 'bold', marginRight: '0.75rem' }}>Tsh</span>
                   <span>Manage Budget</span>
                 </a>
               </div>
@@ -139,7 +139,7 @@ const FinanceDashboard = () => {
                   View All <FontAwesomeIcon icon="arrow-right" />
                 </a>
               </div>
-              
+
               {summary.recentTransactions.length > 0 ? (
                 <table className="data-table">
                   <thead>

@@ -79,7 +79,7 @@ const FinanceSidebar = () => {
           </li>
           <li className={isActive('/finance/budget') ? 'active' : ''}>
             <Link to="/finance/budget">
-              <FontAwesomeIcon icon="file-invoice-dollar" />
+              <span style={{ fontWeight: 'bold', marginRight: '0.75rem' }}>Tsh</span>
               <span>Budget</span>
             </Link>
           </li>

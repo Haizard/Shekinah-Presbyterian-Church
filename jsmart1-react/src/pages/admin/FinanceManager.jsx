@@ -273,7 +273,7 @@ const FinanceManager = () => {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'TZS'
     }).format(amount);
   };
 
@@ -352,7 +352,7 @@ const FinanceManager = () => {
 
           <div className="summary-card balance">
             <div className="card-icon">
-              <FontAwesomeIcon icon="dollar-sign" />
+              <span style={{ fontWeight: 'bold' }}>Tsh</span>
             </div>
             <div className="card-content">
               <h3>Balance</h3>
