@@ -644,7 +644,7 @@ const FinanceManager = () => {
           </div>
         )}
       </div>
-    </AdminLayout>
+    </Layout>
   );
 };
 

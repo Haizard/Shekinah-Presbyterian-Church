@@ -51,7 +51,13 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     console.log('Login attempt received:', req.body);
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+
+    // Trim email and password to prevent whitespace issues
+    email = email.trim();
+    password = password.trim();
+
+    console.log('Trimmed credentials:', { email, password });
 
     // Check for user email
     const user = await User.findOne({ email });

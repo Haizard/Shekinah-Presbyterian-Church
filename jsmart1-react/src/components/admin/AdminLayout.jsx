@@ -7,7 +7,7 @@ import '../../styles/admin/modern-admin.css';
 import '../../styles/admin/AdminLayout.css';
 
 const AdminLayout = ({ children }) => {
-  const { isAuthenticated, isAdmin, loading } = useContext(AuthContext);
+  const { isAuthenticated, isAdmin, isFinance, userRole, loading } = useContext(AuthContext);
 
   // TEMPORARY: For development, bypass authentication check
   const bypassAuth = process.env.NODE_ENV === 'development';
@@ -22,8 +22,18 @@ const AdminLayout = ({ children }) => {
     );
   }
 
-  // Redirect if not authenticated or not an admin (unless bypassed)
-  if (!bypassAuth && (!isAuthenticated || !isAdmin)) {
+  // Redirect if not authenticated (unless bypassed)
+  if (!bypassAuth && !isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  // Redirect finance users trying to access non-finance pages
+  if (!bypassAuth && userRole === 'finance' && !window.location.pathname.includes('/finances') && window.location.pathname !== '/admin' && window.location.pathname !== '/admin/dashboard') {
+    return <Navigate to="/admin/finances" replace />;
+  }
+
+  // Redirect non-admin users trying to access admin-only pages
+  if (!bypassAuth && !isAdmin && !isFinance) {
     return <Navigate to="/admin/login" replace />;
   }
 

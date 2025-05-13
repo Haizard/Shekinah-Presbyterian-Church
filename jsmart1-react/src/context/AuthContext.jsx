@@ -19,7 +19,16 @@ export const AuthProvider = ({ children }) => {
   // Login user
   const login = async (email, password) => {
     try {
-      const data = await api.auth.login({ email, password });
+      // Trim email and password to prevent whitespace issues
+      const trimmedEmail = email.trim();
+      const trimmedPassword = password.trim();
+
+      console.log('Attempting login with:', { email: trimmedEmail, password: trimmedPassword });
+
+      const data = await api.auth.login({
+        email: trimmedEmail,
+        password: trimmedPassword
+      });
 
       localStorage.setItem('user', JSON.stringify(data));
       setUser(data);

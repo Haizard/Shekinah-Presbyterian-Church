@@ -4,38 +4,47 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AuthContext from '../../context/AuthContext';
 import '../../styles/admin/Login.css';
 
-const Login = () => {
+const FinanceLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const { login, isAuthenticated, isAdmin, isFinance } = useContext(AuthContext);
+  
+  const { login, isAuthenticated, userRole } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If already authenticated and is admin or finance, redirect to admin dashboard
-    if (isAuthenticated && (isAdmin || isFinance)) {
-      navigate('/admin');
+    // If already authenticated, redirect to appropriate dashboard
+    if (isAuthenticated) {
+      if (userRole === 'finance') {
+        navigate('/finance/dashboard');
+      } else if (userRole === 'admin') {
+        navigate('/admin/dashboard');
+      }
     }
-  }, [isAuthenticated, isAdmin, isFinance, navigate]);
+  }, [isAuthenticated, userRole, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (!email || !password) {
       setError('Please enter both email and password');
       return;
     }
-
+    
     setLoading(true);
     setError('');
-
+    
     try {
       const result = await login(email, password);
-
+      
       if (!result.success) {
         setError(result.message || 'Invalid credentials');
+      } else {
+        // Check if the user is a finance user
+        if (result.role !== 'finance') {
+          setError('You do not have permission to access the finance panel');
+        }
       }
     } catch (err) {
       setError('An error occurred during login');
@@ -45,26 +54,31 @@ const Login = () => {
     }
   };
 
-  // If already authenticated and is admin or finance, redirect to admin dashboard
-  if (isAuthenticated && (isAdmin || isFinance)) {
-    return <Navigate to="/admin" replace />;
+  // If already authenticated and is finance user, redirect to finance dashboard
+  if (isAuthenticated && userRole === 'finance') {
+    return <Navigate to="/finance/dashboard" replace />;
+  }
+
+  // If already authenticated and is admin, redirect to admin dashboard
+  if (isAuthenticated && userRole === 'admin') {
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
   return (
-    <div className="admin-login-container">
+    <div className="admin-login-container finance-login">
       <div className="admin-login-card">
         <div className="login-header">
-          <h2>Admin Login</h2>
+          <h2>Finance Panel Login</h2>
           <p>Shekinah Presbyterian Church Tanzania</p>
         </div>
-
+        
         {error && (
           <div className="alert alert-danger">
             <FontAwesomeIcon icon="exclamation-circle" />
             {error}
           </div>
         )}
-
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -80,7 +94,7 @@ const Login = () => {
               />
             </div>
           </div>
-
+          
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <div className="input-with-icon">
@@ -95,7 +109,7 @@ const Login = () => {
               />
             </div>
           </div>
-
+          
           <button type="submit" className="login-btn" disabled={loading}>
             {loading ? (
               <>
@@ -110,7 +124,7 @@ const Login = () => {
             )}
           </button>
         </form>
-
+        
         <div className="login-footer">
           <a href="/">Back to Website</a>
         </div>
@@ -119,4 +133,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default FinanceLogin;
