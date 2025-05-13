@@ -13,19 +13,14 @@ if (!isLocalhost) {
   // Production - since backend and frontend are deployed together on Render,
   // we use a relative URL to the current domain
   API_BASE_URL = '';
-  console.log('Using production API endpoint (same domain)');
+  // Removed console log to prevent browser overload
 } else {
   // Development - use localhost with the specific port
   API_BASE_URL = 'http://localhost:5002';
-  console.log('Using development API endpoint:', API_BASE_URL);
+  // Removed console log to prevent browser overload
 }
 
-// Log environment information for debugging
-console.log('Environment:', process.env.NODE_ENV);
-console.log('Hostname:', hostname);
-console.log('Is localhost:', isLocalhost);
-
-console.log('API Base URL:', API_BASE_URL);
+// Removed environment logging to prevent browser overload
 
 // Get the user from localStorage
 const getUser = () => {
@@ -89,7 +84,7 @@ const apiRequest = async (url, options = {}) => {
 
     // If the error is still fresh, don't retry yet
     if (age < ERROR_CACHE_TTL) {
-      console.log(`API Request to ${fullUrl} skipped due to recent error (${age}ms ago)`);
+      // Removed console log to prevent browser overload
       throw error;
     }
 
@@ -104,31 +99,31 @@ const apiRequest = async (url, options = {}) => {
 
     // If the cache is still fresh, return the cached data
     if (age < CACHE_TTL) {
-      console.log(`API Request to ${fullUrl} served from cache (${age}ms old)`);
+      // Removed console log to prevent browser overload
       return data;
     }
   }
 
   // Check if we already have an in-flight request for this URL
   if (requestCache.has(cacheKey)) {
-    console.log(`API Request to ${fullUrl} already in progress, reusing promise`);
+    // Removed console log to prevent browser overload
     return requestCache.get(cacheKey);
   }
 
   // Create a new request promise
   const requestPromise = (async () => {
     try {
-      console.log(`API Request to: ${fullUrl}`, { method: requestOptions.method || 'GET' });
+      // Removed console log to prevent browser overload
 
       const response = await fetch(fullUrl, requestOptions);
-      console.log(`API Response status: ${response.status} ${response.statusText}`);
+      // Removed console log to prevent browser overload
 
       // Check if the response is ok before trying to parse JSON
       if (!response.ok) {
         let errorData;
         try {
           errorData = await response.json();
-          console.error(`API Error (${fullUrl}):`, errorData);
+          // Removed console error to prevent browser overload
           const error = new Error(errorData.message || `Server responded with status: ${response.status}`);
 
           // Cache the error
@@ -137,7 +132,7 @@ const apiRequest = async (url, options = {}) => {
           throw error;
         } catch (jsonError) {
           // If we can't parse JSON from the error response
-          console.error(`API Error (${fullUrl}): Could not parse error response`, jsonError);
+          // Removed console error to prevent browser overload
           const error = new Error(`Server responded with status: ${response.status}`);
 
           // Cache the error
@@ -150,7 +145,7 @@ const apiRequest = async (url, options = {}) => {
       // Parse JSON response
       try {
         const data = await response.json();
-        console.log('API Response data:', data);
+        // Removed console log to prevent browser overload
 
         // Cache the response for GET requests
         if (isGetRequest) {
@@ -159,7 +154,7 @@ const apiRequest = async (url, options = {}) => {
 
         return data;
       } catch (jsonError) {
-        console.error(`API Error (${fullUrl}): Could not parse JSON response`, jsonError);
+        // Removed console error to prevent browser overload
         const error = new Error('Invalid response format from server');
 
         // Cache the error
@@ -168,8 +163,7 @@ const apiRequest = async (url, options = {}) => {
         throw error;
       }
     } catch (error) {
-      console.error(`API Error (${fullUrl}):`, error);
-      console.error('Request options:', JSON.stringify(requestOptions, null, 2));
+      // Removed console errors to prevent browser overload
 
       // Cache the error if it's a network error
       if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
@@ -420,7 +414,7 @@ const api = {
         }
 
         const uploadUrl = API_BASE_URL ? `${API_BASE_URL}/api/upload` : '/api/upload';
-        console.log('Uploading file to:', uploadUrl);
+        // Removed console log to prevent browser overload
 
         const response = await fetch(uploadUrl, {
           method: 'POST',
@@ -437,7 +431,7 @@ const api = {
 
         return response.json();
       } catch (error) {
-        console.error('Upload API error:', error);
+        // Removed console error to prevent browser overload
         throw error;
       }
     },

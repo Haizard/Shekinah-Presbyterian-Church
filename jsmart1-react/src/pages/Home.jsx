@@ -39,8 +39,7 @@ const Home = () => {
           api.branches.getAll()
         ]);
 
-        console.log('Home: Fetched sermons, events, and branches', { sermons, events, branches: branchesData });
-        console.log('BRANCHES DATA:', branchesData);
+        // Removed console logs to prevent browser overload
 
         // Sort sermons by date (newest first) and take the first 2
         const sortedSermons = sermons
@@ -93,13 +92,11 @@ const Home = () => {
 
   // Debug function to check content state
   const handleDebugClick = () => {
-    console.log('Home: Debug button clicked');
+    // Removed console logs to prevent browser overload
     if (debugContent) {
       debugContent();
-    } else {
-      console.log('Home: debugContent function not available');
     }
-    console.log('Home: Local refresh trigger:', localRefreshTrigger);
+    // Removed console logs to prevent browser overload
   };
 
   return (
@@ -381,8 +378,12 @@ const Home = () => {
                   upcomingEvents.map((event) => {
                     // Parse the date
                     const eventDate = new Date(event.date);
-                    const day = eventDate.getDate();
-                    const month = eventDate.toLocaleString('default', { month: 'short' }).toUpperCase();
+                    // Make sure day is a valid number and convert to string
+                    const day = !isNaN(eventDate.getDate()) ? eventDate.getDate().toString() : '1';
+                    // Make sure month is a valid string
+                    const month = !isNaN(eventDate.getTime())
+                      ? eventDate.toLocaleString('default', { month: 'short' }).toUpperCase()
+                      : 'JAN';
 
                     return (
                       <div className="event-card" key={event._id}>

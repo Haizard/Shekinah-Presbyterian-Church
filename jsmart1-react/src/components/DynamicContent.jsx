@@ -235,16 +235,7 @@ const DynamicContent = ({
   // Show loading state only during initial load and only for a reasonable amount of time
   // Never show loading state if we already have content data to avoid flickering
   if (isLoading && !contentData && Date.now() - lastFetchTime < 10000) { // Only show loading for max 10 seconds and only during initial load
-    // Reduce console logging to prevent browser overload
-    if (!window._loadingLogCount) {
-      window._loadingLogCount = 0;
-    }
-
-    // Only log occasionally to reduce console spam
-    if (window._loadingLogCount % 5 === 0) {
-      console.log(`DynamicContent: Showing loading state for section "${section}"`);
-    }
-    window._loadingLogCount++;
+    // Removed loading state logging to prevent browser overload
 
     return (
       <div className={`dynamic-content-loading ${className}`}>
