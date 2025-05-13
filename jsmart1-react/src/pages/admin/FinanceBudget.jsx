@@ -31,9 +31,13 @@ const FinanceBudget = () => {
   });
 
   const { userRole } = useContext(AuthContext);
-  
+
+  // Check if user is a finance user or admin
+  const isFinanceUser = userRole === 'finance';
+  const isAdminUser = userRole === 'admin';
+
   // Choose the appropriate layout based on user role
-  const Layout = userRole === 'finance' ? FinanceLayout : AdminLayout;
+  const Layout = isFinanceUser ? FinanceLayout : AdminLayout;
 
   // Fetch data on component mount
   useEffect(() => {
@@ -68,19 +72,19 @@ const FinanceBudget = () => {
     const incomeBudget = budgetItems
       .filter(item => item.type === 'income')
       .reduce((sum, item) => sum + item.amount, 0);
-    
+
     const incomeActual = budgetItems
       .filter(item => item.type === 'income')
       .reduce((sum, item) => sum + item.actual, 0);
-    
+
     const expenseBudget = budgetItems
       .filter(item => item.type === 'expense')
       .reduce((sum, item) => sum + item.amount, 0);
-    
+
     const expenseActual = budgetItems
       .filter(item => item.type === 'expense')
       .reduce((sum, item) => sum + item.actual, 0);
-    
+
     return {
       incomeBudget,
       incomeActual,
@@ -113,12 +117,12 @@ const FinanceBudget = () => {
   // Add new budget item
   const handleAddItem = (e) => {
     e.preventDefault();
-    
+
     if (!formData.category || formData.amount <= 0) {
       alert('Please enter a category and amount');
       return;
     }
-    
+
     setBudgetItems([...budgetItems, { ...formData }]);
     setFormData({
       category: '',
@@ -148,15 +152,21 @@ const FinanceBudget = () => {
     <Layout>
       <div className="data-manager finance-manager">
         <div className="manager-header">
-          <h1>Budget Planning</h1>
-          <div className="header-actions">
-            <button type="button" className="btn btn-secondary" onClick={() => setShowForm(true)}>
-              <FontAwesomeIcon icon="plus" /> Add Item
-            </button>
-            <button type="button" className="btn btn-primary" onClick={handleSaveBudget}>
-              <FontAwesomeIcon icon="save" /> Save Budget
-            </button>
-          </div>
+          <h1>{isAdminUser ? 'Budget Viewer' : 'Budget Planning'}</h1>
+          {isFinanceUser ? (
+            <div className="header-actions">
+              <button type="button" className="btn btn-secondary" onClick={() => setShowForm(true)}>
+                <FontAwesomeIcon icon="plus" /> Add Item
+              </button>
+              <button type="button" className="btn btn-primary" onClick={handleSaveBudget}>
+                <FontAwesomeIcon icon="save" /> Save Budget
+              </button>
+            </div>
+          ) : (
+            <div className="admin-view-badge">
+              <FontAwesomeIcon icon="eye" /> View Only Mode
+            </div>
+          )}
         </div>
 
         {error && (
@@ -293,13 +303,23 @@ const FinanceBudget = () => {
                       {formatCurrency(item.actual - item.amount)}
                     </td>
                     <td className="actions">
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-delete"
-                        onClick={() => handleDeleteItem(index)}
-                      >
-                        <FontAwesomeIcon icon="trash-alt" /> Delete
-                      </button>
+                      {isFinanceUser ? (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-delete"
+                          onClick={() => handleDeleteItem(index)}
+                        >
+                          <FontAwesomeIcon icon="trash-alt" /> Delete
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-view"
+                          disabled
+                        >
+                          <FontAwesomeIcon icon="eye" /> View Only
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -26,9 +26,13 @@ const FinanceReports = () => {
   });
 
   const { userRole } = useContext(AuthContext);
-  
+
+  // Check if user is a finance user or admin
+  const isFinanceUser = userRole === 'finance';
+  const isAdminUser = userRole === 'admin';
+
   // Choose the appropriate layout based on user role
-  const Layout = userRole === 'finance' ? FinanceLayout : AdminLayout;
+  const Layout = isFinanceUser ? FinanceLayout : AdminLayout;
 
   // Fetch data on component mount
   useEffect(() => {
@@ -92,10 +96,16 @@ const FinanceReports = () => {
     <Layout>
       <div className="data-manager finance-manager">
         <div className="manager-header">
-          <h1>Finance Reports</h1>
-          <button type="button" className="btn btn-primary" onClick={generateReport}>
-            <FontAwesomeIcon icon="file-export" /> Generate Report
-          </button>
+          <h1>{isAdminUser ? 'Finance Reports Viewer' : 'Finance Reports'}</h1>
+          {isFinanceUser ? (
+            <button type="button" className="btn btn-primary" onClick={generateReport}>
+              <FontAwesomeIcon icon="file-export" /> Generate Report
+            </button>
+          ) : (
+            <div className="admin-view-badge">
+              <FontAwesomeIcon icon="eye" /> View Only Mode
+            </div>
+          )}
         </div>
 
         {error && (
@@ -110,19 +120,19 @@ const FinanceReports = () => {
           <div className="filter-group">
             <label htmlFor="reportType">Report Type:</label>
             <div className="btn-group">
-              <button 
+              <button
                 className={`btn ${reportType === 'summary' ? 'btn-primary' : 'btn-outline-primary'}`}
                 onClick={() => handleReportTypeChange('summary')}
               >
                 Summary
               </button>
-              <button 
+              <button
                 className={`btn ${reportType === 'income' ? 'btn-primary' : 'btn-outline-primary'}`}
                 onClick={() => handleReportTypeChange('income')}
               >
                 Income
               </button>
-              <button 
+              <button
                 className={`btn ${reportType === 'expense' ? 'btn-primary' : 'btn-outline-primary'}`}
                 onClick={() => handleReportTypeChange('expense')}
               >
@@ -170,7 +180,7 @@ const FinanceReports = () => {
         {/* Report Preview */}
         <div className="report-preview">
           <h2>Report Preview</h2>
-          
+
           {loading ? (
             <div className="loading-spinner">
               <FontAwesomeIcon icon="spinner" spin />

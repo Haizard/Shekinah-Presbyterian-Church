@@ -73,13 +73,25 @@ const admin = (req, res, next) => {
   }
 };
 
-// Finance middleware - allows access to finance users and admins
+// Finance middleware - allows access to finance users and admins (read-only for admins)
 const finance = (req, res, next) => {
   if (req.user && (req.user.isAdmin || req.user.role === 'finance')) {
+    // Add a flag to indicate if the user is a finance user or admin
+    req.isFinanceUser = req.user.role === 'finance';
+    req.isAdminUser = req.user.isAdmin;
     next();
   } else {
     res.status(401).json({ message: 'Not authorized to access finance features' });
   }
 };
 
-module.exports = { protect, admin, finance };
+// Finance-only middleware - only allows finance users to perform CRUD operations
+const financeOnly = (req, res, next) => {
+  if (req.user && req.user.role === 'finance') {
+    next();
+  } else {
+    res.status(401).json({ message: 'Not authorized to modify finance data' });
+  }
+};
+
+module.exports = { protect, admin, finance, financeOnly };

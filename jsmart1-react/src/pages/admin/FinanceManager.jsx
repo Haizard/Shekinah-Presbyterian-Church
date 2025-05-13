@@ -274,17 +274,28 @@ const FinanceManager = () => {
 
   const { userRole } = useContext(AuthContext);
 
+  // Check if user is a finance user or admin
+  const isFinanceUser = userRole === 'finance';
+  const isAdminUser = userRole === 'admin';
+
   // Choose the appropriate layout based on user role
-  const Layout = userRole === 'finance' ? FinanceLayout : AdminLayout;
+  const Layout = isFinanceUser ? FinanceLayout : AdminLayout;
 
   return (
     <Layout>
       <div className="data-manager finance-manager">
         <div className="manager-header">
-          <h1>Finance Manager</h1>
-          <button type="button" className="btn btn-primary" onClick={handleAddNew}>
-            <FontAwesomeIcon icon="plus" /> Add New Transaction
-          </button>
+          <h1>{isAdminUser ? 'Finance Viewer' : 'Finance Manager'}</h1>
+          {isFinanceUser && (
+            <button type="button" className="btn btn-primary" onClick={handleAddNew}>
+              <FontAwesomeIcon icon="plus" /> Add New Transaction
+            </button>
+          )}
+          {isAdminUser && (
+            <div className="admin-view-badge">
+              <FontAwesomeIcon icon="eye" /> View Only Mode
+            </div>
+          )}
         </div>
 
         {error && (
@@ -413,20 +424,33 @@ const FinanceManager = () => {
                     <td>{finance.description || '-'}</td>
                     <td>{getBranchName(finance.branchId)}</td>
                     <td className="actions">
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-edit"
-                        onClick={() => handleEdit(finance)}
-                      >
-                        <FontAwesomeIcon icon="edit" /> Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-delete"
-                        onClick={() => handleDeleteConfirm(finance)}
-                      >
-                        <FontAwesomeIcon icon="trash-alt" /> Delete
-                      </button>
+                      {isFinanceUser ? (
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-edit"
+                            onClick={() => handleEdit(finance)}
+                          >
+                            <FontAwesomeIcon icon="edit" /> Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-delete"
+                            onClick={() => handleDeleteConfirm(finance)}
+                          >
+                            <FontAwesomeIcon icon="trash-alt" /> Delete
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-view"
+                          onClick={() => handleEdit(finance)}
+                          disabled
+                        >
+                          <FontAwesomeIcon icon="eye" /> View Only
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

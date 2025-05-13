@@ -9,7 +9,7 @@ const {
   deleteFinance,
   getFinanceSummary
 } = require('../controllers/financeController');
-const { protect, admin, finance } = require('../middleware/auth');
+const { protect, admin, finance, financeOnly } = require('../middleware/auth');
 
 // Get all finances
 router.get('/', protect, finance, getFinances);
@@ -23,13 +23,13 @@ router.get('/branch/:branchId', protect, finance, getFinancesByBranch);
 // Get finance by ID
 router.get('/:id', protect, finance, getFinanceById);
 
-// Create a finance record
-router.post('/', protect, finance, createFinance);
+// Create a finance record - only finance users can create
+router.post('/', protect, financeOnly, createFinance);
 
-// Update a finance record
-router.put('/:id', protect, finance, updateFinance);
+// Update a finance record - only finance users can update
+router.put('/:id', protect, financeOnly, updateFinance);
 
-// Delete a finance record
-router.delete('/:id', protect, finance, deleteFinance);
+// Delete a finance record - only finance users can delete
+router.delete('/:id', protect, financeOnly, deleteFinance);
 
 module.exports = router;
