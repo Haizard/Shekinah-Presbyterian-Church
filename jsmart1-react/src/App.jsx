@@ -259,6 +259,10 @@ import GroupManager from './pages/admin/GroupManager'
 import TestSidebar from './pages/admin/TestSidebar'
 import DirectSidebar from './pages/admin/DirectSidebar'
 
+// Finance Pages
+import FinanceLogin from './pages/finance/Login'
+import FinanceDashboard from './pages/finance/Dashboard'
+
 // This component will force a re-render when the location changes
 const LocationAwareRoutes = () => {
   const location = useLocation();
@@ -346,8 +350,9 @@ const LocationAwareRoutes = () => {
             <Route path="/admin/finances/budget" element={<FinanceBudget />} />
 
             {/* Finance User Routes - Separate panel for finance users */}
-            <Route path="/finance" element={<FinanceManager />} />
-            <Route path="/finance/dashboard" element={<FinanceManager />} />
+            <Route path="/finance/login" element={<FinanceLogin />} />
+            <Route path="/finance" element={<FinanceDashboard />} />
+            <Route path="/finance/dashboard" element={<FinanceDashboard />} />
             <Route path="/finance/transactions" element={<FinanceManager />} />
             <Route path="/finance/reports" element={<FinanceReports />} />
             <Route path="/finance/budget" element={<FinanceBudget />} />

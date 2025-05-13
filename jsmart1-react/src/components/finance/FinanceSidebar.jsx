@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../../styles/admin/AdminSidebar.css';
+import '../../styles/finance/FinanceSidebar.css';
 
 const FinanceSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -38,7 +38,7 @@ const FinanceSidebar = () => {
   }, []);
 
   return (
-    <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <aside className={`finance-sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <h2>Finance Panel</h2>
         <button type="button" className="toggle-btn" onClick={toggleSidebar}>
@@ -48,8 +48,8 @@ const FinanceSidebar = () => {
 
       <nav className="sidebar-nav">
         <ul>
-          <li className={isActive('/admin') ? 'active' : ''}>
-            <Link to="/admin">
+          <li className={isActive('/finance') || isActive('/finance/dashboard') ? 'active' : ''}>
+            <Link to="/finance/dashboard">
               <FontAwesomeIcon icon="tachometer-alt" />
               <span>Dashboard</span>
             </Link>
@@ -59,20 +59,20 @@ const FinanceSidebar = () => {
           <li className="nav-section-title">
             <span>Finance Management</span>
           </li>
-          <li className={isActive('/admin/finances') ? 'active' : ''}>
-            <Link to="/admin/finances">
+          <li className={isActive('/finance/transactions') ? 'active' : ''}>
+            <Link to="/finance/transactions">
               <FontAwesomeIcon icon="money-bill-alt" />
               <span>Transactions</span>
             </Link>
           </li>
-          <li className={isActive('/admin/finances/reports') ? 'active' : ''}>
-            <Link to="/admin/finances/reports">
+          <li className={isActive('/finance/reports') ? 'active' : ''}>
+            <Link to="/finance/reports">
               <FontAwesomeIcon icon="chart-bar" />
               <span>Reports</span>
             </Link>
           </li>
-          <li className={isActive('/admin/finances/budget') ? 'active' : ''}>
-            <Link to="/admin/finances/budget">
+          <li className={isActive('/finance/budget') ? 'active' : ''}>
+            <Link to="/finance/budget">
               <FontAwesomeIcon icon="file-invoice-dollar" />
               <span>Budget</span>
             </Link>

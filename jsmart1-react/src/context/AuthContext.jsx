@@ -41,8 +41,19 @@ export const AuthProvider = ({ children }) => {
 
   // Logout user
   const logout = () => {
+    // Get the current user role before removing from localStorage
+    const currentRole = user?.role;
+
+    // Remove user from localStorage
     localStorage.removeItem('user');
     setUser(null);
+
+    // Redirect based on role
+    if (currentRole === 'finance') {
+      window.location.href = '/finance/login';
+    } else {
+      window.location.href = '/';
+    }
   };
 
   // Register user
