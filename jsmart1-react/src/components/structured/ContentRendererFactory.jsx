@@ -3,6 +3,7 @@ import HowWeServeRenderer from './HowWeServeRenderer';
 import WeeklyScheduleRenderer from './WeeklyScheduleRenderer';
 import VideoGalleryRenderer from './VideoGalleryRenderer';
 import FeaturedEventRenderer from './FeaturedEventRenderer';
+import LeadershipRenderer from './LeadershipRenderer';
 import { parseContent, isHtmlContent } from '../../utils/contentUtils';
 
 /**
@@ -53,6 +54,10 @@ const ContentRendererFactory = ({ section, content }) => {
     case 'featured_event':
       console.log(`ContentRendererFactory: Using FeaturedEventRenderer for section "${section}"`);
       return <FeaturedEventRenderer content={parsedContent} />;
+
+    case 'leadership':
+      console.log(`ContentRendererFactory: Using LeadershipRenderer for section "${section}"`);
+      return <LeadershipRenderer content={parsedContent} />;
 
     default:
       // For HTML content, render with dangerouslySetInnerHTML
