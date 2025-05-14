@@ -395,7 +395,7 @@ const Home = () => {
                           <h3>{event.title}</h3>
                           <p><FontAwesomeIcon icon={faClock} /> {event.time}</p>
                           <p><FontAwesomeIcon icon={faMapMarkerAlt} /> {event.location}</p>
-                          <Link to={`/events#${event._id}`} className="btn btn-sm">Learn More</Link>
+                          <Link to={`/events/${event._id}`} className="btn btn-sm">Learn More</Link>
                         </div>
                       </div>
                     );

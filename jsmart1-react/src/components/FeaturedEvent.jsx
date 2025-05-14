@@ -48,9 +48,9 @@ const FeaturedEvent = () => {
           return (
             <div className="featured-event-container">
               <div className="featured-event-image">
-                <img 
-                  src={getImageUrl(content.image)} 
-                  alt={content.title} 
+                <img
+                  src={getImageUrl(content.image)}
+                  alt={content.title}
                   onError={(e) => handleImageError(e)}
                 />
                 {eventDetails.date && (
@@ -83,7 +83,7 @@ const FeaturedEvent = () => {
                 {eventDetails.description && (
                   <p className="featured-event-description">{eventDetails.description}</p>
                 )}
-                <Link to={eventDetails.link || "/events"} className="btn btn-primary">Learn More</Link>
+                <Link to={eventDetails.link || (content._id ? `/events/${content._id}` : "/events")} className="btn btn-primary">Learn More</Link>
               </div>
             </div>
           );

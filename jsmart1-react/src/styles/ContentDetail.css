@@ -1,0 +1,136 @@
+.content-detail-page {
+  padding: 60px 0;
+  min-height: 70vh;
+}
+
+.back-link {
+  margin-bottom: 20px;
+}
+
+.back-link a {
+  display: inline-flex;
+  align-items: center;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.back-link a:hover {
+  color: var(--primary-color);
+}
+
+.back-link svg {
+  margin-right: 8px;
+}
+
+.content-detail-wrapper {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.content-detail-header {
+  padding: 30px;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.content-detail-header h1 {
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+.content-detail-body {
+  padding: 30px;
+}
+
+.content-image-container {
+  margin-bottom: 30px;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 400px;
+}
+
+.content-image-container img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.content-text {
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.content-text h2 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: var(--primary-color);
+}
+
+.content-text p {
+  margin-bottom: 20px;
+}
+
+.content-text ul,
+.content-text ol {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.content-text li {
+  margin-bottom: 10px;
+}
+
+.social-share-container {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.loading-container,
+.error-container,
+.not-found-container {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.loading-container .spinner {
+  margin: 0 auto 20px;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-container p,
+.not-found-container p {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .content-detail-header {
+    padding: 20px;
+  }
+
+  .content-detail-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .content-detail-body {
+    padding: 20px;
+  }
+}

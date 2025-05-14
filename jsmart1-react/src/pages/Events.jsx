@@ -93,7 +93,8 @@ const Events = () => {
               <p className="event-description">Join us for our annual church conference as we explore what it means to be rooted in Christ. This full-day event will feature inspiring speakers, powerful worship, and practical workshops to help you grow in your faith.</p>
               <div className="event-buttons">
                 <Link to="/events/conference/register" className="btn btn-primary">Register Now</Link>
-                <Link to="/events/conference" className="btn btn-secondary">Learn More</Link>
+                <Link to="/events/featured-conference" className="btn btn-secondary">Learn More</Link>
+                <Link to="/simple-event" className="btn btn-primary">View Simple Event</Link>
               </div>
               <div className="event-countdown" data-date="2023-06-25T09:00:00">
                 <div className="countdown-item">
@@ -321,7 +322,7 @@ const Events = () => {
                 <p className="special-event-description">
                   Our annual church conference brings together believers from across Tanzania for a time of powerful teaching, worship, and fellowship. This year's theme is "Advancing the Kingdom" with guest speakers from around the world.
                 </p>
-                <Link to="/events/annual-conference" className="btn btn-primary">Register Now</Link>
+                <Link to="/events/special-annual-conference" className="btn btn-primary">Learn More</Link>
               </div>
             </div>
           </div>

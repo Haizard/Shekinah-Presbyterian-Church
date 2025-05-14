@@ -238,10 +238,16 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Sermons from './pages/Sermons'
 import Events from './pages/Events'
+import EventDetail from './pages/EventDetail'
 import Ministries from './pages/Ministries'
+import MinistryDetail from './pages/MinistryDetail'
+import ContentDetail from './pages/ContentDetail'
 import Gallery from './pages/Gallery'
 import Contact from './pages/Contact'
 import Give from './pages/Give'
+import TestPage from './pages/TestPage'
+import SimpleTest from './pages/SimpleTest'
+import SimpleEventDetail from './pages/SimpleEventDetail'
 
 // Admin Pages
 import AdminLogin from './pages/admin/Login'
@@ -274,6 +280,9 @@ import UnifiedDashboard from './pages/finance/UnifiedDashboard'
 // This component will force a re-render when the location changes
 const LocationAwareRoutes = () => {
   const location = useLocation();
+
+  // Log the current location for debugging
+  console.log('Current location:', location);
 
   return (
     <div className="App">
@@ -311,10 +320,31 @@ const LocationAwareRoutes = () => {
                 <Footer />
               </>
             } />
+            <Route path="/events/:id" element={
+              <>
+                <Header />
+                <EventDetail />
+                <Footer />
+              </>
+            } />
             <Route path="/ministries" element={
               <>
                 <Header />
                 <Ministries />
+                <Footer />
+              </>
+            } />
+            <Route path="/ministries/:id" element={
+              <>
+                <Header />
+                <MinistryDetail />
+                <Footer />
+              </>
+            } />
+            <Route path="/content/:section" element={
+              <>
+                <Header />
+                <ContentDetail />
                 <Footer />
               </>
             } />
@@ -339,6 +369,15 @@ const LocationAwareRoutes = () => {
                 <Footer />
               </>
             } />
+            <Route path="/test" element={
+              <>
+                <Header />
+                <TestPage />
+                <Footer />
+              </>
+            } />
+            <Route path="/simple-test" element={<SimpleTest />} />
+            <Route path="/simple-event" element={<SimpleEventDetail />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
