@@ -5,7 +5,7 @@ services:
     buildCommand: >
       cd jsmart1-react && npm install && npm run build && cd .. &&
       npm install &&
-      node preserve-uploads.js
+      node preserve-uploads.js && node copy-uploads.js
     startCommand: node server.js
     envVars:
       - key: NODE_ENV

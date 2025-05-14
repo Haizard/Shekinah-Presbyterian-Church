@@ -551,6 +551,71 @@ const api = {
       }
     },
   },
+
+  // Image verification endpoints
+  imageVerify: {
+    verifyImage: async (imagePath) => {
+      try {
+        const user = getUser();
+        if (!user || !user.token) {
+          throw new Error('Authentication required');
+        }
+
+        const verifyUrl = API_BASE_URL
+          ? `${API_BASE_URL}/api/image-verify/verify?path=${encodeURIComponent(imagePath)}`
+          : `/api/image-verify/verify?path=${encodeURIComponent(imagePath)}`;
+
+        const response = await fetch(verifyUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Image verification failed');
+        }
+
+        return response.json();
+      } catch (error) {
+        console.error('Image verification failed:', error.message);
+        throw new Error(`Image verification failed: ${error.message}`);
+      }
+    },
+
+    listUploads: async () => {
+      try {
+        const user = getUser();
+        if (!user || !user.token) {
+          throw new Error('Authentication required');
+        }
+
+        const listUrl = API_BASE_URL
+          ? `${API_BASE_URL}/api/image-verify/list-uploads`
+          : `/api/image-verify/list-uploads`;
+
+        const response = await fetch(listUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to list uploads');
+        }
+
+        return response.json();
+      } catch (error) {
+        console.error('Failed to list uploads:', error.message);
+        throw new Error(`Failed to list uploads: ${error.message}`);
+      }
+    },
+  },
 };
 
 export default api;

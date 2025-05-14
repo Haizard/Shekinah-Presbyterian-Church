@@ -23,12 +23,43 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve static files from the React app in production
+// Static file serving configuration
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist')));
+  // In production, serve files from the React build directory first
+  console.log('Setting up static file serving for production...');
+
+  // Serve static files from the React build directory
+  app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist'), {
+    maxAge: '1d' // Cache for 1 day
+  }));
+
+  // Serve static files from the public directory as a fallback
+  // This ensures files in public are still accessible if they're not in the build directory
+  app.use(express.static(path.join(__dirname, 'public'), {
+    maxAge: '1d' // Cache for 1 day
+  }));
+
+  // Special handling for the uploads directory to ensure it's always accessible
+  // This is crucial for user-uploaded content
+  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), {
+    maxAge: '1h' // Cache for 1 hour only for uploads to allow for updates
+  }));
+
+  // Also serve from the dist/uploads directory as another fallback
+  app.use('/uploads', express.static(path.join(__dirname, 'jsmart1-react', 'dist', 'uploads'), {
+    maxAge: '1h' // Cache for 1 hour
+  }));
+
+  console.log('Static file paths configured for production:');
+  console.log('- Primary: ' + path.join(__dirname, 'jsmart1-react', 'dist'));
+  console.log('- Fallback: ' + path.join(__dirname, 'public'));
+  console.log('- Uploads (1): ' + path.join(__dirname, 'public', 'uploads'));
+  console.log('- Uploads (2): ' + path.join(__dirname, 'jsmart1-react', 'dist', 'uploads'));
+} else {
+  // In development, serve files from the public directory
+  console.log('Setting up static file serving for development...');
+  app.use(express.static(path.join(__dirname, 'public')));
+  console.log('Static files served from: ' + path.join(__dirname, 'public'));
 }
 
 // MongoDB Connection
@@ -86,6 +117,7 @@ const financeRoutes = require('./routes/finances');
 const budgetRoutes = require('./routes/budgets');
 const memberRoutes = require('./routes/members');
 const groupRoutes = require('./routes/groups');
+const imageVerifyRoutes = require('./routes/image-verify');
 
 // Health check endpoint for Render
 app.get('/api/health', (req, res) => {
@@ -106,6 +138,7 @@ app.use('/api/finances', financeRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/groups', groupRoutes);
+app.use('/api/image-verify', imageVerifyRoutes);
 
 // Serve React app for any other routes in production
 if (process.env.NODE_ENV === 'production') {

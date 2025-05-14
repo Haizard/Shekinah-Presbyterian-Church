@@ -1,0 +1,67 @@
+.image-verifier-page {
+  padding: 20px;
+}
+
+.image-verifier-page .page-header {
+  margin-bottom: 30px;
+}
+
+.image-verifier-page h1 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 2rem;
+}
+
+.image-verifier-page .description {
+  color: #666;
+  font-size: 1rem;
+  max-width: 800px;
+}
+
+.image-verifier-container {
+  margin-bottom: 40px;
+}
+
+.troubleshooting-guide {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.troubleshooting-guide h2 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.guide-section {
+  margin-bottom: 30px;
+}
+
+.guide-section h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.guide-section ul,
+.guide-section ol {
+  padding-left: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.guide-section li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.guide-section strong {
+  color: #333;
+}

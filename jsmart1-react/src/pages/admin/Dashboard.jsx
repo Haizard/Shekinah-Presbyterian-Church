@@ -202,6 +202,10 @@ const Dashboard = () => {
               <FontAwesomeIcon icon="tools" />
               <span>Image Debugger</span>
             </Link>
+            <Link to="/admin/image-verifier" className="quick-action">
+              <FontAwesomeIcon icon="images" />
+              <span>Image Verifier</span>
+            </Link>
           </div>
         </div>
 

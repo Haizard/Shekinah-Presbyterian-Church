@@ -276,6 +276,7 @@ import GroupManager from './pages/admin/GroupManager'
 import TestSidebar from './pages/admin/TestSidebar'
 import DirectSidebar from './pages/admin/DirectSidebar'
 import ImageDebuggerPage from './pages/admin/ImageDebuggerPage'
+import ImageVerifierPage from './pages/admin/ImageVerifierPage'
 
 // Finance Pages
 import FinanceLogin from './pages/finance/Login'
@@ -427,6 +428,7 @@ const LocationAwareRoutes = () => {
 
             {/* System Tools Routes */}
             <Route path="/admin/image-debugger" element={<ImageDebuggerPage />} />
+            <Route path="/admin/image-verifier" element={<ImageVerifierPage />} />
 
             {/* Communication Routes */}
             <Route path="/admin/contact" element={<ContactManager />} />
