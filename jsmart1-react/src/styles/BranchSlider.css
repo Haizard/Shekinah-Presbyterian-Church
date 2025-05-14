@@ -224,6 +224,18 @@
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
 }
 
+.no-branches-message {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  color: var(--light-color);
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Slick slider custom styles */
 .branch-slider {
   width: 100%;

@@ -116,8 +116,8 @@ const Home = () => {
         {/* Overlay */}
         <div className="hero-overlay"></div>
 
-        {/* Content */}
-        <div className="hero-content">
+        {/* Content - Branch Slider */}
+        <div className="hero-content branches-only">
           <DynamicContent
             section="hero"
             showTitle={false}

@@ -307,7 +307,8 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
             <label htmlFor="showBranchSlider">Show Branch Slider</label>
           </div>
           <p className="form-help-text">
-            When enabled, the hero section will display a slider of church branches.
+            When enabled, the hero section will display a slider of church branches from the Branch Manager.
+            This will be the main content in the hero section.
           </p>
         </div>
 
@@ -317,6 +318,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
               <legend>Select Branches to Display</legend>
               <p className="form-help-text">
                 Select which branches to display in the slider. If none are selected, all branches will be shown.
+                Branches are managed in the Branch Manager section of the admin panel.
               </p>
 
               <div className="branches-selection">

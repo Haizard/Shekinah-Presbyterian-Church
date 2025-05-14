@@ -62,7 +62,30 @@ const HeroSectionRenderer = ({ content, backgroundImage }) => {
   // Only render branch slider if showBranchSlider is true and we have branches
   // Otherwise return null (display nothing) instead of using static fallback data
   if (heroData.showBranchSlider !== false && branches.length > 0) {
-    return <BranchSlider branches={branches} />;
+    return (
+      <div className="hero-branch-slider">
+        <BranchSlider branches={branches} />
+      </div>
+    );
+  }
+
+  // If we're still loading, show a loading indicator
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner" />
+        <p>Loading church branches...</p>
+      </div>
+    );
+  }
+
+  // If there was an error, show an error message
+  if (error) {
+    return (
+      <div className="error-message">
+        <p>{error}</p>
+      </div>
+    );
   }
 
   // Return null if no branches or showBranchSlider is false

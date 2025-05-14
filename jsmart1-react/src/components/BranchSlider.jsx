@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faUser, faPhone, faChurch } from '@fortawesome/free-solid-svg-icons';
@@ -8,10 +8,6 @@ import 'slick-carousel/slick/slick-theme.css';
 import '../styles/BranchSlider.css';
 
 const BranchSlider = ({ branches }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  // Removed console log to prevent browser overload
-
   // Settings for the slider
   const settings = {
     dots: true,
@@ -22,17 +18,25 @@ const BranchSlider = ({ branches }) => {
     autoplay: true,
     autoplaySpeed: 20000, // 20 seconds per slide
     pauseOnHover: true,
-    beforeChange: (current, next) => setCurrentSlide(next),
     fade: true,
     arrows: true,
     className: 'branch-slider',
     adaptiveHeight: true
   };
 
-  // If no branches, return null
+  // If no branches, return a message
   if (!branches || branches.length === 0) {
     console.log('No branches to display in slider');
-    return null;
+    return (
+      <div className="branch-slider-container">
+        <h2 className="branch-slider-title">
+          <FontAwesomeIcon icon={faChurch} /> Shekinah Presbyterian Church
+        </h2>
+        <div className="no-branches-message">
+          <p>No church branches available. Please add branches in the admin panel.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -41,7 +45,7 @@ const BranchSlider = ({ branches }) => {
         <FontAwesomeIcon icon={faChurch} /> Shekinah Presbyterian Church
       </h2>
       <Slider {...settings}>
-        {branches.map((branch, index) => (
+        {branches.map((branch) => (
           <div key={branch._id} className="branch-slide">
             <div className="branch-slide-content">
               <div className="branch-info">

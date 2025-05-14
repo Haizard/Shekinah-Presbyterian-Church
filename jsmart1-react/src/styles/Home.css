@@ -125,6 +125,42 @@
   justify-content: center;
 }
 
+.hero-branch-slider {
+  width: 100%;
+  height: 100%;
+}
+
+.hero .loading-container,
+.hero .error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--light-color);
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero .spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
