@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getImageUrl, handleImageError } from '../../../utils/imageUtils';
 import api from '../../../services/api';
+import ConfirmDialog from '../ConfirmDialog';
 
 const HeroSectionForm = ({ initialData, onSubmit }) => {
   const [title, setTitle] = useState('Hero Section');
@@ -15,6 +16,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   // Fetch all branches
   useEffect(() => {
@@ -31,14 +33,17 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
     fetchBranches();
   }, []);
 
-  // Initialize form with data if available
-  useEffect(() => {
+  const resetForm = () => {
+    // Reset form to initial state or default values
     if (initialData) {
       setTitle(initialData.title || 'Hero Section');
 
       if (initialData.image) {
         setBackgroundImage(initialData.image);
         setImagePreview(getImageUrl(initialData.image));
+      } else {
+        setBackgroundImage('');
+        setImagePreview(null);
       }
 
       if (initialData.content) {
@@ -52,17 +57,49 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
             // Set selected branches if available
             if (parsedData.selectedBranchIds && Array.isArray(parsedData.selectedBranchIds)) {
               setSelectedBranches(parsedData.selectedBranchIds);
+            } else {
+              setSelectedBranches([]);
             }
           } else {
             // If not JSON, use as subtitle
             setSubtitle(initialData.content);
+            setShowBranchSlider(true);
+            setSelectedBranches([]);
           }
         } catch (err) {
           console.error('Error parsing hero section data:', err);
           setError('Invalid hero section data format');
+          setSubtitle('');
+          setShowBranchSlider(true);
+          setSelectedBranches([]);
         }
+      } else {
+        setSubtitle('');
+        setShowBranchSlider(true);
+        setSelectedBranches([]);
       }
+    } else {
+      // Default values if no initial data
+      setTitle('Hero Section');
+      setSubtitle('');
+      setBackgroundImage('');
+      setShowBranchSlider(true);
+      setSelectedBranches([]);
+      setImagePreview(null);
     }
+
+    // Clear file input
+    setImageFile(null);
+
+    // Clear messages
+    setError(null);
+    setSuccess(null);
+  };
+
+  // Initialize form with data if available
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    resetForm();
   }, [initialData]);
 
   const handleImageChange = (e) => {
@@ -127,14 +164,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
     return true;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate form before submission
-    if (!validateForm()) {
-      return;
-    }
-
+  const handleFormSubmit = async () => {
     try {
       setLoading(true);
 
@@ -174,8 +204,35 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+
+    // Show confirmation dialog
+    setShowConfirmDialog(true);
+  };
+
   return (
     <div className="specialized-form hero-section-form">
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        show={showConfirmDialog}
+        title="Save Hero Section"
+        message="Are you sure you want to save these changes to the Hero Section?"
+        confirmText="Save Changes"
+        cancelText="Cancel"
+        onConfirm={() => {
+          setShowConfirmDialog(false);
+          handleFormSubmit();
+        }}
+        onCancel={() => setShowConfirmDialog(false)}
+        confirmIcon="save"
+      />
+
       {error && (
         <div className="alert alert-danger">
           <FontAwesomeIcon icon="exclamation-circle" /> {error}
@@ -284,6 +341,14 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
         )}
 
         <div className="form-actions">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={resetForm}
+            disabled={loading}
+          >
+            <FontAwesomeIcon icon="undo" /> Reset
+          </button>
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? (
               <>

@@ -7,6 +7,7 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
   const [title, setTitle] = useState('Our Mission');
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [imagePath, setImagePath] = useState('');
@@ -17,7 +18,7 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
     if (initialData) {
       setTitle(initialData.title || 'Our Mission');
       setContent(initialData.content || '');
-      
+
       if (initialData.image) {
         setImagePath(initialData.image);
         setImagePreview(getImageUrl(initialData.image));
@@ -58,24 +59,43 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
     }
   };
 
+  const validateForm = () => {
+    // Title is required
+    if (!title.trim()) {
+      setError('Section title is required');
+      setSuccess(null);
+      return false;
+    }
+
+    // Content is required
+    if (!content.trim()) {
+      setError('Content is required');
+      setSuccess(null);
+      return false;
+    }
+
+    // Clear any previous errors
+    setError(null);
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
-    if (!title.trim() || !content.trim()) {
-      setError('Please fill in all required fields');
+    // Validate form before submission
+    if (!validateForm()) {
       return;
     }
 
     try {
       setLoading(true);
-      
+
       // Upload image if selected
       let finalImagePath = imagePath;
       if (imageFile) {
         finalImagePath = await uploadImage();
       }
-      
+
       // Call the parent's onSubmit with the form data
       onSubmit({
         section: 'mission',
@@ -83,10 +103,15 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
         content: content,
         image: finalImagePath
       });
-      
+
+      // Show success message
+      setSuccess('Our Mission section saved successfully!');
+
       setLoading(false);
     } catch (err) {
+      console.error('Error saving mission section:', err);
       setError('Failed to save mission section. Please try again.');
+      setSuccess(null);
       setLoading(false);
     }
   };
@@ -95,11 +120,16 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
     <div className="specialized-form our-mission-form">
       {error && (
         <div className="alert alert-danger">
-          <FontAwesomeIcon icon="exclamation-circle" />
-          {error}
+          <FontAwesomeIcon icon="exclamation-circle" /> {error}
         </div>
       )}
-      
+
+      {success && (
+        <div className="alert alert-success">
+          <FontAwesomeIcon icon="check-circle" /> {success}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Section Title</label>
@@ -111,7 +141,7 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="content">Content</label>
           <textarea
@@ -128,9 +158,9 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
             For a list, use: &lt;ul&gt;&lt;li&gt;Item 1&lt;/li&gt;&lt;li&gt;Item 2&lt;/li&gt;&lt;/ul&gt;
           </p>
         </div>
-        
+
         <div className="form-group">
-          <label>Mission Image</label>
+          <label htmlFor="mission-image">Mission Image</label>
           <div className="image-upload-container">
             {(imagePreview || imagePath) && (
               <div className="image-preview">
@@ -141,7 +171,7 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
                 />
               </div>
             )}
-            
+
             <div className="upload-controls">
               <input
                 type="file"
@@ -156,12 +186,12 @@ const OurMissionForm = ({ initialData, onSubmit }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? (
               <>
-                <span className="spinner-small"></span> Saving...
+                <span className="spinner-small" /> Saving...
               </>
             ) : (
               <>

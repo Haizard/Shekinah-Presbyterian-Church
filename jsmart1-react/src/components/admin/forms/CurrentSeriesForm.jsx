@@ -12,6 +12,7 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
     link: '/sermons'
   });
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [imagePath, setImagePath] = useState('');
@@ -27,12 +28,12 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
         dateRange: '',
         link: '/sermons'
       });
-      
+
       if (initialData.image) {
         setImagePath(initialData.image);
         setImagePreview(getImageUrl(initialData.image));
       }
-      
+
       if (initialData.content) {
         try {
           // Try to parse the content as JSON
@@ -95,24 +96,43 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
     }
   };
 
+  const validateForm = () => {
+    // Series title is required
+    if (!formData.seriesTitle.trim()) {
+      setError('Series title is required');
+      setSuccess(null);
+      return false;
+    }
+
+    // Description is required
+    if (!formData.description.trim()) {
+      setError('Description is required');
+      setSuccess(null);
+      return false;
+    }
+
+    // Clear any previous errors
+    setError(null);
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate form
-    if (!formData.seriesTitle || !formData.description) {
-      setError('Please fill in all required fields');
+
+    // Validate form before submission
+    if (!validateForm()) {
       return;
     }
-    
+
     try {
       setLoading(true);
-      
+
       // Upload image if selected
       let finalImagePath = imagePath;
       if (imageFile) {
         finalImagePath = await uploadImage();
       }
-      
+
       // Convert to JSON string
       const contentJson = JSON.stringify({
         seriesTitle: formData.seriesTitle,
@@ -120,7 +140,7 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
         dateRange: formData.dateRange,
         link: formData.link
       });
-      
+
       // Call the parent's onSubmit with the form data
       onSubmit({
         section: 'current_series',
@@ -128,10 +148,15 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
         content: contentJson,
         image: finalImagePath
       });
-      
+
+      // Show success message
+      setSuccess('Current Series saved successfully!');
+
       setLoading(false);
     } catch (err) {
+      console.error('Error saving current series:', err);
       setError('Failed to save current series. Please try again.');
+      setSuccess(null);
       setLoading(false);
     }
   };
@@ -140,11 +165,16 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
     <div className="specialized-form current-series-form">
       {error && (
         <div className="alert alert-danger">
-          <FontAwesomeIcon icon="exclamation-circle" />
-          {error}
+          <FontAwesomeIcon icon="exclamation-circle" /> {error}
         </div>
       )}
-      
+
+      {success && (
+        <div className="alert alert-success">
+          <FontAwesomeIcon icon="check-circle" /> {success}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Section Title</label>
@@ -157,7 +187,7 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="seriesTitle">Series Title <span className="required">*</span></label>
           <input
@@ -170,7 +200,7 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="description">Description <span className="required">*</span></label>
           <textarea
@@ -183,7 +213,7 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="dateRange">Date Range</label>
           <input
@@ -195,7 +225,7 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
             placeholder="e.g. June 2023 - August 2023"
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="link">Link URL</label>
           <input
@@ -210,9 +240,9 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
             URL to view the full series. Default is /sermons
           </p>
         </div>
-        
+
         <div className="form-group">
-          <label>Series Image</label>
+          <label htmlFor="series-image">Series Image</label>
           <div className="image-upload-container">
             {(imagePreview || imagePath) && (
               <div className="image-preview">
@@ -223,7 +253,7 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
                 />
               </div>
             )}
-            
+
             <div className="upload-controls">
               <input
                 type="file"
@@ -238,12 +268,12 @@ const CurrentSeriesForm = ({ initialData, onSubmit }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? (
               <>
-                <span className="spinner-small"></span> Saving...
+                <span className="spinner-small" /> Saving...
               </>
             ) : (
               <>

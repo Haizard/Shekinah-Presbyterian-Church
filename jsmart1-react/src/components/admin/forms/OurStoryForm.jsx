@@ -7,6 +7,7 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
   const [title, setTitle] = useState('Our Story');
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [imagePath, setImagePath] = useState('');
@@ -17,7 +18,7 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
     if (initialData) {
       setTitle(initialData.title || 'Our Story');
       setContent(initialData.content || '');
-      
+
       if (initialData.image) {
         setImagePath(initialData.image);
         setImagePreview(getImageUrl(initialData.image));
@@ -58,24 +59,43 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
     }
   };
 
+  const validateForm = () => {
+    // Title is required
+    if (!title.trim()) {
+      setError('Section title is required');
+      setSuccess(null);
+      return false;
+    }
+
+    // Content is required
+    if (!content.trim()) {
+      setError('Content is required');
+      setSuccess(null);
+      return false;
+    }
+
+    // Clear any previous errors
+    setError(null);
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
-    if (!title.trim() || !content.trim()) {
-      setError('Please fill in all required fields');
+    // Validate form before submission
+    if (!validateForm()) {
       return;
     }
 
     try {
       setLoading(true);
-      
+
       // Upload image if selected
       let finalImagePath = imagePath;
       if (imageFile) {
         finalImagePath = await uploadImage();
       }
-      
+
       // Call the parent's onSubmit with the form data
       onSubmit({
         section: 'story',
@@ -83,10 +103,15 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
         content: content,
         image: finalImagePath
       });
-      
+
+      // Show success message
+      setSuccess('Our Story section saved successfully!');
+
       setLoading(false);
     } catch (err) {
+      console.error('Error saving our story section:', err);
       setError('Failed to save our story section. Please try again.');
+      setSuccess(null);
       setLoading(false);
     }
   };
@@ -95,11 +120,16 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
     <div className="specialized-form our-story-form">
       {error && (
         <div className="alert alert-danger">
-          <FontAwesomeIcon icon="exclamation-circle" />
-          {error}
+          <FontAwesomeIcon icon="exclamation-circle" /> {error}
         </div>
       )}
-      
+
+      {success && (
+        <div className="alert alert-success">
+          <FontAwesomeIcon icon="check-circle" /> {success}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Section Title</label>
@@ -111,7 +141,7 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="content">Content</label>
           <textarea
@@ -126,9 +156,9 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
             You can use HTML tags to format your content. For example, use &lt;strong&gt;text&lt;/strong&gt; for bold text.
           </p>
         </div>
-        
+
         <div className="form-group">
-          <label>Story Image</label>
+          <label htmlFor="story-image">Story Image</label>
           <div className="image-upload-container">
             {(imagePreview || imagePath) && (
               <div className="image-preview">
@@ -139,7 +169,7 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
                 />
               </div>
             )}
-            
+
             <div className="upload-controls">
               <input
                 type="file"
@@ -154,12 +184,12 @@ const OurStoryForm = ({ initialData, onSubmit }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? (
               <>
-                <span className="spinner-small"></span> Saving...
+                <span className="spinner-small" /> Saving...
               </>
             ) : (
               <>
