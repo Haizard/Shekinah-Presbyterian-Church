@@ -10,6 +10,7 @@ import '../../styles/admin/DataManager.css';
 const ContentManager = () => {
   const { refreshContent } = useContext(ContentContext);
   const [contents, setContents] = useState([]);
+  const [filteredContents, setFilteredContents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -28,6 +29,12 @@ const ContentManager = () => {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterSection, setFilterSection] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [sortField, setSortField] = useState('updatedAt');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [showViewModal, setShowViewModal] = useState(false);
 
   // Predefined content sections
   const contentSections = [
@@ -56,30 +63,102 @@ const ContentManager = () => {
     fetchContents();
   }, []);
 
+  // Apply filters and search when contents, searchTerm, or filterSection changes
+  useEffect(() => {
+    applyFiltersAndSort();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contents, searchTerm, filterSection, sortField, sortDirection]);
+
+  // Apply filters, search, and sorting to contents
+  const applyFiltersAndSort = () => {
+    let result = [...contents];
+
+    // Apply section filter
+    if (filterSection) {
+      result = result.filter(item => item.section === filterSection);
+    }
+
+    // Apply search term
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(item =>
+        item.title?.toLowerCase().includes(term) ||
+        item.section?.toLowerCase().includes(term) ||
+        item.content?.toLowerCase().includes(term)
+      );
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      let fieldA = a[sortField];
+      let fieldB = b[sortField];
+
+      // Handle date fields
+      if (sortField === 'updatedAt' || sortField === 'createdAt') {
+        fieldA = new Date(fieldA).getTime();
+        fieldB = new Date(fieldB).getTime();
+      }
+
+      // Handle string fields
+      if (typeof fieldA === 'string') {
+        fieldA = fieldA.toLowerCase();
+        fieldB = fieldB.toLowerCase();
+      }
+
+      // Apply sort direction
+      if (sortDirection === 'asc') {
+        return fieldA > fieldB ? 1 : -1;
+      }
+      return fieldA < fieldB ? 1 : -1;
+    });
+
+    setFilteredContents(result);
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Handle filter change
+  const handleFilterChange = (e) => {
+    setFilterSection(e.target.value);
+  };
+
+  // Handle sort change
+  const handleSortChange = (field) => {
+    if (sortField === field) {
+      // Toggle direction if clicking the same field
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field and default to ascending
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Handle sort key press for accessibility
+  const handleSortKeyPress = (e, field) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleSortChange(field);
+    }
+  };
+
   // Fetch contents from API
   const fetchContents = async () => {
     try {
-      console.log('ContentManager: Fetching all content from API...');
       setLoading(true);
       const data = await api.content.getAll();
-      console.log('ContentManager: Fetched content data:', data);
-
-      // Log sections and timestamps
-      const sections = data.map(item => ({
-        section: item.section,
-        updatedAt: new Date(item.updatedAt).toLocaleString(),
-        _id: item._id
-      }));
-      console.log('ContentManager: Content sections and update times:', sections);
 
       setContents(data);
+      setFilteredContents(data);
       setError(null);
     } catch (err) {
-      console.error('ContentManager: Error fetching content:', err);
+      console.error('Error fetching content:', err);
       setError('Failed to load content. Please try again.');
     } finally {
       setLoading(false);
-      console.log('ContentManager: Finished fetching content');
     }
   };
 
@@ -281,9 +360,33 @@ const ContentManager = () => {
     }
   };
 
+  // Handle view content
+  const handleViewContent = (content) => {
+    // Create a modal to view the content details
+    setCurrentContent(content);
+    setShowViewModal(true);
+  };
+
+  // Close view modal
+  const handleCloseViewModal = () => {
+    setShowViewModal(false);
+    setCurrentContent(null);
+  };
+
   // Handle delete confirmation
   const handleDeleteConfirm = (content) => {
     setConfirmDelete(content);
+  };
+
+  // Handle bulk delete
+  const handleBulkDelete = () => {
+    if (selectedItems.length === 0) return;
+
+    // Confirm before deleting multiple items
+    if (window.confirm(`Are you sure you want to delete ${selectedItems.length} selected items? This action cannot be undone.`)) {
+      // We'll implement the actual bulk delete functionality later
+      alert(`Bulk delete ${selectedItems.length} items`);
+    }
   };
 
   // Cancel delete
@@ -529,6 +632,57 @@ const ContentManager = () => {
           </div>
         </div>
 
+        <div className="filter-controls">
+          <div className="search-box">
+            <FontAwesomeIcon icon="search" />
+            <input
+              type="text"
+              placeholder="Search content..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className="clear-search"
+                onClick={() => setSearchTerm('')}
+                title="Clear search"
+              >
+                <FontAwesomeIcon icon="times" />
+              </button>
+            )}
+          </div>
+
+          <div className="filter-box">
+            <label htmlFor="filter-section">Filter by section:</label>
+            <select
+              id="filter-section"
+              value={filterSection}
+              onChange={handleFilterChange}
+            >
+              <option value="">All Sections</option>
+              {contentSections.map(section => (
+                <option key={section.value} value={section.value}>
+                  {section.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {selectedItems.length > 0 && (
+            <div className="bulk-actions">
+              <span>{selectedItems.length} items selected</span>
+              <button
+                type="button"
+                className="btn btn-sm btn-danger"
+                onClick={() => handleBulkDelete()}
+              >
+                <FontAwesomeIcon icon="trash-alt" /> Delete Selected
+              </button>
+            </div>
+          )}
+        </div>
+
         {error && (
           <div className="alert alert-danger">
             <FontAwesomeIcon icon="exclamation-circle" />
@@ -552,36 +706,119 @@ const ContentManager = () => {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Section</th>
-                      <th>Title</th>
-                      <th>Last Updated</th>
+                      <th className="select-column">
+                        <input
+                          type="checkbox"
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedItems(filteredContents.map(item => item._id));
+                            } else {
+                              setSelectedItems([]);
+                            }
+                          }}
+                          checked={selectedItems.length === filteredContents.length && filteredContents.length > 0}
+                        />
+                      </th>
+                      <th className={sortField === 'section' ? `sorted-${sortDirection}` : ''}>
+                        <div className="th-content">
+                          <span>Section</span>
+                          <button
+                            type="button"
+                            className="sort-button"
+                            onClick={() => handleSortChange('section')}
+                            aria-label={`Sort by section ${sortField === 'section' && sortDirection === 'asc' ? 'descending' : 'ascending'}`}
+                          >
+                            <FontAwesomeIcon icon={sortField === 'section' ? (sortDirection === 'asc' ? 'sort-up' : 'sort-down') : 'sort'} />
+                          </button>
+                        </div>
+                      </th>
+                      <th className={sortField === 'title' ? `sorted-${sortDirection}` : ''}>
+                        <div className="th-content">
+                          <span>Title</span>
+                          <button
+                            type="button"
+                            className="sort-button"
+                            onClick={() => handleSortChange('title')}
+                            aria-label={`Sort by title ${sortField === 'title' && sortDirection === 'asc' ? 'descending' : 'ascending'}`}
+                          >
+                            <FontAwesomeIcon icon={sortField === 'title' ? (sortDirection === 'asc' ? 'sort-up' : 'sort-down') : 'sort'} />
+                          </button>
+                        </div>
+                      </th>
+                      <th className={sortField === 'updatedAt' ? `sorted-${sortDirection}` : ''}>
+                        <div className="th-content">
+                          <span>Last Updated</span>
+                          <button
+                            type="button"
+                            className="sort-button"
+                            onClick={() => handleSortChange('updatedAt')}
+                            aria-label={`Sort by last updated ${sortField === 'updatedAt' && sortDirection === 'asc' ? 'descending' : 'ascending'}`}
+                          >
+                            <FontAwesomeIcon icon={sortField === 'updatedAt' ? (sortDirection === 'asc' ? 'sort-up' : 'sort-down') : 'sort'} />
+                          </button>
+                        </div>
+                      </th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {contents.map(content => (
-                      <tr key={content._id}>
-                        <td>{getSectionLabel(content.section)}</td>
-                        <td>{content.title}</td>
-                        <td>{new Date(content.updatedAt).toLocaleDateString()}</td>
-                        <td className="actions">
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-edit"
-                            onClick={() => handleEdit(content)}
-                          >
-                            <FontAwesomeIcon icon="edit" /> Edit
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-delete"
-                            onClick={() => handleDeleteConfirm(content)}
-                          >
-                            <FontAwesomeIcon icon="trash-alt" /> Delete
-                          </button>
+                    {filteredContents.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" className="no-results">
+                          No content found matching your search criteria.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      filteredContents.map(content => (
+                        <tr
+                          key={content._id}
+                          className={selectedItems.includes(content._id) ? 'selected-row' : ''}
+                        >
+                          <td className="select-column">
+                            <input
+                              type="checkbox"
+                              checked={selectedItems.includes(content._id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedItems([...selectedItems, content._id]);
+                                } else {
+                                  setSelectedItems(selectedItems.filter(id => id !== content._id));
+                                }
+                              }}
+                            />
+                          </td>
+                          <td>{getSectionLabel(content.section)}</td>
+                          <td>{content.title}</td>
+                          <td>{new Date(content.updatedAt).toLocaleDateString()}</td>
+                          <td className="actions">
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-view"
+                              onClick={() => handleViewContent(content)}
+                              title="View Content"
+                            >
+                              <FontAwesomeIcon icon="eye" />
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-edit"
+                              onClick={() => handleEdit(content)}
+                              title="Edit Content"
+                            >
+                              <FontAwesomeIcon icon="edit" />
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-delete"
+                              onClick={() => handleDeleteConfirm(content)}
+                              title="Delete Content"
+                            >
+                              <FontAwesomeIcon icon="trash-alt" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -660,6 +897,203 @@ const ContentManager = () => {
                   onSubmit={handleSpecializedFormSubmit}
                 />
               )}
+            </div>
+          </div>
+        )}
+
+        {/* View Content Modal */}
+        {showViewModal && currentContent && (
+          <div className="modal-overlay">
+            <div className="modal-content view-modal">
+              <div className="modal-header">
+                <h2>{currentContent.title}</h2>
+                <button type="button" className="close-btn" onClick={handleCloseViewModal}>
+                  <FontAwesomeIcon icon="times" />
+                </button>
+              </div>
+
+              <div className="content-view">
+                <div className="content-info">
+                  <div className="info-item">
+                    <span className="info-label">Section:</span>
+                    <span className="info-value">{getSectionLabel(currentContent.section)}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Last Updated:</span>
+                    <span className="info-value">{new Date(currentContent.updatedAt).toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="content-body">
+                  <h3>Content Preview</h3>
+                  {(() => {
+                    // Try to parse as JSON for structured content
+                    try {
+                      if (currentContent.content &&
+                          (currentContent.content.startsWith('{') || currentContent.content.startsWith('['))) {
+                        const parsedContent = JSON.parse(currentContent.content);
+
+                        // For leadership content, render a more user-friendly view
+                        if (currentContent.section === 'leadership' && parsedContent.leaders) {
+                          return (
+                            <div className="structured-content-preview">
+                              {parsedContent.introduction && (
+                                <div className="content-introduction">
+                                  <p>{parsedContent.introduction}</p>
+                                </div>
+                              )}
+
+                              <div className="leadership-preview">
+                                {parsedContent.leaders.map((leader, index) => (
+                                  <div key={`leader-${leader.name}-${index}`} className="leader-preview-card">
+                                    {leader.image && (
+                                      <div className="leader-preview-image">
+                                        <img
+                                          src={getImageUrl(leader.image)}
+                                          alt={leader.name}
+                                          onError={handleImageError}
+                                        />
+                                      </div>
+                                    )}
+                                    <div className="leader-preview-details">
+                                      <h4>{leader.name}</h4>
+                                      <p className="leader-position">{leader.position}</p>
+                                      {leader.bio && <p className="leader-bio">{leader.bio}</p>}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        // For weekly schedule content, render a more user-friendly view
+                        if (currentContent.section === 'weekly_schedule' && Array.isArray(parsedContent)) {
+                          return (
+                            <div className="structured-content-preview">
+                              <div className="schedule-preview">
+                                {parsedContent.map((day, dayIndex) => (
+                                  <div key={`day-${day.day}-${dayIndex}`} className="schedule-day">
+                                    <h4>{day.day}</h4>
+                                    <div className="schedule-events">
+                                      {day.events.map((event, eventIndex) => (
+                                        <div key={`event-${day.day}-${event.name}-${eventIndex}`} className="schedule-event">
+                                          <p className="event-name">{event.name}</p>
+                                          <p className="event-time">{event.time}</p>
+                                          <p className="event-location">{event.location}</p>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        // For featured event content, render a more user-friendly view
+                        if (currentContent.section === 'featured_event') {
+                          return (
+                            <div className="structured-content-preview">
+                              <div className="featured-event-preview">
+                                <h4>{parsedContent.title}</h4>
+                                <p className="event-date-time">
+                                  {parsedContent.date} {parsedContent.time && `• ${parsedContent.time}`}
+                                </p>
+                                {parsedContent.location && (
+                                  <p className="event-location">{parsedContent.location}</p>
+                                )}
+                                {parsedContent.description && (
+                                  <p className="event-description">{parsedContent.description}</p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        // For other structured content, show a simplified view
+                        return (
+                          <div className="structured-content-preview">
+                            <div className="structured-data-summary">
+                              {Object.keys(parsedContent).map((key) => {
+                                const value = parsedContent[key];
+                                if (typeof value === 'string' || typeof value === 'number') {
+                                  return (
+                                    <div key={`data-${key}`} className="data-item">
+                                      <span className="data-key">{key}:</span>
+                                      <span className="data-value">{value}</span>
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              })}
+                              {Array.isArray(parsedContent) && (
+                                <p className="data-summary">
+                                  This content contains {parsedContent.length} items.
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
+                    } catch (e) {
+                      // Not valid JSON, continue to default rendering
+                    }
+
+                    // Default content rendering - use a sanitized approach
+                    // For plain text or HTML content, display it in a readable format
+                    const contentText = currentContent.content || '';
+
+                    // Simple HTML tag detection
+                    const hasHtmlTags = /<[a-z][\s\S]*>/i.test(contentText);
+
+                    // Process content based on whether it has HTML tags
+                    const processedContent = hasHtmlTags ?
+                      contentText.replace(/<[^>]*>/g, '') : contentText;
+
+                    // Display the processed content with line breaks
+                    return (
+                      <div className="text-content formatted-content">
+                        {processedContent.split('\n')
+                          .filter(line => line.trim() !== '')
+                          .map((line, i) => (
+                            <p key={`content-line-${currentContent._id}-${i}`}>{line}</p>
+                          ))
+                        }
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {currentContent.image && (
+                  <div className="content-image">
+                    <h3>Image</h3>
+                    <div className="image-preview">
+                      <img
+                        src={getImageUrl(currentContent.image)}
+                        alt={currentContent.title}
+                        onError={handleImageError}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleCloseViewModal}>
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    handleCloseViewModal();
+                    handleEdit(currentContent);
+                  }}
+                >
+                  <FontAwesomeIcon icon="edit" /> Edit Content
+                </button>
+              </div>
             </div>
           </div>
         )}
