@@ -11,13 +11,20 @@ const CurrentSeriesRenderer = ({ content, image }) => {
   let seriesData;
   try {
     seriesData = typeof content === 'string' ? JSON.parse(content) : content;
+
+    // Validate the structure of seriesData
+    if (!seriesData || typeof seriesData !== 'object') {
+      console.error('Invalid current series data structure:', seriesData);
+      return renderFallback();
+    }
   } catch (error) {
+    console.error('Error parsing current series data:', error);
     // Return fallback if parsing fails
     return renderFallback();
   }
 
   // If we have valid series data, render it
-  if (seriesData && seriesData.seriesTitle && seriesData.description) {
+  if (seriesData?.seriesTitle && seriesData?.description) {
     return (
       <div className="current-series">
         <div className="series-image">

@@ -294,6 +294,116 @@
   object-fit: cover;
 }
 
+/* Hero Section Form */
+.hero-section-form .branches-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.hero-section-form .branch-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.hero-section-form .branch-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.hero-section-form .branch-checkbox label {
+  margin-bottom: 0;
+  font-weight: normal;
+}
+
+.hero-section-form .checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-section-form .checkbox-container input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.hero-section-form .checkbox-container label {
+  margin-bottom: 0;
+  font-weight: normal;
+}
+
+/* Special Events Form */
+.special-events-form .event-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #eee;
+}
+
+.special-events-form .event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.special-events-form .event-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.special-events-form .events-header {
+  margin-bottom: 1.5rem;
+}
+
+.special-events-form .events-header h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+/* Event Calendar Form */
+.event-calendar-form .calendar-event-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #eee;
+}
+
+.event-calendar-form .event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.event-calendar-form .event-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.event-calendar-form .events-header {
+  margin-bottom: 1.5rem;
+}
+
+.event-calendar-form .events-header h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
 /* File Input Styling */
 .file-input {
   width: 0.1px;
@@ -307,6 +417,28 @@
 .file-input + label {
   cursor: pointer;
   display: inline-block;
+}
+
+/* Alert Styles */
+.specialized-form .alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.specialized-form .alert-danger {
+  background-color: #fde8e8;
+  color: #e74c3c;
+  border-left: 4px solid #e74c3c;
+}
+
+.specialized-form .alert-success {
+  background-color: #e8f8f0;
+  color: #27ae60;
+  border-left: 4px solid #27ae60;
 }
 
 /* Spinner */

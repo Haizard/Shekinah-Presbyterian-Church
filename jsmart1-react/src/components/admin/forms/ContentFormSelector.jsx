@@ -12,6 +12,7 @@ import OurMissionForm from './OurMissionForm';
 import OurVisionForm from './OurVisionForm';
 import CurrentSeriesForm from './CurrentSeriesForm';
 import SpecialEventsForm from './SpecialEventsForm';
+import EventCalendarForm from './EventCalendarForm';
 import '../../../styles/admin/SpecializedForms.css';
 
 const ContentFormSelector = ({ section, initialData, onSubmit }) => {
@@ -52,6 +53,9 @@ const ContentFormSelector = ({ section, initialData, onSubmit }) => {
 
     case 'special_events':
       return <SpecialEventsForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'event_calendar':
+      return <EventCalendarForm initialData={initialData} onSubmit={onSubmit} />;
 
     case 'sermon_series':
       return <SermonSeriesForm initialData={initialData} onSubmit={onSubmit} />;

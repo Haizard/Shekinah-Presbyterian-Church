@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faMapMarkerAlt, faCalendarAlt, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import '../../styles/EventCalendar.css';
 
 /**
  * Component for rendering the "event_calendar" structured content
@@ -14,7 +15,14 @@ const EventCalendarRenderer = ({ content }) => {
   let calendarData;
   try {
     calendarData = typeof content === 'string' ? JSON.parse(content) : content;
+
+    // Validate the structure of calendarData
+    if (!calendarData || typeof calendarData !== 'object') {
+      console.error('Invalid calendar data structure:', calendarData);
+      return null;
+    }
   } catch (error) {
+    console.error('Error parsing event calendar data:', error);
     // Return null to show nothing if parsing fails
     return null;
   }
@@ -27,30 +35,30 @@ const EventCalendarRenderer = ({ content }) => {
       try {
         eventDate = new Date(event.date);
         // Check if date is valid
-        if (isNaN(eventDate.getTime())) {
+        if (Number.isNaN(eventDate.getTime())) {
           eventDate = null;
         }
       } catch (e) {
         eventDate = null;
       }
-      
+
       return {
         ...event,
         dateObj: eventDate
       };
     }).filter(event => event.dateObj !== null); // Filter out events with invalid dates
-    
+
     // If no valid events after processing, return null
     if (processedEvents.length === 0) {
       return null;
     }
-    
+
     // Get events for the current month
     const eventsForCurrentMonth = processedEvents.filter(event => {
-      return event.dateObj.getMonth() === currentMonth && 
+      return event.dateObj.getMonth() === currentMonth &&
              event.dateObj.getFullYear() === currentYear;
     });
-    
+
     // Navigate to previous month
     const goToPreviousMonth = () => {
       if (currentMonth === 0) {
@@ -60,7 +68,7 @@ const EventCalendarRenderer = ({ content }) => {
         setCurrentMonth(currentMonth - 1);
       }
     };
-    
+
     // Navigate to next month
     const goToNextMonth = () => {
       if (currentMonth === 11) {
@@ -70,50 +78,50 @@ const EventCalendarRenderer = ({ content }) => {
         setCurrentMonth(currentMonth + 1);
       }
     };
-    
+
     // Get month name
     const monthNames = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    
+
     // Generate calendar grid
     const generateCalendarGrid = () => {
       // Get first day of the month
       const firstDay = new Date(currentYear, currentMonth, 1);
       // Get last day of the month
       const lastDay = new Date(currentYear, currentMonth + 1, 0);
-      
+
       // Get day of week for first day (0 = Sunday, 6 = Saturday)
       const firstDayOfWeek = firstDay.getDay();
       // Get total days in month
       const daysInMonth = lastDay.getDate();
-      
+
       // Create array for calendar days
       const calendarDays = [];
-      
+
       // Add empty cells for days before first day of month
       for (let i = 0; i < firstDayOfWeek; i++) {
         calendarDays.push(null);
       }
-      
+
       // Add days of the month
       for (let day = 1; day <= daysInMonth; day++) {
         calendarDays.push(day);
       }
-      
+
       return calendarDays;
     };
-    
+
     // Get events for a specific day
     const getEventsForDay = (day) => {
       if (!day) return [];
-      
+
       return eventsForCurrentMonth.filter(event => {
         return event.dateObj.getDate() === day;
       });
     };
-    
+
     // Render calendar
     return (
       <div className="event-calendar">
@@ -122,29 +130,31 @@ const EventCalendarRenderer = ({ content }) => {
             <p>{calendarData.introduction}</p>
           </div>
         )}
-        
+
         <div className="calendar-header">
-          <button 
-            className="calendar-nav-btn" 
+          <button
+            type="button"
+            className="calendar-nav-btn"
             onClick={goToPreviousMonth}
             aria-label="Previous Month"
           >
             <FontAwesomeIcon icon={faChevronLeft} />
           </button>
-          
+
           <h3 className="calendar-title">
             {monthNames[currentMonth]} {currentYear}
           </h3>
-          
-          <button 
-            className="calendar-nav-btn" 
+
+          <button
+            type="button"
+            className="calendar-nav-btn"
             onClick={goToNextMonth}
             aria-label="Next Month"
           >
             <FontAwesomeIcon icon={faChevronRight} />
           </button>
         </div>
-        
+
         <div className="calendar-grid">
           {/* Day headers */}
           <div className="calendar-day-header">Sun</div>
@@ -154,27 +164,27 @@ const EventCalendarRenderer = ({ content }) => {
           <div className="calendar-day-header">Thu</div>
           <div className="calendar-day-header">Fri</div>
           <div className="calendar-day-header">Sat</div>
-          
+
           {/* Calendar days */}
           {generateCalendarGrid().map((day, index) => {
             const eventsForDay = day ? getEventsForDay(day) : [];
             const hasEvents = eventsForDay.length > 0;
-            
+
             return (
-              <div 
-                key={`day-${index}`} 
+              <div
+                key={`day-${day || `empty-${index}`}`}
                 className={`calendar-day ${!day ? 'empty-day' : ''} ${hasEvents ? 'has-events' : ''}`}
               >
                 {day && (
                   <>
                     <div className="day-number">{day}</div>
-                    
+
                     {hasEvents && (
                       <div className="day-events">
                         {eventsForDay.map((event, eventIndex) => (
-                          <div key={`event-${day}-${eventIndex}`} className="day-event">
+                          <div key={`event-${day}-${event.title}-${eventIndex}`} className="day-event">
                             <div className="event-title">{event.title}</div>
-                            
+
                             {event.startTime && (
                               <div className="event-time">
                                 <FontAwesomeIcon icon={faClock} />
@@ -182,7 +192,7 @@ const EventCalendarRenderer = ({ content }) => {
                                 {event.endTime && ` - ${event.endTime}`}
                               </div>
                             )}
-                            
+
                             {event.location && (
                               <div className="event-location">
                                 <FontAwesomeIcon icon={faMapMarkerAlt} />
@@ -199,22 +209,22 @@ const EventCalendarRenderer = ({ content }) => {
             );
           })}
         </div>
-        
+
         {/* List of events for the month */}
         {eventsForCurrentMonth.length > 0 && (
           <div className="month-events-list">
             <h4>Events This Month</h4>
-            
+
             {eventsForCurrentMonth.sort((a, b) => a.dateObj - b.dateObj).map((event, index) => (
-              <div key={`month-event-${index}`} className="month-event">
+              <div key={`month-event-${event.title}-${event.dateObj.toISOString()}`} className="month-event">
                 <div className="event-date">
                   <FontAwesomeIcon icon={faCalendarAlt} />
                   {event.dateObj.toLocaleDateString()}
                 </div>
-                
+
                 <div className="event-details">
                   <h5>{event.title}</h5>
-                  
+
                   <div className="event-meta">
                     {event.startTime && (
                       <p>
@@ -223,7 +233,7 @@ const EventCalendarRenderer = ({ content }) => {
                         {event.endTime && ` - ${event.endTime}`}
                       </p>
                     )}
-                    
+
                     {event.location && (
                       <p>
                         <FontAwesomeIcon icon={faMapMarkerAlt} />
@@ -231,7 +241,7 @@ const EventCalendarRenderer = ({ content }) => {
                       </p>
                     )}
                   </div>
-                  
+
                   {event.description && (
                     <p className="event-description">{event.description}</p>
                   )}

@@ -19,7 +19,14 @@ const HeroSectionRenderer = ({ content, backgroundImage }) => {
   let heroData;
   try {
     heroData = typeof content === 'string' ? JSON.parse(content) : content;
+
+    // Validate the structure of heroData
+    if (!heroData || typeof heroData !== 'object') {
+      console.error('Invalid hero data structure:', heroData);
+      return renderFallback();
+    }
   } catch (error) {
+    console.error('Error parsing hero section data:', error);
     // Return fallback if parsing fails
     return renderFallback();
   }
@@ -30,17 +37,17 @@ const HeroSectionRenderer = ({ content, backgroundImage }) => {
       try {
         setLoading(true);
         const data = await api.branches.getAll();
-        
+
         // Filter branches if selectedBranchIds is provided
         if (heroData.selectedBranchIds && Array.isArray(heroData.selectedBranchIds) && heroData.selectedBranchIds.length > 0) {
-          const filteredBranches = data.filter(branch => 
+          const filteredBranches = data.filter(branch =>
             heroData.selectedBranchIds.includes(branch._id)
           );
           setBranches(filteredBranches);
         } else {
           setBranches(data);
         }
-        
+
         setError(null);
       } catch (err) {
         console.error('Error fetching branches:', err);
@@ -70,7 +77,7 @@ const HeroSectionRenderer = ({ content, backgroundImage }) => {
       <div className="hero-content">
         <div className="hero-main-content">
           <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
-          {heroData && heroData.subtitle ? (
+          {heroData?.subtitle ? (
             <p>{heroData.subtitle}</p>
           ) : (
             <p>"The True Word, The True Gospel, and True Freedom"</p>

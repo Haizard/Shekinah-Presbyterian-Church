@@ -11,6 +11,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
   const [branches, setBranches] = useState([]);
   const [selectedBranches, setSelectedBranches] = useState([]);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -34,12 +35,12 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title || 'Hero Section');
-      
+
       if (initialData.image) {
         setBackgroundImage(initialData.image);
         setImagePreview(getImageUrl(initialData.image));
       }
-      
+
       if (initialData.content) {
         try {
           // Try to parse the content as JSON
@@ -47,7 +48,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
             const parsedData = JSON.parse(initialData.content);
             setSubtitle(parsedData.subtitle || '');
             setShowBranchSlider(parsedData.showBranchSlider !== false);
-            
+
             // Set selected branches if available
             if (parsedData.selectedBranchIds && Array.isArray(parsedData.selectedBranchIds)) {
               setSelectedBranches(parsedData.selectedBranchIds);
@@ -101,34 +102,58 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
     setSelectedBranches(prev => {
       if (prev.includes(branchId)) {
         return prev.filter(id => id !== branchId);
-      } else {
-        return [...prev, branchId];
       }
+      return [...prev, branchId];
     });
+  };
+
+  const validateForm = () => {
+    // Title is required
+    if (!title.trim()) {
+      setError('Section title is required');
+      setSuccess(null);
+      return false;
+    }
+
+    // If showBranchSlider is true, check if there are branches available
+    if (showBranchSlider && branches.length === 0) {
+      setError('You need to create branches first before enabling the branch slider');
+      setSuccess(null);
+      return false;
+    }
+
+    // Clear any previous errors
+    setError(null);
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       setLoading(true);
-      
+
       // Upload image if selected
       let finalBackgroundImage = backgroundImage;
       if (imageFile) {
         finalBackgroundImage = await uploadImage();
       }
-      
+
       // Create the content object
       const contentObj = {
         subtitle: subtitle,
         showBranchSlider: showBranchSlider,
         selectedBranchIds: selectedBranches
       };
-      
+
       // Convert to JSON string
       const contentJson = JSON.stringify(contentObj);
-      
+
       // Call the parent's onSubmit with the form data
       onSubmit({
         section: 'hero',
@@ -136,10 +161,15 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
         content: contentJson,
         image: finalBackgroundImage
       });
-      
+
+      // Show success message
+      setSuccess('Hero section saved successfully!');
+
       setLoading(false);
     } catch (err) {
+      console.error('Error saving hero section:', err);
       setError('Failed to save hero section. Please try again.');
+      setSuccess(null);
       setLoading(false);
     }
   };
@@ -148,11 +178,16 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
     <div className="specialized-form hero-section-form">
       {error && (
         <div className="alert alert-danger">
-          <FontAwesomeIcon icon="exclamation-circle" />
-          {error}
+          <FontAwesomeIcon icon="exclamation-circle" /> {error}
         </div>
       )}
-      
+
+      {success && (
+        <div className="alert alert-success">
+          <FontAwesomeIcon icon="check-circle" /> {success}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Section Title</label>
@@ -164,7 +199,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="subtitle">Subtitle</label>
           <textarea
@@ -175,9 +210,9 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
             placeholder="Enter a subtitle for the hero section..."
           />
         </div>
-        
+
         <div className="form-group">
-          <label>Background Image</label>
+          <label htmlFor="background-image">Background Image</label>
           <div className="image-upload-container">
             {(imagePreview || backgroundImage) && (
               <div className="image-preview">
@@ -188,7 +223,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
                 />
               </div>
             )}
-            
+
             <div className="upload-controls">
               <input
                 type="file"
@@ -203,7 +238,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="form-group">
           <div className="checkbox-container">
             <input
@@ -218,39 +253,41 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
             When enabled, the hero section will display a slider of church branches.
           </p>
         </div>
-        
+
         {showBranchSlider && (
           <div className="form-group">
-            <label>Select Branches to Display</label>
-            <p className="form-help-text">
-              Select which branches to display in the slider. If none are selected, all branches will be shown.
-            </p>
-            
-            <div className="branches-selection">
-              {branches.length > 0 ? (
-                branches.map(branch => (
-                  <div key={branch._id} className="branch-checkbox">
-                    <input
-                      type="checkbox"
-                      id={`branch-${branch._id}`}
-                      checked={selectedBranches.includes(branch._id)}
-                      onChange={() => handleBranchSelection(branch._id)}
-                    />
-                    <label htmlFor={`branch-${branch._id}`}>{branch.name}</label>
-                  </div>
-                ))
-              ) : (
-                <p>No branches available. <a href="/admin/branches" target="_blank" rel="noopener noreferrer">Create branches</a> first.</p>
-              )}
-            </div>
+            <fieldset>
+              <legend>Select Branches to Display</legend>
+              <p className="form-help-text">
+                Select which branches to display in the slider. If none are selected, all branches will be shown.
+              </p>
+
+              <div className="branches-selection">
+                {branches.length > 0 ? (
+                  branches.map(branch => (
+                    <div key={branch._id} className="branch-checkbox">
+                      <input
+                        type="checkbox"
+                        id={`branch-${branch._id}`}
+                        checked={selectedBranches.includes(branch._id)}
+                        onChange={() => handleBranchSelection(branch._id)}
+                      />
+                      <label htmlFor={`branch-${branch._id}`}>{branch.name}</label>
+                    </div>
+                  ))
+                ) : (
+                  <p>No branches available. <a href="/admin/branches" target="_blank" rel="noopener noreferrer">Create branches</a> first.</p>
+                )}
+              </div>
+            </fieldset>
           </div>
         )}
-        
+
         <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? (
               <>
-                <span className="spinner-small"></span> Saving...
+                <span className="spinner-small" /> Saving...
               </>
             ) : (
               <>

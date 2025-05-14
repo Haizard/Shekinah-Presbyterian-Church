@@ -8,6 +8,7 @@ import LeadershipRenderer from './LeadershipRenderer';
 import HeroSectionRenderer from './HeroSectionRenderer';
 import CurrentSeriesRenderer from './CurrentSeriesRenderer';
 import SpecialEventsRenderer from './SpecialEventsRenderer';
+import EventCalendarRenderer from './EventCalendarRenderer';
 import { parseContent, isHtmlContent, truncateHtmlContent } from '../../utils/contentUtils';
 
 /**
@@ -74,6 +75,10 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
     case 'special_events':
       console.log(`ContentRendererFactory: Using SpecialEventsRenderer for section "${section}"`);
       return <SpecialEventsRenderer content={parsedContent} />;
+
+    case 'event_calendar':
+      console.log(`ContentRendererFactory: Using EventCalendarRenderer for section "${section}"`);
+      return <EventCalendarRenderer content={parsedContent} />;
 
     default:
       // For HTML content, render with dangerouslySetInnerHTML
