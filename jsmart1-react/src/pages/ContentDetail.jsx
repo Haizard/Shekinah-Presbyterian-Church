@@ -141,16 +141,10 @@ const ContentDetail = () => {
               )}
 
               <div style={{ lineHeight: '1.6', fontSize: '1.1rem' }}>
-                {typeof contentData.content === 'string' && contentData.content.trim().startsWith('{') ? (
-                  <ContentRendererFactory
-                    section={section}
-                    content={contentData.content}
-                  />
-                ) : typeof contentData.content === 'string' ? (
-                  <div dangerouslySetInnerHTML={{ __html: contentData.content }} />
-                ) : (
-                  <p>No content available.</p>
-                )}
+                <ContentRendererFactory
+                  section={section}
+                  content={contentData.content}
+                />
               </div>
 
               <div style={{

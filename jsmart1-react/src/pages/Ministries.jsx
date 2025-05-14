@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DynamicContent from '../components/DynamicContent';
@@ -103,20 +103,29 @@ const Ministries = () => {
                 </div>
               </div>
             }
-            renderContent={(content) => (
-              <div className="ministries-intro">
-                <div dangerouslySetInnerHTML={{ __html: content.content }} />
-                <div className="ministry-buttons">
-                  <a href="#worship" className="btn btn-sm">Worship</a>
-                  <a href="#discipleship" className="btn btn-sm">Discipleship</a>
-                  <a href="#children" className="btn btn-sm">Children</a>
-                  <a href="#youth" className="btn btn-sm">Youth</a>
-                  <a href="#outreach" className="btn btn-sm">Outreach</a>
-                  <a href="#missions" className="btn btn-sm">Missions</a>
-                  <a href="#prayer" className="btn btn-sm">Prayer</a>
+            showContent={false}
+            renderContent={(content) => {
+              // Use the imported components
+              const HowWeServeRenderer = lazy(() => import('../components/structured/HowWeServeRenderer'));
+
+              return (
+                <div className="ministries-intro">
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <HowWeServeRenderer content={content.content} image={content.image} />
+                  </Suspense>
+
+                  <div className="ministry-buttons">
+                    <a href="#worship" className="btn btn-sm">Worship</a>
+                    <a href="#discipleship" className="btn btn-sm">Discipleship</a>
+                    <a href="#children" className="btn btn-sm">Children</a>
+                    <a href="#youth" className="btn btn-sm">Youth</a>
+                    <a href="#outreach" className="btn btn-sm">Outreach</a>
+                    <a href="#missions" className="btn btn-sm">Missions</a>
+                    <a href="#prayer" className="btn btn-sm">Prayer</a>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            }}
           />
         </div>
       </section>

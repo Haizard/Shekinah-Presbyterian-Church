@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faMapMarkerAlt, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { getImageUrl, handleImageError } from '../../utils/imageUtils';
@@ -6,20 +7,60 @@ import { getImageUrl, handleImageError } from '../../utils/imageUtils';
 /**
  * Component for rendering the "featured_event" structured content
  */
-const FeaturedEventRenderer = ({ content }) => {
+const FeaturedEventRenderer = ({ content, image }) => {
   console.log('FeaturedEventRenderer received content:', content);
+  console.log('FeaturedEventRenderer received image:', image);
 
   // Handle different content formats
   let parsedContent;
 
+  // Special handling for the "[object Object]" format
+  if (typeof content === 'string' && content.includes('[object Object]')) {
+    console.log('Content appears to be a stringified object that lost its structure');
+
+    // Extract any text that might be useful
+    const contentLines = content.split('\n');
+    const eventInfo = {
+      title: 'Featured Event',
+      description: 'Event details coming soon',
+      date: new Date().toLocaleDateString(),
+      time: 'TBD',
+      location: 'Main Sanctuary',
+      link: '/events'
+    };
+
+    // Try to extract meaningful information from the content
+    for (const line of contentLines) {
+      const trimmedLine = line.trim();
+      if (trimmedLine && !trimmedLine.includes('[object Object]')) {
+        // If we find a line that looks like a title, use it
+        if (!eventInfo.title || eventInfo.title === 'Featured Event') {
+          eventInfo.title = trimmedLine;
+        } else if (!eventInfo.description || eventInfo.description === 'Event details coming soon') {
+          eventInfo.description = trimmedLine;
+        }
+      }
+    }
+
+    parsedContent = eventInfo;
+  }
   // If content is a string, try to parse it
-  if (typeof content === 'string') {
+  else if (typeof content === 'string') {
     try {
       parsedContent = JSON.parse(content);
       console.log('FeaturedEventRenderer parsed string content:', parsedContent);
     } catch (error) {
       console.error('Error parsing FeaturedEvent content:', error);
-      return null; // Return nothing if parsing fails
+
+      // If parsing fails, create a simple event object from the string content
+      parsedContent = {
+        title: 'Featured Event',
+        description: content,
+        date: new Date().toLocaleDateString(),
+        time: 'TBD',
+        location: 'Main Sanctuary',
+        link: '/events'
+      };
     }
   } else {
     // If content is already an object, use it directly
@@ -27,27 +68,17 @@ const FeaturedEventRenderer = ({ content }) => {
     console.log('FeaturedEventRenderer using object content directly:', parsedContent);
   }
 
-  // If parsedContent is not an object, return an error message
+  // If parsedContent is still not an object, create a default one
   if (typeof parsedContent !== 'object' || parsedContent === null) {
-    // Try to convert to object if it's a string that looks like JSON
-    if (typeof parsedContent === 'string') {
-      try {
-        const tryParse = JSON.parse(parsedContent);
-        if (typeof tryParse === 'object' && tryParse !== null) {
-          console.log('FeaturedEventRenderer parsed string to object:', tryParse);
-          parsedContent = tryParse;
-        } else {
-          console.error('FeaturedEvent content is not an object after parsing:', tryParse);
-          return null; // Return nothing if content is invalid
-        }
-      } catch (error) {
-        console.error('FeaturedEvent content is not an object:', parsedContent);
-        return null; // Return nothing if content is invalid
-      }
-    } else {
-      console.error('FeaturedEvent content is not an object:', parsedContent);
-      return null; // Return nothing if content is invalid
-    }
+    console.error('FeaturedEvent content is not an object:', parsedContent);
+    parsedContent = {
+      title: 'Featured Event',
+      description: 'Event details coming soon',
+      date: new Date().toLocaleDateString(),
+      time: 'TBD',
+      location: 'Main Sanctuary',
+      link: '/events'
+    };
   }
 
   // Format the date if it exists
@@ -102,15 +133,17 @@ const FeaturedEventRenderer = ({ content }) => {
         )}
 
         <div className="event-actions">
-          <button type="button" className="btn btn-primary">Register Now</button>
-          <button type="button" className="btn btn-secondary">Learn More</button>
+          {parsedContent.registerLink && (
+            <Link to={parsedContent.registerLink} className="btn btn-primary">Register Now</Link>
+          )}
+          <Link to={parsedContent.link || '/events'} className="btn btn-secondary">Learn More</Link>
         </div>
       </div>
 
-      {parsedContent.image && (
+      {(image || parsedContent.image) && (
         <div className="featured-event-image">
           <img
-            src={getImageUrl(parsedContent.image)}
+            src={image ? getImageUrl(image) : getImageUrl(parsedContent.image)}
             alt={parsedContent.title}
             onError={(e) => handleImageError(e)}
           />

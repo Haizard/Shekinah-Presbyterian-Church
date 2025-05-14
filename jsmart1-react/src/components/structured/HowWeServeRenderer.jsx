@@ -23,11 +23,41 @@ const iconMap = {
   faGraduationCap
 };
 
+// Function to get an appropriate icon for a ministry based on its name
+const getIconForMinistry = (ministryName) => {
+  const name = ministryName.toLowerCase();
+
+  if (name.includes('worship') || name.includes('music')) {
+    return 'faMusic';
+  } else if (name.includes('prayer') || name.includes('intercession')) {
+    return 'faPrayingHands';
+  } else if (name.includes('children') || name.includes('youth') || name.includes('teen')) {
+    return 'faUsers';
+  } else if (name.includes('bible') || name.includes('study') || name.includes('discipleship')) {
+    return 'faBookOpen';
+  } else if (name.includes('outreach') || name.includes('mission') || name.includes('community')) {
+    return 'faHandsHelping';
+  } else if (name.includes('education') || name.includes('school') || name.includes('teaching')) {
+    return 'faGraduationCap';
+  } else if (name.includes('church') || name.includes('sanctuary')) {
+    return 'faChurch';
+  } else {
+    return 'faHeart'; // Default icon
+  }
+};
+
 /**
  * Component for rendering the "how_we_serve" structured content
  */
-const HowWeServeRenderer = ({ content }) => {
+const HowWeServeRenderer = ({ content, image }) => {
   console.log('HowWeServeRenderer received content:', content);
+  console.log('HowWeServeRenderer content type:', typeof content);
+  console.log('HowWeServeRenderer received image:', image);
+
+  // If content is a string that looks like "[object Object]", it might be a toString() conversion
+  if (typeof content === 'string' && content.includes('[object Object]')) {
+    console.log('Content appears to be a stringified object that lost its structure');
+  }
 
   // Handle different content formats
   let parsedContent;
@@ -99,6 +129,61 @@ const HowWeServeRenderer = ({ content }) => {
     }
   }
 
+  // Special handling for the specific format seen in the UI
+  if (typeof content === 'string') {
+    // Check if it's the specific format with [object Object] followed by ministry names
+    if (content.includes('[object Object]')) {
+      // Extract the list of items that appear after [object Object]
+      const contentLines = content.split('\n');
+      const items = [];
+
+      for (const line of contentLines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine && !trimmedLine.includes('[object Object]')) {
+          items.push({
+            title: trimmedLine,
+            description: `Our ${trimmedLine} ministry serves the church and community.`,
+            icon: getIconForMinistry(trimmedLine)
+          });
+        }
+      }
+
+      if (items.length > 0) {
+        return (
+          <div className="how-we-serve-grid">
+            {items.map((item) => (
+              <div className="service-card" key={`service-${item.title}`}>
+                <div className="service-icon">
+                  <FontAwesomeIcon icon={iconMap[item.icon] || faHeart} />
+                </div>
+                <div className="service-content">
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      }
+    } else {
+      // If it's just a regular string, create a single service item
+      return (
+        <div className="how-we-serve-grid">
+          <div className="service-card">
+            <div className="service-icon">
+              <FontAwesomeIcon icon={faHeart} />
+            </div>
+            <div className="service-content">
+              <h3>How We Serve</h3>
+              <p>{content}</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  // Standard rendering for properly formatted data
   return (
     <div className="how-we-serve-grid">
       {parsedContent.map((item, index) => (

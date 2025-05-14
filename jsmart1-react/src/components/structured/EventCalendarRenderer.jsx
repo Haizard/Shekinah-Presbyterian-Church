@@ -7,14 +7,40 @@ import '../../styles/EventCalendar.css';
  * Component for rendering the "event_calendar" structured content
  * Follows the same pattern as LeadershipRenderer
  */
-const EventCalendarRenderer = ({ content }) => {
+const EventCalendarRenderer = ({ content, image }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+  console.log('EventCalendarRenderer received content:', content);
+  console.log('EventCalendarRenderer received image:', image);
 
   // Parse content if it's a string
   let calendarData;
   try {
-    calendarData = typeof content === 'string' ? JSON.parse(content) : content;
+    // Check if content is a string that looks like JSON
+    if (typeof content === 'string' &&
+        ((content.trim().startsWith('{') && content.trim().endsWith('}')) ||
+         (content.trim().startsWith('[') && content.trim().endsWith(']')))) {
+      calendarData = JSON.parse(content);
+    } else if (typeof content === 'string') {
+      // If it's a string but not JSON, create a simple calendar with one event
+      calendarData = {
+        introduction: 'Upcoming church events',
+        events: [
+          {
+            title: 'Church Event',
+            date: new Date().toISOString().split('T')[0], // Today's date
+            startTime: '9:00 AM',
+            endTime: '12:00 PM',
+            location: 'Main Sanctuary',
+            description: content // Use the content string as the description
+          }
+        ]
+      };
+    } else {
+      // If it's already an object, use it directly
+      calendarData = content;
+    }
 
     // Validate the structure of calendarData
     if (!calendarData || typeof calendarData !== 'object') {

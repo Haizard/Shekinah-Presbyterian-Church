@@ -50,7 +50,7 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
 
     case 'how_we_serve':
       console.log(`ContentRendererFactory: Using HowWeServeRenderer for section "${section}"`);
-      return <HowWeServeRenderer content={parsedContent} />;
+      return <HowWeServeRenderer content={parsedContent} image={content?.image} />;
 
     case 'weekly_schedule':
       console.log(`ContentRendererFactory: Using WeeklyScheduleRenderer for section "${section}"`);
@@ -62,7 +62,7 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
 
     case 'featured_event':
       console.log(`ContentRendererFactory: Using FeaturedEventRenderer for section "${section}"`);
-      return <FeaturedEventRenderer content={parsedContent} />;
+      return <FeaturedEventRenderer content={parsedContent} image={content?.image} />;
 
     case 'leadership':
       console.log(`ContentRendererFactory: Using LeadershipRenderer for section "${section}"`);
@@ -80,7 +80,7 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
 
     case 'event_calendar':
       console.log(`ContentRendererFactory: Using EventCalendarRenderer for section "${section}"`);
-      return <EventCalendarRenderer content={parsedContent} />;
+      return <EventCalendarRenderer content={parsedContent} image={content?.image} />;
 
     case 'our_story':
       console.log(`ContentRendererFactory: Rendering our_story content for section "${section}"`);
