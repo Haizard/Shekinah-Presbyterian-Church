@@ -306,30 +306,35 @@ const DynamicContent = ({
         </div>
       )}
 
-      {showTitle && contentData.title && (
-        <h2 className="dynamic-content-title">{contentData.title}</h2>
-      )}
+      {/* Only render content if contentData exists */}
+      {contentData && (
+        <>
+          {showTitle && contentData.title && (
+            <h2 className="dynamic-content-title">{contentData.title}</h2>
+          )}
 
-      {showImage && contentData.image && (
-        <div className="dynamic-content-image">
-          <img
-            src={getImageUrl(contentData.image)}
-            alt={contentData.title}
-            onError={(e) => handleImageError(e)}
-          />
-        </div>
-      )}
+          {showImage && contentData.image && (
+            <div className="dynamic-content-image">
+              <img
+                src={getImageUrl(contentData.image)}
+                alt={contentData.title}
+                onError={(e) => handleImageError(e)}
+              />
+            </div>
+          )}
 
-      {showContent && contentData.content && (
-        <div className="dynamic-content-text">
-          <ContentRendererFactory
-            section={section}
-            content={contentData.content}
-            truncate={truncateContent}
-            maxLength={maxContentLength}
-            contentId={contentData._id}
-          />
-        </div>
+          {showContent && contentData.content && (
+            <div className="dynamic-content-text">
+              <ContentRendererFactory
+                section={section}
+                content={contentData.content}
+                truncate={truncateContent}
+                maxLength={maxContentLength}
+                contentId={contentData._id}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

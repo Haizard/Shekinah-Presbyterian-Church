@@ -8,7 +8,7 @@ import LeadershipRenderer from './LeadershipRenderer';
 import HeroSectionRenderer from './HeroSectionRenderer';
 import CurrentSeriesRenderer from './CurrentSeriesRenderer';
 import SpecialEventsRenderer from './SpecialEventsRenderer';
-import EventCalendarRenderer from './EventCalendarRenderer';
+import CompactEventCalendarRenderer from './CompactEventCalendarRenderer';
 import { parseContent, isHtmlContent, truncateHtmlContent } from '../../utils/contentUtils';
 
 /**
@@ -79,8 +79,8 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
       return <SpecialEventsRenderer content={parsedContent} />;
 
     case 'event_calendar':
-      console.log(`ContentRendererFactory: Using EventCalendarRenderer for section "${section}"`);
-      return <EventCalendarRenderer content={parsedContent} image={content?.image} />;
+      console.log(`ContentRendererFactory: Using CompactEventCalendarRenderer for section "${section}"`);
+      return <CompactEventCalendarRenderer content={parsedContent} image={content?.image} />;
 
     case 'our_story':
       console.log(`ContentRendererFactory: Rendering our_story content for section "${section}"`);
