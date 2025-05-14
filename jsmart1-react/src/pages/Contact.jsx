@@ -77,21 +77,27 @@ const Contact = () => {
                 <FontAwesomeIcon icon="map-marker-alt" />
                 <div>
                   <h3>Location</h3>
-                  <p>Dar es Salaam, Tanzania</p>
+                  <a href="https://maps.google.com/?q=Dar+es+Salaam,Tanzania" target="_blank" rel="noopener noreferrer" className="contact-link">
+                    Dar es Salaam, Tanzania
+                  </a>
                 </div>
               </div>
               <div className="contact-item">
                 <FontAwesomeIcon icon="phone" />
                 <div>
                   <h3>Phone</h3>
-                  <p>+255 769 080 629</p>
+                  <a href="tel:+255769080629" className="contact-link">
+                    +255 769 080 629
+                  </a>
                 </div>
               </div>
               <div className="contact-item">
                 <FontAwesomeIcon icon="envelope" />
                 <div>
                   <h3>Email</h3>
-                  <p>spctanzania@gmail.com</p>
+                  <a href="mailto:spctanzania@gmail.com" className="contact-link">
+                    spctanzania@gmail.com
+                  </a>
                 </div>
               </div>
               <div className="contact-item">
@@ -199,14 +205,18 @@ const Contact = () => {
               <h3>Visit Us</h3>
               <p>Shekinah Presbyterian Church Tanzania</p>
               <p>P.O. Box 32807</p>
-              <p>Dar es Salaam, Tanzania</p>
+              <a href="https://maps.google.com/?q=Dar+es+Salaam,Tanzania" target="_blank" rel="noopener noreferrer" className="contact-link">
+                Dar es Salaam, Tanzania
+              </a>
             </div>
             <div className="contact-card">
               <div className="contact-icon">
                 <FontAwesomeIcon icon="phone" />
               </div>
               <h3>Call Us</h3>
-              <p>Phone: +255 769 080 629</p>
+              <a href="tel:+255769080629" className="contact-link">
+                Phone: +255 769 080 629
+              </a>
               <p>Office Hours:</p>
               <p>Monday-Friday: 9:00 AM - 5:00 PM</p>
             </div>
@@ -216,7 +226,9 @@ const Contact = () => {
               </div>
               <h3>Email Us</h3>
               <p>Email:</p>
-              <p>spctanzania@gmail.com</p>
+              <a href="mailto:spctanzania@gmail.com" className="contact-link">
+                spctanzania@gmail.com
+              </a>
             </div>
             <div className="contact-card">
               <div className="contact-icon">
@@ -263,7 +275,7 @@ const Contact = () => {
           <div className="prayer-request-content">
             <div className="prayer-request-text">
               <p>We believe in the power of prayer. If you have a specific prayer need, our prayer team would be honored to pray for you.</p>
-              <p>You can submit your prayer request using the form below or by emailing us at spctanzania@gmail.com.</p>
+              <p>You can submit your prayer request using the form below or by emailing us at <a href="mailto:spctanzania@gmail.com" className="contact-link">spctanzania@gmail.com</a>.</p>
               <p>All prayer requests are kept confidential and are shared only with our prayer team.</p>
             </div>
             <div className="prayer-request-form">

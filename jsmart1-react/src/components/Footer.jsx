@@ -79,13 +79,19 @@ const Footer = () => {
             <div className="footer-contact">
               <h3>Contact Us</h3>
               <p>
-                <FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania
+                <a href="https://maps.google.com/?q=Dar+es+Salaam,Tanzania" target="_blank" rel="noopener noreferrer" className="contact-link">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania
+                </a>
               </p>
               <p>
-                <FontAwesomeIcon icon={faPhone} /> +255 769 080 629
+                <a href="tel:+255769080629" className="contact-link">
+                  <FontAwesomeIcon icon={faPhone} /> +255 769 080 629
+                </a>
               </p>
               <p>
-                <FontAwesomeIcon icon={faEnvelope} /> spctanzania@gmail.com
+                <a href="mailto:spctanzania@gmail.com" className="contact-link">
+                  <FontAwesomeIcon icon={faEnvelope} /> spctanzania@gmail.com
+                </a>
               </p>
             </div>
             <div className="footer-newsletter">

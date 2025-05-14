@@ -49,12 +49,25 @@ footer {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
-  color: var(--gray-color);
 }
 
 .footer-contact p svg {
   margin-right: 10px;
   color: var(--accent-color);
+}
+
+.footer-contact .contact-link {
+  display: flex;
+  align-items: center;
+  color: var(--gray-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 5px 0;
+}
+
+.footer-contact .contact-link:hover {
+  color: var(--light-color);
+  transform: translateX(5px);
 }
 
 .footer-newsletter form {

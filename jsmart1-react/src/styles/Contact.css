@@ -42,6 +42,23 @@
   margin-bottom: 0.5rem;
 }
 
+.contact-card .contact-link,
+.prayer-request-text .contact-link,
+.contact-item .contact-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.contact-card .contact-link:hover,
+.prayer-request-text .contact-link:hover,
+.contact-item .contact-link:hover {
+  color: var(--primary-dark);
+  transform: translateX(5px);
+}
+
 /* Map Section */
 .map-section {
   padding: 0;

@@ -235,6 +235,7 @@ library.add(
 // Components
 import Header from './components/Header'
 import Footer from './components/Footer'
+import WhatsAppButton from './components/WhatsAppButton'
 
 // Pages
 import Home from './pages/Home'
@@ -290,6 +291,11 @@ const LocationAwareRoutes = () => {
 
   return (
     <div className="App">
+      {/* WhatsApp floating button - visible on all pages except admin and finance routes */}
+      {!location.pathname.includes('/admin') && !location.pathname.includes('/finance') && (
+        <WhatsAppButton phoneNumber="769080629" countryCode="255" />
+      )}
+
       {/* Use the location.key as a key to force re-rendering when location changes */}
       <Routes key={location.key}>
             {/* Public Routes */}
