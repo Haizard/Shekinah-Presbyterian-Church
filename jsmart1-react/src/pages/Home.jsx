@@ -17,7 +17,7 @@ import DynamicContent from '../components/DynamicContent';
 import ContentContext from '../context/ContentContext';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
-import ContentDebugger from '../components/ContentDebugger';
+
 import BranchSlider from '../components/BranchSlider';
 import ContentRendererFactory from '../components/structured/ContentRendererFactory';
 
@@ -70,7 +70,7 @@ const Home = () => {
   }, []);
 
   // Get content from context but don't re-render on every change
-  const { content, debugContent } = useContext(ContentContext);
+  const { content } = useContext(ContentContext);
 
   // Simple state to track when content is loaded
   const [localRefreshTrigger, setLocalRefreshTrigger] = useState(0);
@@ -91,35 +91,9 @@ const Home = () => {
 
   // Removed content sections logging to prevent browser overload
 
-  // Debug function to check content state
-  const handleDebugClick = () => {
-    // Removed console logs to prevent browser overload
-    if (debugContent) {
-      debugContent();
-    }
-    // Removed console logs to prevent browser overload
-  };
-
   return (
     <main>
-      {/* Debug button - only visible in development */}
-      {process.env.NODE_ENV !== 'production' && (
-        <div className="debug-panel" style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 9999 }}>
-          <button
-            type="button"
-            onClick={handleDebugClick}
-            style={{
-              padding: '5px 10px',
-              background: '#f0f0f0',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Debug Content
-          </button>
-        </div>
-      )}
+
       {/* Hero Section - Church Branches Slider */}
       <section id="home" className="hero">
         {/* Background Image */}
@@ -392,17 +366,6 @@ const Home = () => {
               </div>
             </>
           )}
-        </div>
-      </section>
-
-      {/* Content Debugger Section */}
-      <section id="debug" className="section bg-light">
-        <div className="container">
-          <div className="section-header">
-            <h2>Content Debugger</h2>
-            <div className="divider" />
-          </div>
-          <ContentDebugger />
         </div>
       </section>
     </main>

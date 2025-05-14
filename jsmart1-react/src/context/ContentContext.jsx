@@ -276,14 +276,6 @@ export const ContentProvider = ({ children }) => {
     return staleTimestamp; // Return the timestamp for debugging purposes
   }, []);
 
-  // Debug function to check content state
-  const debugContent = useCallback(() => {
-    console.log('ContentContext: Current content state:', content);
-    console.log('ContentContext: Content keys:', Object.keys(content));
-    console.log('ContentContext: Current refresh trigger:', refreshTrigger);
-    return { content, refreshTrigger };
-  }, [content, refreshTrigger]);
-
   return (
     <ContentContext.Provider
       value={{
@@ -294,8 +286,7 @@ export const ContentProvider = ({ children }) => {
         getContentBySection,
         createOrUpdateContent,
         deleteContent,
-        refreshContent,
-        debugContent
+        refreshContent
       }}
     >
       {children}

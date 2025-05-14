@@ -207,17 +207,7 @@ const About = () => {
             <h2>Our Leadership</h2>
             <div className="divider" />
           </div>
-          {process.env.NODE_ENV !== 'production' && (
-            <div style={{
-              backgroundColor: '#f0f8ff',
-              padding: '0.5rem',
-              marginBottom: '1rem',
-              borderRadius: '4px',
-              fontSize: '0.8rem'
-            }}>
-              <strong>About Page Debug:</strong> Rendering Leadership component
-            </div>
-          )}
+
           <Leadership />
         </div>
       </section>

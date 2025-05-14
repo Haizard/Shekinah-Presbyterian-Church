@@ -235,7 +235,6 @@ library.add(
 // Components
 import Header from './components/Header'
 import Footer from './components/Footer'
-import ContentDebugPanel from './components/debug/ContentDebugPanel'
 
 // Pages
 import Home from './pages/Home'
@@ -291,9 +290,6 @@ const LocationAwareRoutes = () => {
 
   return (
     <div className="App">
-      {/* Debug Panel - only visible in development */}
-      {process.env.NODE_ENV !== 'production' && <ContentDebugPanel />}
-
       {/* Use the location.key as a key to force re-rendering when location changes */}
       <Routes key={location.key}>
             {/* Public Routes */}
