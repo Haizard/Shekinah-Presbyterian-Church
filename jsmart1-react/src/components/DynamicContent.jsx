@@ -296,7 +296,7 @@ const DynamicContent = ({
   return (
     <div className={`dynamic-content ${className}`} data-refresh-count={localRefreshCount} data-section={section}>
       {/* Hidden debug info - only visible in development */}
-      {process.env.NODE_ENV !== 'production' && (
+      {process.env.NODE_ENV !== 'production' && contentData && (
         <div className="dynamic-content-debug" style={{ display: 'none' }}>
           <p>Section: {section}</p>
           <p>Refresh Count: {localRefreshCount}</p>

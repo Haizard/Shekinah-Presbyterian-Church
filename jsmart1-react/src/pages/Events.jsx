@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/Events.css';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
+import DynamicContent from '../components/DynamicContent';
 
 const Events = () => {
   const [filter, setFilter] = useState('all');
@@ -77,45 +78,16 @@ const Events = () => {
             <h2>Featured Event</h2>
             <div className="divider" />
           </div>
-          <div className="featured-event">
-            <div className="featured-event-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Annual Church Conference" />
-            </div>
-            <div className="featured-event-details">
-              <div className="event-date-large">
-                <span className="month">JUN</span>
-                <span className="day">25</span>
-                <span className="year">2023</span>
+          <DynamicContent
+            section="featured_event"
+            fallback={
+              <div className="featured-event-container">
+                <p className="text-center">No featured event at this time. Check our upcoming events below.</p>
               </div>
-              <h3>Annual Church Conference: "Rooted in Christ"</h3>
-              <p className="event-time"><FontAwesomeIcon icon="clock" /> 9:00 AM - 4:00 PM</p>
-              <p className="event-location"><FontAwesomeIcon icon="map-marker-alt" /> Main Sanctuary, Shekinah Church</p>
-              <p className="event-description">Join us for our annual church conference as we explore what it means to be rooted in Christ. This full-day event will feature inspiring speakers, powerful worship, and practical workshops to help you grow in your faith.</p>
-              <div className="event-buttons">
-                <Link to="/events/conference/register" className="btn btn-primary">Register Now</Link>
-                <Link to="/events/featured-conference" className="btn btn-secondary">Learn More</Link>
-                <Link to="/simple-event" className="btn btn-primary">View Simple Event</Link>
-              </div>
-              <div className="event-countdown" data-date="2023-06-25T09:00:00">
-                <div className="countdown-item">
-                  <span className="countdown-number" id="countdown-days">30</span>
-                  <span className="countdown-label">Days</span>
-                </div>
-                <div className="countdown-item">
-                  <span className="countdown-number" id="countdown-hours">12</span>
-                  <span className="countdown-label">Hours</span>
-                </div>
-                <div className="countdown-item">
-                  <span className="countdown-number" id="countdown-minutes">45</span>
-                  <span className="countdown-label">Minutes</span>
-                </div>
-                <div className="countdown-item">
-                  <span className="countdown-number" id="countdown-seconds">20</span>
-                  <span className="countdown-label">Seconds</span>
-                </div>
-              </div>
-            </div>
-          </div>
+            }
+            showContent={true}
+            className="featured-event-container"
+          />
         </div>
       </section>
 
@@ -236,23 +208,16 @@ const Events = () => {
             <h2>Event Calendar</h2>
             <div className="divider" />
           </div>
-          <div className="calendar-controls">
-            <div className="calendar-navigation">
-              <button type="button" className="btn btn-sm"><FontAwesomeIcon icon="chevron-left" /> Previous</button>
-              <h3>June 2023</h3>
-              <button type="button" className="btn btn-sm">Next <FontAwesomeIcon icon="chevron-right" /></button>
-            </div>
-            <div className="calendar-view-options">
-              <button type="button" className="btn btn-sm active">Month</button>
-              <button type="button" className="btn btn-sm">List</button>
-            </div>
-          </div>
-          <div className="calendar-container">
-            <div className="calendar-notice">
-              <p>View our full calendar to plan your visit and stay updated on all church activities.</p>
-              <Link to="/calendar" className="btn btn-primary">View Full Calendar</Link>
-            </div>
-          </div>
+          <DynamicContent
+            section="event_calendar"
+            fallback={
+              <div className="calendar-container">
+                <p className="text-center">No events have been added to the calendar yet. Check back later for updates.</p>
+              </div>
+            }
+            showContent={true}
+            className="event-calendar-container"
+          />
         </div>
       </section>
 
@@ -263,48 +228,16 @@ const Events = () => {
             <h2>Weekly Schedule</h2>
             <div className="divider" />
           </div>
-          <div className="weekly-schedule">
-            <div className="schedule-day">
-              <h3>Sunday</h3>
-              <div className="schedule-items">
-                <div className="schedule-item">
-                  <span className="schedule-time">9:00 AM - 12:00 PM</span>
-                  <span className="schedule-title">Sunday Worship Service</span>
-                  <span className="schedule-location">Main Sanctuary</span>
-                </div>
-                <div className="schedule-item">
-                  <span className="schedule-time">10:30 AM - 11:30 AM</span>
-                  <span className="schedule-title">Children's Sunday School</span>
-                  <span className="schedule-location">Children's Wing</span>
-                </div>
+          <DynamicContent
+            section="weekly_schedule"
+            fallback={
+              <div className="weekly-schedule">
+                <p className="text-center">Weekly schedule is being updated. Please check back later.</p>
               </div>
-            </div>
-            <div className="schedule-day">
-              <h3>Wednesday</h3>
-              <div className="schedule-items">
-                <div className="schedule-item">
-                  <span className="schedule-time">6:00 PM - 7:30 PM</span>
-                  <span className="schedule-title">Midweek Bible Study</span>
-                  <span className="schedule-location">Fellowship Hall</span>
-                </div>
-                <div className="schedule-item">
-                  <span className="schedule-time">6:00 PM - 7:30 PM</span>
-                  <span className="schedule-title">Youth Group</span>
-                  <span className="schedule-location">Youth Center</span>
-                </div>
-              </div>
-            </div>
-            <div className="schedule-day">
-              <h3>Friday</h3>
-              <div className="schedule-items">
-                <div className="schedule-item">
-                  <span className="schedule-time">7:00 PM - 9:00 PM</span>
-                  <span className="schedule-title">Prayer Meeting</span>
-                  <span className="schedule-location">Prayer Room</span>
-                </div>
-              </div>
-            </div>
-          </div>
+            }
+            showContent={true}
+            className="weekly-schedule-container"
+          />
         </div>
       </section>
 
@@ -315,20 +248,17 @@ const Events = () => {
             <h2>Special Events</h2>
             <div className="divider" />
           </div>
-          <div className="special-events">
-            <div className="special-event">
-              <div className="special-event-image">
-                <img src="/images/SPCT/CHURCH.jpg" alt="Annual Conference" />
-              </div>
-              <div className="special-event-details">
-                <h3>Annual Church Conference</h3>
-                <p className="special-event-date">August 15-18, 2023</p>
-                <p className="special-event-description">
-                  Our annual church conference brings together believers from across Tanzania for a time of powerful teaching, worship, and fellowship. This year's theme is "Advancing the Kingdom" with guest speakers from around the world.
-                </p>
-                <Link to="/events/special-annual-conference" className="btn btn-primary">Learn More</Link>
-              </div>
-            </div>
+          {/* Temporarily commenting out this section until content is created in admin panel */}
+          {/*
+          <DynamicContent
+            section="special_events"
+            fallback={null}
+            showContent={true}
+            className="special-events-container"
+          />
+          */}
+          <div className="special-events-container">
+            <p className="text-center">No special events at this time. Check back later for updates.</p>
           </div>
         </div>
       </section>
