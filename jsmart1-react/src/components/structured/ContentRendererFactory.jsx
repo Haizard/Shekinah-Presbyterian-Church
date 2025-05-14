@@ -5,6 +5,9 @@ import WeeklyScheduleRenderer from './WeeklyScheduleRenderer';
 import VideoGalleryRenderer from './VideoGalleryRenderer';
 import FeaturedEventRenderer from './FeaturedEventRenderer';
 import LeadershipRenderer from './LeadershipRenderer';
+import HeroSectionRenderer from './HeroSectionRenderer';
+import CurrentSeriesRenderer from './CurrentSeriesRenderer';
+import SpecialEventsRenderer from './SpecialEventsRenderer';
 import { parseContent, isHtmlContent, truncateHtmlContent } from '../../utils/contentUtils';
 
 /**
@@ -40,6 +43,10 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
 
   // Select the appropriate renderer based on the section
   switch (section) {
+    case 'hero':
+      console.log(`ContentRendererFactory: Using HeroSectionRenderer for section "${section}"`);
+      return <HeroSectionRenderer content={parsedContent} />;
+
     case 'how_we_serve':
       console.log(`ContentRendererFactory: Using HowWeServeRenderer for section "${section}"`);
       return <HowWeServeRenderer content={parsedContent} />;
@@ -59,6 +66,14 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
     case 'leadership':
       console.log(`ContentRendererFactory: Using LeadershipRenderer for section "${section}"`);
       return <LeadershipRenderer content={parsedContent} />;
+
+    case 'current_series':
+      console.log(`ContentRendererFactory: Using CurrentSeriesRenderer for section "${section}"`);
+      return <CurrentSeriesRenderer content={parsedContent} image={content?.image} />;
+
+    case 'special_events':
+      console.log(`ContentRendererFactory: Using SpecialEventsRenderer for section "${section}"`);
+      return <SpecialEventsRenderer content={parsedContent} />;
 
     default:
       // For HTML content, render with dangerouslySetInnerHTML

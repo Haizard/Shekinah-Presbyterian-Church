@@ -19,6 +19,7 @@ import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import ContentDebugger from '../components/ContentDebugger';
 import BranchSlider from '../components/BranchSlider';
+import ContentRendererFactory from '../components/structured/ContentRendererFactory';
 
 const Home = () => {
   const [latestSermons, setLatestSermons] = useState([]);
@@ -141,15 +142,35 @@ const Home = () => {
           alignItems: 'center',
           zIndex: 0
         }}>
-          <img
-            src="/images/SPCT/CHURCH.jpg"
-            alt="Church Background"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center'
-            }}
+          <DynamicContent
+            section="hero"
+            showTitle={false}
+            showContent={false}
+            fallback={
+              <img
+                src="/images/SPCT/CHURCH.jpg"
+                alt="Church Background"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
+              />
+            }
+            renderContent={(content) => (
+              <img
+                src={getImageUrl(content.image)}
+                alt="Church Background"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
+                onError={(e) => handleImageError(e)}
+              />
+            )}
           />
         </div>
 
@@ -162,7 +183,7 @@ const Home = () => {
           height: '100%',
           backgroundColor: 'rgba(0,0,0,0.2)',
           zIndex: 1
-        }}></div>
+        }} />
 
         {/* Content */}
         <div style={{
@@ -171,24 +192,38 @@ const Home = () => {
           width: '100%',
           padding: '20px'
         }}>
-          {branches && branches.length > 0 ? (
-            <BranchSlider branches={branches} />
-          ) : (
-            <div className="hero-content">
-              <div className="hero-main-content">
-                <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
-                <p>"The True Word, The True Gospel, and True Freedom"</p>
-                <div className="hero-buttons">
-                  <a href="#about" className="btn btn-primary">Learn More</a>
-                  <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
+          <DynamicContent
+            section="hero"
+            showTitle={false}
+            showImage={false}
+            fallback={
+              branches && branches.length > 0 ? (
+                <BranchSlider branches={branches} />
+              ) : (
+                <div className="hero-content">
+                  <div className="hero-main-content">
+                    <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
+                    <p>"The True Word, The True Gospel, and True Freedom"</p>
+                    <div className="hero-buttons">
+                      <a href="#about" className="btn btn-primary">Learn More</a>
+                      <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
+                    </div>
+                    <div className="service-times">
+                      <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
+                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="service-times">
-                  <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
-                  <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
-                </div>
-              </div>
-            </div>
-          )}
+              )
+            }
+            renderContent={(content) => (
+              <ContentRendererFactory
+                section="hero"
+                content={content.content}
+                backgroundImage={content.image}
+              />
+            )}
+          />
         </div>
       </section>
 

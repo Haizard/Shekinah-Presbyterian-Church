@@ -5,11 +5,33 @@ import FeaturedEventForm from './FeaturedEventForm';
 import LeadershipForm from './LeadershipForm';
 import HowWeServeForm from './HowWeServeForm';
 import SermonSeriesForm from './SermonSeriesForm';
+import HeroSectionForm from './HeroSectionForm';
+import AboutUsForm from './AboutUsForm';
+import OurStoryForm from './OurStoryForm';
+import OurMissionForm from './OurMissionForm';
+import OurVisionForm from './OurVisionForm';
+import CurrentSeriesForm from './CurrentSeriesForm';
+import SpecialEventsForm from './SpecialEventsForm';
 import '../../../styles/admin/SpecializedForms.css';
 
 const ContentFormSelector = ({ section, initialData, onSubmit }) => {
   // Render the appropriate form based on the section
   switch (section) {
+    case 'hero':
+      return <HeroSectionForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'about':
+      return <AboutUsForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'story':
+      return <OurStoryForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'mission':
+      return <OurMissionForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'vision':
+      return <OurVisionForm initialData={initialData} onSubmit={onSubmit} />;
+
     case 'weekly_schedule':
       return <WeeklyScheduleForm initialData={initialData} onSubmit={onSubmit} />;
 
@@ -24,6 +46,12 @@ const ContentFormSelector = ({ section, initialData, onSubmit }) => {
 
     case 'how_we_serve':
       return <HowWeServeForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'current_series':
+      return <CurrentSeriesForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'special_events':
+      return <SpecialEventsForm initialData={initialData} onSubmit={onSubmit} />;
 
     case 'sermon_series':
       return <SermonSeriesForm initialData={initialData} onSubmit={onSubmit} />;
