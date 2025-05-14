@@ -198,6 +198,10 @@ const Dashboard = () => {
               <FontAwesomeIcon icon="file-alt" />
               <span>Manage Content</span>
             </Link>
+            <Link to="/admin/image-debugger" className="quick-action">
+              <FontAwesomeIcon icon="tools" />
+              <span>Image Debugger</span>
+            </Link>
           </div>
         </div>
 

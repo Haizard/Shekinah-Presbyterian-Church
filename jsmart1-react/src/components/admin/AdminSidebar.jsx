@@ -150,6 +150,12 @@ const AdminSidebar = () => {
                   <span>Settings</span>
                 </Link>
               </li>
+              <li className={isActive('/admin/image-debugger') ? 'active' : ''}>
+                <Link to="/admin/image-debugger">
+                  <FontAwesomeIcon icon="tools" />
+                  <span>Image Debugger</span>
+                </Link>
+              </li>
             </>
           )}
         </ul>
