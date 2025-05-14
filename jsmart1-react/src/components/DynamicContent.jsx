@@ -328,8 +328,7 @@ const DynamicContent = ({
               <ContentRendererFactory
                 section={section}
                 content={contentData.content}
-                truncate={truncateContent}
-                maxLength={maxContentLength}
+                truncate={false}
                 contentId={contentData._id}
               />
             </div>

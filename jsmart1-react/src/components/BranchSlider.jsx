@@ -46,20 +46,24 @@ const BranchSlider = ({ branches }) => {
             <div className="branch-slide-content">
               <div className="branch-info">
                 <h3>{branch.name}</h3>
-                <p className="branch-location">
-                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {branch.location}
-                </p>
-                <p className="branch-pastor">
-                  <FontAwesomeIcon icon={faUser} /> Pastor: {branch.pastor}
-                </p>
-                <p className="branch-contact">
-                  <FontAwesomeIcon icon={faPhone} /> {branch.contactInfo}
-                </p>
+                <div className="branch-details">
+                  <p className="branch-location">
+                    <FontAwesomeIcon icon={faMapMarkerAlt} /> {branch.location}
+                  </p>
+                  <p className="branch-pastor">
+                    <FontAwesomeIcon icon={faUser} /> Pastor: {branch.pastor}
+                  </p>
+                  <p className="branch-contact">
+                    <FontAwesomeIcon icon={faPhone} /> {branch.contactInfo}
+                  </p>
+                  {branch.memberCount > 0 && (
+                    <p className="branch-members">Members: {branch.memberCount}</p>
+                  )}
+                </div>
                 {branch.description && (
-                  <p className="branch-description">{branch.description}</p>
-                )}
-                {branch.memberCount > 0 && (
-                  <p className="branch-members">Members: {branch.memberCount}</p>
+                  <div className="branch-description">
+                    <p>{branch.description}</p>
+                  </div>
                 )}
               </div>
               {branch.image ? (

@@ -3,12 +3,14 @@
 
 :root {
   --primary-color: #3B82F6; /* Modern Blue */
+  --primary-rgb: 59, 130, 246; /* RGB values for primary color */
   --primary-dark: #2563EB; /* Darker Blue for hover states */
   --secondary-color: #1F2937; /* Dark Slate */
   --accent-color: #F59E0B; /* Amber for accents */
   --accent-light: #FBBF24; /* Lighter amber for hover states */
   --text-color: #374151;
   --text-light: #6B7280;
+  --text-dark: #1F2937;
   --light-color: #FFFFFF;
   --light-bg: #F9FAFB;
   --dark-bg: #111827;

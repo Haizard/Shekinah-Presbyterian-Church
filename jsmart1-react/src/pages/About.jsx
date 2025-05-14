@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DynamicContent from '../components/DynamicContent';
+import ContentRendererFactory from '../components/structured/ContentRendererFactory';
 import WeeklySchedule from '../components/WeeklySchedule';
 import FeaturedEvent from '../components/FeaturedEvent';
 import Leadership from '../components/Leadership';
@@ -50,34 +51,30 @@ const About = () => {
             <div className="divider" />
           </div>
           <DynamicContent
-            section="who_we_are"
+            section="about"
             className="about-content"
-            fallback={
-              <div className="about-content">
-                <div className="about-text">
-                  <p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond. We exist to raise up mature disciples of Jesus, build Gospel-driven communities, and extend the love and truth of Christ to every sphere of life.</p>
-                  <p>We are not just building churches—we are cultivating a missional culture where every believer is equipped to live for Christ, serve others, and make disciples who make disciples.</p>
-                  <p>We operate through prayer, sound teaching, strategic outreach, and compassionate service, believing that true transformation comes only through the power of the Gospel.</p>
+            renderContent={(content) => {
+              return (
+                <div className="about-content">
+                  <div className="about-text">
+                    {typeof content.content === 'string' && (
+                      <ContentRendererFactory
+                        section="about"
+                        content={content.content}
+                        contentId={content._id}
+                      />
+                    )}
+                  </div>
+                  <div className="about-image">
+                    <img
+                      src={getImageUrl(content.image)}
+                      alt={content.title}
+                      onError={(e) => handleImageError(e)}
+                    />
+                  </div>
                 </div>
-                <div className="about-image">
-                  <img src="/images/SPCT/CHURCH BCND.jpg" alt="Shekinah Church Building" />
-                </div>
-              </div>
-            }
-            renderContent={(content) => (
-              <div className="about-content">
-                <div className="about-text">
-                  <div dangerouslySetInnerHTML={{ __html: content.content }} />
-                </div>
-                <div className="about-image">
-                  <img
-                    src={getImageUrl(content.image)}
-                    alt={content.title}
-                    onError={(e) => handleImageError(e)}
-                  />
-                </div>
-              </div>
-            )}
+              );
+            }}
           />
         </div>
       </section>
@@ -89,15 +86,32 @@ const About = () => {
             <h2>Our Vision</h2>
             <div className="divider" />
           </div>
-          <div className="vision-content">
-            <div className="vision-image">
-              <img src="/images/SPCT/CHURCH BCND.jpg" alt="Church Vision" />
-            </div>
-            <div className="vision-text">
-              <p>To see a generation of disciples who are rooted in the truth, shaped by the Gospel, and released to transform communities for the glory of Christ.</p>
-              <p>We envision believers who are spiritually mature, mission-minded, and actively involved in making Jesus known—locally and globally.</p>
-            </div>
-          </div>
+          <DynamicContent
+            section="vision"
+            className="vision-content"
+            renderContent={(content) => {
+              return (
+                <div className="vision-content">
+                  <div className="vision-image">
+                    <img
+                      src={getImageUrl(content.image)}
+                      alt={content.title}
+                      onError={(e) => handleImageError(e)}
+                    />
+                  </div>
+                  <div className="vision-text">
+                    {typeof content.content === 'string' && (
+                      <ContentRendererFactory
+                        section="vision"
+                        content={content.content}
+                        contentId={content._id}
+                      />
+                    )}
+                  </div>
+                </div>
+              );
+            }}
+          />
         </div>
       </section>
 
@@ -108,38 +122,32 @@ const About = () => {
             <h2>Our Mission</h2>
             <div className="divider" />
           </div>
-          <div className="mission-content">
-            <div className="mission-text">
-              <p>We exist to:</p>
-              <ul className="mission-list">
-                <li>
-                  <FontAwesomeIcon icon="book-open" />
-                  <div>
-                    <h3>Proclaim the true Word of God</h3>
-                    <p>Teaching the uncompromised Word of God with clarity and conviction as the foundation of life, discipleship, and mission.</p>
+          <DynamicContent
+            section="mission"
+            className="mission-content"
+            renderContent={(content) => {
+              return (
+                <div className="mission-content">
+                  <div className="mission-text">
+                    {typeof content.content === 'string' && (
+                      <ContentRendererFactory
+                        section="mission"
+                        content={content.content}
+                        contentId={content._id}
+                      />
+                    )}
                   </div>
-                </li>
-                <li>
-                  <FontAwesomeIcon icon="cross" />
-                  <div>
-                    <h3>Spread the true Gospel of Jesus Christ</h3>
-                    <p>Proclaiming the Good News of Jesus Christ clearly, boldly, and faithfully through disciple-making and church planting—calling all people to repentance, faith, and new life.</p>
+                  <div className="mission-image">
+                    <img
+                      src={getImageUrl(content.image)}
+                      alt={content.title}
+                      onError={(e) => handleImageError(e)}
+                    />
                   </div>
-                </li>
-                <li>
-                  <FontAwesomeIcon icon="dove" />
-                  <div>
-                    <h3>Lead people into true freedom</h3>
-                    <p>Helping people experience the real freedom found in Christ alone—spiritual, emotional, and relational—through the power of the cross.</p>
-                  </div>
-                </li>
-              </ul>
-              <p>Our mission is lived out through teaching, training, prayer, community engagement, and empowering leaders who will carry the fire of the Gospel into every corner of society.</p>
-            </div>
-            <div className="mission-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Church Mission" />
-            </div>
-          </div>
+                </div>
+              );
+            }}
+          />
         </div>
       </section>
 

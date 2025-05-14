@@ -121,41 +121,18 @@ const Home = () => {
         </div>
       )}
       {/* Hero Section - Church Branches Slider */}
-      <section id="home" className="hero" style={{
-        position: 'relative',
-        minHeight: '600px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        backgroundColor: '#000'
-      }}>
+      <section id="home" className="hero">
         {/* Background Image */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 0
-        }}>
+        <div className="hero-background">
           <DynamicContent
             section="hero"
             showTitle={false}
             showContent={false}
             renderContent={(content) => (
               <img
-                src={getImageUrl(content.image)}
+                src={getImageUrl(content.image) || '/images/SPCT/CHURCH.jpg'}
                 alt="Church Background"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'center'
-                }}
+                className="hero-bg-image"
                 onError={(e) => handleImageError(e)}
               />
             )}
@@ -163,23 +140,10 @@ const Home = () => {
         </div>
 
         {/* Overlay */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.2)',
-          zIndex: 1
-        }} />
+        <div className="hero-overlay"></div>
 
         {/* Content */}
-        <div style={{
-          position: 'relative',
-          zIndex: 2,
-          width: '100%',
-          padding: '20px'
-        }}>
+        <div className="hero-content">
           <DynamicContent
             section="hero"
             showTitle={false}
@@ -206,13 +170,7 @@ const Home = () => {
             key={`about-${localRefreshTrigger}`}
             section="about"
             className="about-content"
-            truncateContent={true}
-            maxContentLength={200}
             renderContent={(content) => {
-              // Only log in development mode and only occasionally
-              if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
-                console.log('About renderContent called');
-              }
               return (
                 <div className="about-content">
                   <div className="about-text">
@@ -220,8 +178,6 @@ const Home = () => {
                       <ContentRendererFactory
                         section="about"
                         content={content.content}
-                        truncate={true}
-                        maxLength={200}
                         contentId={content._id}
                       />
                     )}
@@ -251,13 +207,7 @@ const Home = () => {
             key={`vision-${localRefreshTrigger}`}
             section="vision"
             className="vision-content"
-            truncateContent={true}
-            maxContentLength={200}
             renderContent={(content) => {
-              // Only log in development mode and only occasionally
-              if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
-                console.log('Vision renderContent called');
-              }
               return (
                 <div className="vision-content">
                   <div className="vision-image">
@@ -272,8 +222,6 @@ const Home = () => {
                       <ContentRendererFactory
                         section="vision"
                         content={content.content}
-                        truncate={true}
-                        maxLength={200}
                         contentId={content._id}
                       />
                     )}
@@ -296,13 +244,7 @@ const Home = () => {
             key={`mission-${localRefreshTrigger}`}
             section="mission"
             className="mission-content"
-            truncateContent={true}
-            maxContentLength={200}
             renderContent={(content) => {
-              // Only log in development mode and only occasionally
-              if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
-                console.log('Mission renderContent called');
-              }
               return (
                 <div className="mission-content">
                   <div className="mission-text">
@@ -310,8 +252,6 @@ const Home = () => {
                       <ContentRendererFactory
                         section="mission"
                         content={content.content}
-                        truncate={true}
-                        maxLength={200}
                         contentId={content._id}
                       />
                     )}
