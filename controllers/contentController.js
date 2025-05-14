@@ -59,64 +59,18 @@ const createOrUpdateContent = async (req, res) => {
       // Update
       contentExists.title = title || contentExists.title;
 
-      // Special handling for leadership content to preserve existing leaders
-      if (section === 'leadership' && content && contentExists.content) {
+      // Special handling for leadership content - complete replacement instead of merging
+      if (section === 'leadership' && content) {
         try {
-          // Parse existing content
-          const existingData = JSON.parse(contentExists.content);
-          // Parse new content
+          // Parse new content to validate it
           const newData = JSON.parse(content);
 
-          // If both have leaders array, merge them
-          if (existingData.leaders && Array.isArray(existingData.leaders) &&
-              newData.leaders && Array.isArray(newData.leaders)) {
+          // Check if it has the expected structure
+          if (newData.leaders && Array.isArray(newData.leaders)) {
+            console.log(`Leadership content update: Replacing with ${newData.leaders.length} leaders`);
 
-            console.log('Merging leadership data');
-
-            // Create a map of existing leaders by name for quick lookup
-            const existingLeadersMap = {};
-            for (const leader of existingData.leaders) {
-              if (leader.name) {
-                existingLeadersMap[leader.name.toLowerCase()] = leader;
-              }
-            }
-
-            // Process new leaders
-            const mergedLeaders = [...existingData.leaders]; // Start with all existing leaders
-
-            // For each new leader
-            for (const newLeader of newData.leaders) {
-              if (!newLeader.name) continue; // Skip leaders without names
-
-              const lowerName = newLeader.name.toLowerCase();
-
-              // Check if this leader already exists (by name)
-              if (existingLeadersMap[lowerName]) {
-                // Update existing leader
-                const existingIndex = mergedLeaders.findIndex(
-                  l => l.name && l.name.toLowerCase() === lowerName
-                );
-
-                if (existingIndex !== -1) {
-                  // Replace the existing leader with the updated one
-                  mergedLeaders[existingIndex] = newLeader;
-                }
-              } else {
-                // This is a new leader, add to the array
-                mergedLeaders.push(newLeader);
-              }
-            }
-
-            // Create the merged content
-            const mergedContent = {
-              ...newData,
-              leaders: mergedLeaders
-            };
-
-            // Update the content with the merged data
-            contentExists.content = JSON.stringify(mergedContent);
-
-            console.log(`Leadership data merged. Total leaders: ${mergedLeaders.length}`);
+            // Simply use the new content directly - no merging
+            contentExists.content = content;
           } else {
             // Fallback to standard update if structure is unexpected
             contentExists.content = content;

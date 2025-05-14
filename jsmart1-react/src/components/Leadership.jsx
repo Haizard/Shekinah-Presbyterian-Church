@@ -19,28 +19,45 @@ const Leadership = () => {
   const { createOrUpdateContent, refreshContent } = useContext(ContentContext);
 
   // Fetch leadership data directly from API
-  useEffect(() => {
-    const fetchLeadershipData = async () => {
-      try {
-        setLoading(true);
-        // Direct API call similar to Events component
-        const data = await api.content.getBySection('leadership');
+  const fetchLeadershipData = async () => {
+    try {
+      setLoading(true);
+      // Direct API call similar to Events component
+      const data = await api.content.getBySection('leadership');
 
-        if (data?.content) {
-          setLeadershipData(data);
-        } else {
-          setLeadershipData(null);
-        }
-        setError(null);
-      } catch (err) {
-        setError('Failed to load leadership data');
+      if (data?.content) {
+        setLeadershipData(data);
+      } else {
         setLeadershipData(null);
-      } finally {
-        setLoading(false);
+      }
+      setError(null);
+    } catch (err) {
+      setError('Failed to load leadership data');
+      setLeadershipData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchLeadershipData();
+
+    // Set up a refresh function on the window object
+    if (typeof window !== 'undefined') {
+      if (!window.refreshDynamicContent) {
+        window.refreshDynamicContent = {};
+      }
+      window.refreshDynamicContent.leadership = fetchLeadershipData;
+    }
+
+    // Clean up the refresh function when component unmounts
+    return () => {
+      if (typeof window !== 'undefined' && window.refreshDynamicContent) {
+        window.refreshDynamicContent.leadership = null;
       }
     };
-
-    fetchLeadershipData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Function to create sample leadership content for testing (only available in development)
@@ -86,6 +103,8 @@ const Leadership = () => {
       if (result) {
         alert('Sample leadership content created successfully! Refreshing...');
         refreshContent();
+        // Refresh the leadership data
+        fetchLeadershipData();
       } else {
         alert('Failed to create sample leadership content.');
       }
