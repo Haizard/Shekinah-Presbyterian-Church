@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 
 // Load environment variables
 dotenv.config();
@@ -25,36 +26,64 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Static file serving configuration
 if (process.env.NODE_ENV === 'production') {
-  // In production, serve files from the React build directory first
   console.log('Setting up static file serving for production...');
 
-  // Serve static files from the React build directory
-  app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist'), {
-    maxAge: '1d' // Cache for 1 day
+  // CRITICAL: First, set up a direct route for uploads to ensure they're always accessible
+  // This is the most important change - it ensures uploads are served directly without any middleware interference
+  app.get('/uploads/*', (req, res, next) => {
+    console.log('Direct uploads route hit:', req.path);
+
+    // Try to serve from public/uploads first
+    const publicPath = path.join(__dirname, 'public', req.path);
+    if (fs.existsSync(publicPath)) {
+      console.log('Serving from public uploads:', publicPath);
+      return res.sendFile(publicPath);
+    }
+
+    // If not found in public, try dist/uploads
+    const distPath = path.join(__dirname, 'jsmart1-react', 'dist', req.path);
+    if (fs.existsSync(distPath)) {
+      console.log('Serving from dist uploads:', distPath);
+      return res.sendFile(distPath);
+    }
+
+    // If not found in either location, continue to next middleware
+    console.log('File not found in uploads directories:', req.path);
+    next();
+  });
+
+  // Special handling for the uploads directory to ensure it's always accessible
+  // This is crucial for user-uploaded content - serve from public/uploads first
+  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), {
+    maxAge: '0', // Disable caching for uploads
+    etag: false, // Disable etag for uploads
+    lastModified: false // Disable last-modified for uploads
   }));
 
-  // Serve static files from the public directory as a fallback
-  // This ensures files in public are still accessible if they're not in the build directory
+  // Also serve from the dist/uploads directory as a fallback
+  app.use('/uploads', express.static(path.join(__dirname, 'jsmart1-react', 'dist', 'uploads'), {
+    maxAge: '0', // Disable caching for uploads
+    etag: false, // Disable etag for uploads
+    lastModified: false // Disable last-modified for uploads
+  }));
+
+  // Then serve static files from the public directory
+  // This ensures public files take precedence over dist files
   app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: '1d' // Cache for 1 day
   }));
 
-  // Special handling for the uploads directory to ensure it's always accessible
-  // This is crucial for user-uploaded content
-  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), {
-    maxAge: '1h' // Cache for 1 hour only for uploads to allow for updates
-  }));
-
-  // Also serve from the dist/uploads directory as another fallback
-  app.use('/uploads', express.static(path.join(__dirname, 'jsmart1-react', 'dist', 'uploads'), {
-    maxAge: '1h' // Cache for 1 hour
+  // Finally serve static files from the React build directory
+  app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist'), {
+    maxAge: '1d' // Cache for 1 day
   }));
 
   console.log('Static file paths configured for production:');
-  console.log('- Primary: ' + path.join(__dirname, 'jsmart1-react', 'dist'));
-  console.log('- Fallback: ' + path.join(__dirname, 'public'));
+  console.log('- Uploads direct route (highest priority)');
   console.log('- Uploads (1): ' + path.join(__dirname, 'public', 'uploads'));
   console.log('- Uploads (2): ' + path.join(__dirname, 'jsmart1-react', 'dist', 'uploads'));
+  console.log('- Public: ' + path.join(__dirname, 'public'));
+  console.log('- Dist: ' + path.join(__dirname, 'jsmart1-react', 'dist'));
 } else {
   // In development, serve files from the public directory
   console.log('Setting up static file serving for development...');

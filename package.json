@@ -13,12 +13,14 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "init-admin": "node initAdmin.js",
     "seed-data": "node seedData.js",
-    "build": "cd jsmart1-react && npm install --include=dev && npm run build && cd .. && node preserve-uploads.js && node copy-uploads.js",
+    "build": "cd jsmart1-react && npm install --include=dev && npm run build && cd .. && node preserve-uploads.js && node copy-uploads.js && node persistent-uploads.js",
     "install-client": "cd jsmart1-react && npm install --include=dev",
     "setup": "node setup.js",
     "preserve-uploads": "node preserve-uploads.js",
     "copy-uploads": "node copy-uploads.js",
-    "render-postbuild": "chmod +x build.sh && ./build.sh && node preserve-uploads.js && node copy-uploads.js"
+    "persistent-uploads": "node persistent-uploads.js",
+    "render-postbuild": "chmod +x build.sh && ./build.sh && node preserve-uploads.js && node copy-uploads.js && node persistent-uploads.js",
+    "fix-images": "node persistent-uploads.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

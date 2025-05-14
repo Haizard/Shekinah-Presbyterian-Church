@@ -5,7 +5,7 @@ services:
     buildCommand: >
       cd jsmart1-react && npm install && npm run build && cd .. &&
       npm install &&
-      node preserve-uploads.js && node copy-uploads.js
+      node preserve-uploads.js && node copy-uploads.js && node persistent-uploads.js
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
@@ -14,4 +14,8 @@ services:
         value: mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - key: JWT_SECRET
         generateValue: true
+      - key: PERSISTENT_DIR
+        value: /var/data/uploads
+      - key: PROJECT_ROOT
+        value: /opt/render/project/src
     healthCheckPath: /api/health

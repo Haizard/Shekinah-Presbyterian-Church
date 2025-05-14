@@ -34,32 +34,32 @@ export const getImageUrl = (imagePath, fallbackImage = '/images/SPCT/CHURCH.jpg'
     return fallbackImage;
   }
 
+  // If the image path is a full URL, return it as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+
   // If the image path starts with /uploads, it's a user-uploaded image
   if (imagePath.startsWith('/uploads')) {
-    // In production, we want to ensure we're using the correct path
-    // The uploads directory is served directly from the public folder
-    // so we should use the path as-is without any base URL in production
-    const baseUrl = getBaseUrl();
-
-    // In production, try both paths - with and without the base URL
-    // This helps ensure we find the image regardless of where it's served from
+    // Determine if we're in production or development
     const isProduction = typeof window !== 'undefined' &&
       window.location.hostname !== 'localhost' &&
       window.location.hostname !== '127.0.0.1';
 
     if (isProduction) {
-      // In production, use the path as-is (no base URL)
-      // Add a cache-busting parameter to prevent caching issues
-      const timestamp = new Date().getTime();
-      return `${imagePath}?t=${timestamp}`;
+      // CRITICAL FIX: In production, always use a direct path with a unique timestamp
+      // This forces the browser to make a new request every time
+      const uniqueId = Date.now() + Math.random().toString(36).substring(2, 10);
+      return `${imagePath}?nocache=${uniqueId}`;
     } else {
       // In development, use the full URL with the base URL
+      const baseUrl = getBaseUrl();
       return `${baseUrl}${imagePath}`;
     }
   }
 
-  // If the image path is a full URL, return it as is
-  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+  // For other static images (not in uploads), use as is
+  if (imagePath.startsWith('/')) {
     return imagePath;
   }
 
@@ -77,8 +77,11 @@ export const handleImageError = (event, fallbackImage = '/images/SPCT/CHURCH.jpg
   // Get the original source that failed
   const originalSrc = event.target.src;
 
-  // If this is already a fallback image or we've already tried alternative paths, use the final fallback
-  if (event.target.hasAttribute('data-tried-alternatives') || originalSrc === fallbackImage) {
+  // Track how many attempts we've made
+  const attempts = parseInt(event.target.getAttribute('data-retry-attempts') || '0');
+
+  // If we've tried too many times or this is the fallback image, use the final fallback
+  if (attempts >= 3 || originalSrc === fallbackImage || originalSrc.includes(fallbackImage)) {
     // Prevent infinite loop
     event.target.onerror = null;
 
@@ -86,7 +89,7 @@ export const handleImageError = (event, fallbackImage = '/images/SPCT/CHURCH.jpg
     event.target.src = fallbackImage;
 
     // Log the error for debugging
-    console.warn(`Image load error${componentName ? ` in ${componentName}` : ''} - using final fallback:`, {
+    console.warn(`Image load error${componentName ? ` in ${componentName}` : ''} - using final fallback after ${attempts} attempts:`, {
       originalSrc,
       fallbackUsed: fallbackImage
     });
@@ -97,36 +100,53 @@ export const handleImageError = (event, fallbackImage = '/images/SPCT/CHURCH.jpg
     return;
   }
 
-  // Try alternative paths before falling back to the default image
-  // This helps handle cases where the image might be in a different location in production
-
-  // Mark that we've tried alternatives to prevent infinite loops
-  event.target.setAttribute('data-tried-alternatives', 'true');
+  // Increment the attempt counter
+  event.target.setAttribute('data-retry-attempts', (attempts + 1).toString());
 
   // Get the original path without query parameters
   const pathWithoutQuery = originalSrc.split('?')[0];
 
-  // If the path includes /uploads, try alternative paths
-  if (pathWithoutQuery.includes('/uploads')) {
-    // Try the path with a cache-busting parameter
-    const timestamp = new Date().getTime();
-    const newSrc = `${pathWithoutQuery}?t=${timestamp}`;
+  // Extract the filename from the path
+  const filename = pathWithoutQuery.split('/').pop();
 
-    console.log(`Trying alternative image path: ${newSrc}`);
-    event.target.src = newSrc;
-  } else {
-    // If not an uploads path or we've already tried alternatives, use the fallback
-    event.target.onerror = null;
-    event.target.src = fallbackImage;
-    event.target.setAttribute('data-using-fallback', 'true');
-    event.target.setAttribute('data-original-src', originalSrc);
+  // CRITICAL FIX: Try multiple alternative paths
+  let newSrc;
 
-    // Log the error for debugging
-    console.warn(`Image load error${componentName ? ` in ${componentName}` : ''} - using fallback:`, {
-      originalSrc,
-      fallbackUsed: fallbackImage
-    });
+  // Determine which alternative to try based on the attempt number
+  switch (attempts) {
+    case 0:
+      // First attempt: Try with a unique cache-busting parameter
+      const uniqueId = Date.now() + Math.random().toString(36).substring(2, 10);
+      newSrc = `${pathWithoutQuery}?nocache=${uniqueId}`;
+      console.log(`First retry attempt: ${newSrc}`);
+      break;
+
+    case 1:
+      // Second attempt: Try the direct /uploads path
+      newSrc = `/uploads/${filename}?nocache=${Date.now()}`;
+      console.log(`Second retry attempt (direct uploads path): ${newSrc}`);
+      break;
+
+    case 2:
+      // Third attempt: Try with a different path structure
+      // This handles cases where the image might be in a different location
+      if (pathWithoutQuery.includes('/uploads')) {
+        // If it's already an uploads path, try without the /uploads prefix
+        newSrc = `/${filename}?nocache=${Date.now()}`;
+      } else {
+        // If it's not an uploads path, try with the /uploads prefix
+        newSrc = `/uploads/${filename}?nocache=${Date.now()}`;
+      }
+      console.log(`Third retry attempt (alternative path structure): ${newSrc}`);
+      break;
+
+    default:
+      // Fallback to the default image
+      newSrc = fallbackImage;
   }
+
+  // Set the new source
+  event.target.src = newSrc;
 };
 
 /**
