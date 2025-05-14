@@ -23,6 +23,9 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Serve static files from the public directory - ALWAYS include this line
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Serve static files from the React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist')));

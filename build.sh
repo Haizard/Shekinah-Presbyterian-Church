@@ -25,4 +25,12 @@ cd ..
 echo "Initializing admin user..."
 node initAdmin.js || true
 
+# Ensure uploads directory exists
+echo "Preserving uploads directory..."
+node preserve-uploads.js
+
+# Copy uploads to the dist directory
+echo "Copying uploads to dist directory..."
+node copy-uploads.js
+
 echo "Build completed successfully!"

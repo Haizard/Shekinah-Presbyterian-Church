@@ -37,6 +37,10 @@ build
 jsmart1-react/dist
 jsmart1-react/build
 
+# Ensure uploads directory is tracked
+!public/uploads/
+!public/uploads/.gitkeep
+
 # Misc
 .DS_Store
 .idea
