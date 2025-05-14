@@ -1,11 +1,11 @@
 services:
   - type: web
     name: shekinah-church-website
-    env: node
+    runtime: node
     buildCommand: >
       cd jsmart1-react && npm install && npm run build && cd .. &&
       npm install &&
-      node preserve-uploads.js && node copy-uploads.js && node persistent-uploads.js
+      node preserve-uploads.js && node copy-uploads.js && node restore-images.js
     startCommand: node server.js
     envVars:
       - key: NODE_ENV

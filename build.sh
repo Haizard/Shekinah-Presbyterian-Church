@@ -33,8 +33,8 @@ node preserve-uploads.js
 echo "Copying uploads to dist directory..."
 node copy-uploads.js
 
-# Create persistent storage for uploads
-echo "Setting up persistent storage for uploads..."
-node persistent-uploads.js
+# Restore images from MongoDB
+echo "Restoring images from MongoDB..."
+node restore-images.js
 
 echo "Build completed successfully!"

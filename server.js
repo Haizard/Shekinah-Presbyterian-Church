@@ -28,62 +28,23 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 if (process.env.NODE_ENV === 'production') {
   console.log('Setting up static file serving for production...');
 
-  // CRITICAL: First, set up a direct route for uploads to ensure they're always accessible
-  // This is the most important change - it ensures uploads are served directly without any middleware interference
-  app.get('/uploads/*', (req, res, next) => {
-    console.log('Direct uploads route hit:', req.path);
+  // Note: We no longer need a direct route for uploads because we're serving images from MongoDB
+  // through the /api/upload/:filename route
 
-    // Try to serve from public/uploads first
-    const publicPath = path.join(__dirname, 'public', req.path);
-    if (fs.existsSync(publicPath)) {
-      console.log('Serving from public uploads:', publicPath);
-      return res.sendFile(publicPath);
-    }
-
-    // If not found in public, try dist/uploads
-    const distPath = path.join(__dirname, 'jsmart1-react', 'dist', req.path);
-    if (fs.existsSync(distPath)) {
-      console.log('Serving from dist uploads:', distPath);
-      return res.sendFile(distPath);
-    }
-
-    // If not found in either location, continue to next middleware
-    console.log('File not found in uploads directories:', req.path);
-    next();
-  });
-
-  // Special handling for the uploads directory to ensure it's always accessible
-  // This is crucial for user-uploaded content - serve from public/uploads first
-  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), {
-    maxAge: '0', // Disable caching for uploads
-    etag: false, // Disable etag for uploads
-    lastModified: false // Disable last-modified for uploads
-  }));
-
-  // Also serve from the dist/uploads directory as a fallback
-  app.use('/uploads', express.static(path.join(__dirname, 'jsmart1-react', 'dist', 'uploads'), {
-    maxAge: '0', // Disable caching for uploads
-    etag: false, // Disable etag for uploads
-    lastModified: false // Disable last-modified for uploads
-  }));
-
-  // Then serve static files from the public directory
-  // This ensures public files take precedence over dist files
+  // Serve static files from the public directory
   app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: '1d' // Cache for 1 day
   }));
 
-  // Finally serve static files from the React build directory
+  // Serve static files from the React build directory
   app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist'), {
     maxAge: '1d' // Cache for 1 day
   }));
 
   console.log('Static file paths configured for production:');
-  console.log('- Uploads direct route (highest priority)');
-  console.log('- Uploads (1): ' + path.join(__dirname, 'public', 'uploads'));
-  console.log('- Uploads (2): ' + path.join(__dirname, 'jsmart1-react', 'dist', 'uploads'));
   console.log('- Public: ' + path.join(__dirname, 'public'));
   console.log('- Dist: ' + path.join(__dirname, 'jsmart1-react', 'dist'));
+  console.log('- Images are served from MongoDB through /api/upload/:filename');
 } else {
   // In development, serve files from the public directory
   console.log('Setting up static file serving for development...');
@@ -184,6 +145,78 @@ app.use((err, req, res, next) => {
 
 // Set port and start server
 const PORT = process.env.PORT || 5002;
-app.listen(PORT, () => {
+
+// Function to restore images from MongoDB to filesystem
+const restoreImagesFromMongoDB = async () => {
+  try {
+    // Only run in production
+    if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
+
+    console.log('Restoring images from MongoDB to filesystem...');
+
+    // Import the Image model
+    const Image = require('./models/Image');
+
+    // Get all images from MongoDB
+    const images = await Image.find();
+
+    if (!images || images.length === 0) {
+      console.log('No images found in database');
+      return;
+    }
+
+    console.log(`Found ${images.length} images in database`);
+
+    // Create uploads directory if it doesn't exist
+    const uploadsDir = path.join(__dirname, 'public', 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+      console.log('Created uploads directory:', uploadsDir);
+    }
+
+    // Create dist/uploads directory if it doesn't exist
+    const distUploadsDir = path.join(__dirname, 'jsmart1-react', 'dist', 'uploads');
+    if (fs.existsSync(path.join(__dirname, 'jsmart1-react', 'dist'))) {
+      if (!fs.existsSync(distUploadsDir)) {
+        fs.mkdirSync(distUploadsDir, { recursive: true });
+        console.log('Created dist/uploads directory:', distUploadsDir);
+      }
+    }
+
+    // Restore each image to the filesystem
+    let restoredCount = 0;
+    let errorCount = 0;
+
+    for (const image of images) {
+      try {
+        // Write to public/uploads
+        const filePath = path.join(uploadsDir, image.filename);
+        fs.writeFileSync(filePath, image.data);
+
+        // Write to dist/uploads if it exists
+        if (fs.existsSync(distUploadsDir)) {
+          const distFilePath = path.join(distUploadsDir, image.filename);
+          fs.writeFileSync(distFilePath, image.data);
+        }
+
+        restoredCount++;
+      } catch (error) {
+        console.error(`Error restoring image ${image.filename}:`, error);
+        errorCount++;
+      }
+    }
+
+    console.log(`Restored ${restoredCount} images with ${errorCount} errors`);
+  } catch (error) {
+    console.error('Error restoring images:', error);
+  }
+};
+
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+
+  // Restore images from MongoDB to filesystem
+  await restoreImagesFromMongoDB();
 });

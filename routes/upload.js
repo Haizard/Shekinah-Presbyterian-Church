@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { uploadFile } = require('../controllers/uploadController');
+const { uploadFile, getImage, restoreImages } = require('../controllers/uploadController');
 const { protect, admin } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
@@ -41,5 +41,11 @@ router.post('/',
   },
   uploadFile
 );
+
+// Get image by filename - this route serves images directly from MongoDB
+router.get('/:filename', getImage);
+
+// Restore images from MongoDB to filesystem
+router.post('/restore', protect, admin, restoreImages);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const Image = require('../models/Image');
 
 // Function to calculate file hash for verification
 const calculateFileHash = (filePath) => {
@@ -69,44 +70,72 @@ const uploadFile = async (req, res) => {
       return res.status(500).json({ message: 'File upload failed - file not saved to disk' });
     }
 
-    // CRITICAL FIX: Also save to persistent directory if it's defined
-    const persistentDir = process.env.PERSISTENT_DIR;
-    if (persistentDir) {
-      // Ensure the persistent directory exists
-      if (!fs.existsSync(persistentDir)) {
-        fs.mkdirSync(persistentDir, { recursive: true });
-        console.log('Created persistent directory:', persistentDir);
-      }
+    // CRITICAL FIX: Save the image to MongoDB
+    try {
+      // Read the file data
+      const fileData = fs.readFileSync(filePath);
 
-      // Copy the file to the persistent directory
-      const persistentPath = path.join(persistentDir, req.file.filename);
-      const copySuccess = copyFile(filePath, persistentPath);
+      // Create a new Image document
+      const image = new Image({
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        data: fileData
+      });
 
-      if (copySuccess) {
-        console.log(`File also saved to persistent directory: ${persistentPath}`);
-      } else {
-        console.error(`Failed to save file to persistent directory: ${persistentPath}`);
-      }
+      // Save the image to MongoDB
+      await image.save();
+      console.log(`Image saved to MongoDB: ${req.file.filename}`);
+    } catch (dbError) {
+      console.error('Error saving image to MongoDB:', dbError);
+      // Continue even if MongoDB save fails - we'll still have the file on disk
     }
 
-    // CRITICAL FIX: Also save to dist/uploads directory
-    const distUploadsDir = path.join(__dirname, '..', 'jsmart1-react', 'dist', 'uploads');
-    if (fs.existsSync(path.join(__dirname, '..', 'jsmart1-react', 'dist'))) {
-      // Ensure the dist/uploads directory exists
-      if (!fs.existsSync(distUploadsDir)) {
-        fs.mkdirSync(distUploadsDir, { recursive: true });
-        console.log('Created dist/uploads directory:', distUploadsDir);
+    // Also save to filesystem for local development and as a backup
+    try {
+      // CRITICAL FIX: Also save to persistent directory if it's defined
+      const persistentDir = process.env.PERSISTENT_DIR;
+      if (persistentDir) {
+        // Ensure the persistent directory exists
+        if (!fs.existsSync(persistentDir)) {
+          fs.mkdirSync(persistentDir, { recursive: true });
+          console.log('Created persistent directory:', persistentDir);
+        }
+
+        // Copy the file to the persistent directory
+        const persistentPath = path.join(persistentDir, req.file.filename);
+        const copySuccess = copyFile(filePath, persistentPath);
+
+        if (copySuccess) {
+          console.log(`File also saved to persistent directory: ${persistentPath}`);
+        } else {
+          console.error(`Failed to save file to persistent directory: ${persistentPath}`);
+        }
       }
 
-      // Copy the file to the dist/uploads directory
-      const distPath = path.join(distUploadsDir, req.file.filename);
-      const distCopySuccess = copyFile(filePath, distPath);
+      // CRITICAL FIX: Also save to dist/uploads directory
+      const distUploadsDir = path.join(__dirname, '..', 'jsmart1-react', 'dist', 'uploads');
+      if (fs.existsSync(path.join(__dirname, '..', 'jsmart1-react', 'dist'))) {
+        // Ensure the dist/uploads directory exists
+        if (!fs.existsSync(distUploadsDir)) {
+          fs.mkdirSync(distUploadsDir, { recursive: true });
+          console.log('Created dist/uploads directory:', distUploadsDir);
+        }
 
-      if (distCopySuccess) {
-        console.log(`File also saved to dist/uploads directory: ${distPath}`);
-      } else {
-        console.error(`Failed to save file to dist/uploads directory: ${distPath}`);
+        // Copy the file to the dist/uploads directory
+        const distPath = path.join(distUploadsDir, req.file.filename);
+        const distCopySuccess = copyFile(filePath, distPath);
+
+        if (distCopySuccess) {
+          console.log(`File also saved to dist/uploads directory: ${distPath}`);
+        } else {
+          console.error(`Failed to save file to dist/uploads directory: ${distPath}`);
+        }
       }
+    } catch (fsError) {
+      console.error('Error saving to filesystem:', fsError);
+      // Continue even if filesystem save fails - we'll still have the file in MongoDB
     }
 
     console.log('File uploaded successfully:', {
@@ -131,6 +160,116 @@ const uploadFile = async (req, res) => {
   }
 };
 
+// @desc    Get image by filename
+// @route   GET /api/upload/:filename
+// @access  Public
+const getImage = async (req, res) => {
+  try {
+    const { filename } = req.params;
+
+    console.log(`Image request received for: ${filename}`);
+
+    // First try to find the image in MongoDB
+    const image = await Image.findOne({ filename });
+
+    if (image) {
+      // Set the appropriate content type
+      res.set('Content-Type', image.mimetype);
+
+      // Send the image data
+      return res.send(image.data);
+    }
+
+    // If not found in MongoDB, try to find it in the filesystem
+    const filePath = path.join(__dirname, '..', 'public', 'uploads', filename);
+
+    if (fs.existsSync(filePath)) {
+      console.log(`Serving image from filesystem: ${filePath}`);
+      return res.sendFile(filePath);
+    }
+
+    // If not found in the public directory, try the dist directory
+    const distFilePath = path.join(__dirname, '..', 'jsmart1-react', 'dist', 'uploads', filename);
+
+    if (fs.existsSync(distFilePath)) {
+      console.log(`Serving image from dist directory: ${distFilePath}`);
+      return res.sendFile(distFilePath);
+    }
+
+    // If not found anywhere, return a 404
+    console.log(`Image not found: ${filename}`);
+    return res.status(404).json({ message: 'Image not found' });
+  } catch (error) {
+    console.error('Error getting image:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Restore images from MongoDB to filesystem
+// @route   POST /api/upload/restore
+// @access  Private/Admin
+const restoreImages = async (req, res) => {
+  try {
+    // Get all images from MongoDB
+    const images = await Image.find();
+
+    if (!images || images.length === 0) {
+      return res.status(404).json({ message: 'No images found in database' });
+    }
+
+    // Create uploads directory if it doesn't exist
+    const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+      console.log('Created uploads directory:', uploadsDir);
+    }
+
+    // Create dist/uploads directory if it doesn't exist
+    const distUploadsDir = path.join(__dirname, '..', 'jsmart1-react', 'dist', 'uploads');
+    if (fs.existsSync(path.join(__dirname, '..', 'jsmart1-react', 'dist'))) {
+      if (!fs.existsSync(distUploadsDir)) {
+        fs.mkdirSync(distUploadsDir, { recursive: true });
+        console.log('Created dist/uploads directory:', distUploadsDir);
+      }
+    }
+
+    // Restore each image to the filesystem
+    let restoredCount = 0;
+    let errorCount = 0;
+
+    for (const image of images) {
+      try {
+        // Write to public/uploads
+        const filePath = path.join(uploadsDir, image.filename);
+        fs.writeFileSync(filePath, image.data);
+
+        // Write to dist/uploads if it exists
+        if (fs.existsSync(distUploadsDir)) {
+          const distFilePath = path.join(distUploadsDir, image.filename);
+          fs.writeFileSync(distFilePath, image.data);
+        }
+
+        restoredCount++;
+      } catch (error) {
+        console.error(`Error restoring image ${image.filename}:`, error);
+        errorCount++;
+      }
+    }
+
+    res.json({
+      message: `Restored ${restoredCount} images with ${errorCount} errors`,
+      total: images.length,
+      restored: restoredCount,
+      errors: errorCount
+    });
+  } catch (error) {
+    console.error('Error restoring images:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   uploadFile,
+  getImage,
+  restoreImages
 };
