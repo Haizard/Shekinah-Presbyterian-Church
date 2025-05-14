@@ -236,6 +236,41 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Slider controls */
+.slider-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+.play-button {
+  background-color: var(--accent-color);
+  color: var(--light-color);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.play-button:hover {
+  background-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.play-button svg {
+  font-size: 1rem;
+  margin-left: 2px; /* Slight offset for play icon */
+}
+
 /* Slick slider custom styles */
 .branch-slider {
   width: 100%;

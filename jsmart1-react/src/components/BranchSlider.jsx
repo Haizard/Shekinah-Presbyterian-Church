@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faUser, faPhone, faChurch } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faUser, faPhone, faChurch, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../styles/BranchSlider.css';
 
 const BranchSlider = ({ branches }) => {
+  // Create a ref for the slider
+  const sliderRef = useRef(null);
+
   // Settings for the slider
   const settings = {
     dots: true,
@@ -16,13 +19,39 @@ const BranchSlider = ({ branches }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 20000, // 20 seconds per slide
+    autoplaySpeed: 10000, // 10 seconds per slide
     pauseOnHover: true,
     fade: true,
     arrows: true,
     className: 'branch-slider',
     adaptiveHeight: true
   };
+
+  // Function to manually play the slider
+  const playSlider = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickPlay();
+      console.log('Branch slider manually played');
+    }
+  };
+
+  // Ensure autoplay is working correctly
+  useEffect(() => {
+    // If slider is initialized and has branches
+    if (sliderRef.current && branches && branches.length > 0) {
+      console.log('Branch slider initialized with autoplay');
+
+      // Force autoplay to start
+      const timer = setTimeout(() => {
+        if (sliderRef.current) {
+          sliderRef.current.slickPlay();
+          console.log('Branch slider autoplay started');
+        }
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [branches]);
 
   // If no branches, return a message
   if (!branches || branches.length === 0) {
@@ -44,7 +73,12 @@ const BranchSlider = ({ branches }) => {
       <h2 className="branch-slider-title">
         <FontAwesomeIcon icon={faChurch} /> Shekinah Presbyterian Church
       </h2>
-      <Slider {...settings}>
+      <div className="slider-controls">
+        <button className="play-button" onClick={playSlider} title="Play Slideshow">
+          <FontAwesomeIcon icon={faPlay} />
+        </button>
+      </div>
+      <Slider ref={sliderRef} {...settings}>
         {branches.map((branch) => (
           <div key={branch._id} className="branch-slide">
             <div className="branch-slide-content">
