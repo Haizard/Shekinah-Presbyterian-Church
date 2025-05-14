@@ -13,11 +13,62 @@ if (!isLocalhost) {
   // Production - since backend and frontend are deployed together on Render,
   // we use a relative URL to the current domain
   API_BASE_URL = '';
-  // Removed console log to prevent browser overload
+  console.log('Production mode: API_BASE_URL set to empty string (relative URLs)');
 } else {
   // Development - use localhost with the specific port
-  API_BASE_URL = 'http://localhost:5001';
-  console.log('API_BASE_URL set to:', API_BASE_URL);
+  // Try port 5002 since the error logs show connection refused on 5001
+  API_BASE_URL = 'http://localhost:5002';
+  console.log('Development mode: API_BASE_URL set to:', API_BASE_URL);
+
+  // Set up a function to test the API connection and switch ports if needed
+  const testApiConnection = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/health`);
+      if (response.ok) {
+        console.log('API connection successful on port 5002');
+      } else {
+        console.warn('API health check failed on port 5002, will try fallback ports');
+        // Try port 5001 as fallback
+        try {
+          const fallbackResponse = await fetch('http://localhost:5001/api/health');
+          if (fallbackResponse.ok) {
+            API_BASE_URL = 'http://localhost:5001';
+            console.log('Switched to fallback API_BASE_URL:', API_BASE_URL);
+          } else {
+            // Try port 3001 as second fallback (common Node.js API port)
+            const secondFallbackResponse = await fetch('http://localhost:3001/api/health');
+            if (secondFallbackResponse.ok) {
+              API_BASE_URL = 'http://localhost:3001';
+              console.log('Switched to second fallback API_BASE_URL:', API_BASE_URL);
+            }
+          }
+        } catch (fallbackError) {
+          console.error('All API connection attempts failed');
+        }
+      }
+    } catch (error) {
+      console.warn('API connection test failed, will try fallback ports');
+      // Try port 5001 as fallback
+      try {
+        const fallbackResponse = await fetch('http://localhost:5001/api/health');
+        if (fallbackResponse.ok) {
+          API_BASE_URL = 'http://localhost:5001';
+          console.log('Switched to fallback API_BASE_URL:', API_BASE_URL);
+        } else {
+          // Try empty base URL as last resort (for same-origin API)
+          API_BASE_URL = '';
+          console.log('Using empty API_BASE_URL as last resort');
+        }
+      } catch (fallbackError) {
+        // As a last resort, try with empty base URL (same-origin)
+        API_BASE_URL = '';
+        console.log('All connection attempts failed. Using empty API_BASE_URL as last resort');
+      }
+    }
+  };
+
+  // Run the test immediately
+  testApiConnection();
 }
 
 // Removed environment logging to prevent browser overload
@@ -495,8 +546,8 @@ const api = {
 
         return response.json();
       } catch (error) {
-        // Removed console error to prevent browser overload
-        throw error;
+        console.error('Upload failed:', error.message);
+        throw new Error(`Upload failed: ${error.message}`);
       }
     },
   },

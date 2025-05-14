@@ -57,7 +57,6 @@ const ContentRendererFactory = ({ section, content }) => {
 
     case 'leadership':
       console.log(`ContentRendererFactory: Using LeadershipRenderer for section "${section}"`);
-      console.log('ContentRendererFactory: Leadership content:', parsedContent);
       return <LeadershipRenderer content={parsedContent} />;
 
     default:
