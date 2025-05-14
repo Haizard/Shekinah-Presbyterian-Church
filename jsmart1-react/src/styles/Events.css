@@ -389,78 +389,6 @@
   margin-bottom: 1.5rem;
 }
 
-/* Event Registration */
-.registration-content {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-}
-
-.registration-info {
-  background-color: var(--light-color);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  box-shadow: var(--box-shadow);
-}
-
-.registration-info ul {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0;
-}
-
-.registration-info li {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.8rem;
-}
-
-.registration-info li svg {
-  color: var(--primary-color);
-  margin-right: 0.8rem;
-}
-
-.registration-form {
-  background-color: var(--light-color);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  box-shadow: var(--box-shadow);
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-sm);
-  font-family: 'Open Sans', sans-serif;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-}
-
 /* Media Queries */
 @media (min-width: 768px) {
   .events-grid {
@@ -518,14 +446,6 @@
     grid-template-columns: 1fr 2fr 1fr;
     gap: 1rem;
     align-items: center;
-  }
-
-  .registration-content {
-    grid-template-columns: 1fr 2fr;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr 1fr;
   }
 }
 

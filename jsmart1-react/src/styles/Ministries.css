@@ -224,66 +224,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Testimonials Section */
-.testimonials-slider {
-  max-width: 800px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-}
-
-.testimonial {
-  background-color: var(--light-color);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  box-shadow: var(--box-shadow);
-}
-
-.testimonial-content {
-  font-size: 1.1rem;
-  font-style: italic;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.testimonial-content p {
-  position: relative;
-  z-index: 1;
-}
-
-.testimonial-content::before {
-  content: '"';
-  font-size: 5rem;
-  color: rgba(59, 130, 246, 0.1);
-  position: absolute;
-  top: -2rem;
-  left: -1rem;
-  z-index: 0;
-}
-
-.testimonial-author {
-  display: flex;
-  align-items: center;
-}
-
-.testimonial-author img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 1rem;
-}
-
-.testimonial-author h4 {
-  margin-bottom: 0.2rem;
-}
-
-.testimonial-author p {
-  color: var(--text-light);
-  font-size: 0.9rem;
-}
-
 /* Media Queries */
 @media (min-width: 768px) {
   .ministries-grid {
@@ -320,10 +260,6 @@
 @media (min-width: 992px) {
   .get-involved-steps {
     grid-template-columns: repeat(4, 1fr);
-  }
-
-  .testimonials-slider {
-    grid-template-columns: repeat(3, 1fr);
   }
 }
 

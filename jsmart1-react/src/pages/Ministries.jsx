@@ -436,54 +436,6 @@ const Ministries = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <h2>Ministry Testimonials</h2>
-            <div className="divider" />
-          </div>
-          <div className="testimonials-slider">
-            <div className="testimonial">
-              <div className="testimonial-content">
-                <p>"Serving in the children's ministry has been such a blessing. Seeing the children grow in their understanding of God's love brings me so much joy. I've also grown in my own faith as I prepare lessons and share God's Word with these little ones."</p>
-              </div>
-              <div className="testimonial-author">
-                <img src="/images/SPCT/CHURCH.jpg" alt="Testimonial Author" />
-                <div>
-                  <h4>Mary Johnson</h4>
-                  <p>Children's Ministry Volunteer</p>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial">
-              <div className="testimonial-content">
-                <p>"Being part of the worship team has deepened my relationship with God. Leading others in worship is not just about music—it's about creating an atmosphere where people can encounter God's presence. I'm grateful for the opportunity to use my musical gifts to glorify Him."</p>
-              </div>
-              <div className="testimonial-author">
-                <img src="/images/SPCT/CHURCH.jpg" alt="Testimonial Author" />
-                <div>
-                  <h4>David Wilson</h4>
-                  <p>Worship Team Member</p>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial">
-              <div className="testimonial-content">
-                <p>"The outreach ministry has opened my eyes to the needs in our community. It's one thing to talk about loving your neighbor, but it's another to actually go out and serve them. Through this ministry, I've seen how practical acts of service can open doors for sharing the Gospel."</p>
-              </div>
-              <div className="testimonial-author">
-                <img src="/images/SPCT/CHURCH.jpg" alt="Testimonial Author" />
-                <div>
-                  <h4>Sarah Thompson</h4>
-                  <p>Outreach Volunteer</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Video Gallery Section */}
       <section className="section">
         <div className="container">

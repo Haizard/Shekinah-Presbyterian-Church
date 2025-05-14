@@ -263,64 +263,6 @@ const Events = () => {
         </div>
       </section>
 
-      {/* Event Registration Section */}
-      <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <h2>Event Registration</h2>
-            <div className="divider" />
-          </div>
-          <div className="registration-content">
-            <div className="registration-info">
-              <p>To register for any of our events, please fill out the form or contact our church office:</p>
-              <ul>
-                <li><FontAwesomeIcon icon="phone" /> +255 769 080 629</li>
-                <li><FontAwesomeIcon icon="envelope" /> events@spctanzania.org</li>
-              </ul>
-              <p>For large events, early registration is recommended as space may be limited.</p>
-            </div>
-            <div className="registration-form">
-              <form>
-                <div className="form-group">
-                  <label htmlFor="event-select">Select Event*</label>
-                  <select id="event-select" name="event" required>
-                    <option value="">-- Select an Event --</option>
-                    <option value="conference">Annual Church Conference (Jun 25)</option>
-                    <option value="bible-study">Midweek Bible Study (Jun 15)</option>
-                    <option value="outreach">Community Outreach (Jun 20)</option>
-                  </select>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="reg-name">Your Name*</label>
-                    <input type="text" id="reg-name" name="name" required />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="reg-email">Your Email*</label>
-                    <input type="email" id="reg-email" name="email" required />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="reg-phone">Phone Number*</label>
-                    <input type="tel" id="reg-phone" name="phone" required />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="reg-attendees">Number of Attendees*</label>
-                    <input type="number" id="reg-attendees" name="attendees" min="1" required />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="reg-message">Additional Information</label>
-                  <textarea id="reg-message" name="message" rows="3" />
-                </div>
-                <button type="submit" className="btn btn-primary">Register Now</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Call to Action */}
       <section className="cta-section">
         <div className="container">
