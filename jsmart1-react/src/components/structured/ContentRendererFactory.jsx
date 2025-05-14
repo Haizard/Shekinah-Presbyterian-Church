@@ -1,15 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import HowWeServeRenderer from './HowWeServeRenderer';
 import WeeklyScheduleRenderer from './WeeklyScheduleRenderer';
 import VideoGalleryRenderer from './VideoGalleryRenderer';
 import FeaturedEventRenderer from './FeaturedEventRenderer';
 import LeadershipRenderer from './LeadershipRenderer';
-import { parseContent, isHtmlContent } from '../../utils/contentUtils';
+import { parseContent, isHtmlContent, truncateHtmlContent } from '../../utils/contentUtils';
 
 /**
  * Factory component that selects the appropriate renderer based on the section
  */
-const ContentRendererFactory = ({ section, content }) => {
+const ContentRendererFactory = ({ section, content, truncate = false, maxLength = 150, contentId = null }) => {
   console.log(`ContentRendererFactory: Rendering content for section "${section}"`, {
     contentType: typeof content,
     contentLength: content ? (typeof content === 'string' ? content.length : JSON.stringify(content).length) : 0,
@@ -63,24 +64,68 @@ const ContentRendererFactory = ({ section, content }) => {
       // For HTML content, render with dangerouslySetInnerHTML
       if (typeof parsedContent === 'string' && isHtmlContent(parsedContent)) {
         console.log(`ContentRendererFactory: Rendering HTML content for section "${section}"`);
-        return <div className="html-content" dangerouslySetInnerHTML={{ __html: parsedContent }} />;
+
+        // If truncate is true, truncate the content
+        const htmlToRender = truncate ? truncateHtmlContent(parsedContent, maxLength) : parsedContent;
+
+        return (
+          <div className="html-content">
+            <div dangerouslySetInnerHTML={{ __html: htmlToRender }} />
+
+            {truncate && contentId && (
+              <div className="content-read-more">
+                <Link to={`/content/${section}/${contentId}`} className="btn btn-sm">
+                  Learn More
+                </Link>
+              </div>
+            )}
+          </div>
+        );
       }
 
       // For JSON content that doesn't have a specialized renderer
       if (typeof parsedContent === 'object' && parsedContent !== null) {
         console.log(`ContentRendererFactory: Rendering JSON content for section "${section}"`);
+
+        // For JSON content, we don't truncate but still show the Learn More button if truncate is true
         return (
           <div className="json-content">
             <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.9em' }}>
               {JSON.stringify(parsedContent, null, 2)}
             </pre>
+
+            {truncate && contentId && (
+              <div className="content-read-more">
+                <Link to={`/content/${section}/${contentId}`} className="btn btn-sm">
+                  Learn More
+                </Link>
+              </div>
+            )}
           </div>
         );
       }
 
       // Default case: render as plain text
       console.log(`ContentRendererFactory: Rendering text content for section "${section}"`);
-      return <div className="text-content">{String(parsedContent)}</div>;
+
+      // If truncate is true, truncate the text content
+      const textToRender = truncate && typeof parsedContent === 'string'
+        ? `${parsedContent.substring(0, maxLength).trim()}...`
+        : String(parsedContent);
+
+      return (
+        <div className="text-content">
+          <p>{textToRender}</p>
+
+          {truncate && contentId && (
+            <div className="content-read-more">
+              <Link to={`/content/${section}/${contentId}`} className="btn btn-sm">
+                Learn More
+              </Link>
+            </div>
+          )}
+        </div>
+      );
   }
 };
 

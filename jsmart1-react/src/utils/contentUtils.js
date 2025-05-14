@@ -4,6 +4,34 @@
 import api from '../services/api';
 
 /**
+ * Truncate HTML content to a specified length and add ellipsis
+ * @param {string} htmlContent - The HTML content to truncate
+ * @param {number} maxLength - Maximum length of the truncated content
+ * @returns {string} - Truncated HTML content with ellipsis
+ */
+export const truncateHtmlContent = (htmlContent, maxLength = 150) => {
+  if (!htmlContent || typeof htmlContent !== 'string') return '';
+
+  // Create a temporary div to parse the HTML
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
+
+  // Get the text content
+  const textContent = tempDiv.textContent || tempDiv.innerText || '';
+
+  // Truncate the text content
+  if (textContent.length <= maxLength) {
+    return htmlContent;
+  }
+
+  // Truncate to the specified length
+  const truncatedText = `${textContent.substring(0, maxLength).trim()}...`;
+
+  // Return the truncated text as a paragraph
+  return `<p>${truncatedText}</p>`;
+};
+
+/**
  * Safely parse JSON content if it's in JSON format
  * @param {string} content - The content string that might be JSON
  * @returns {any} - Parsed JSON object or the original string
@@ -198,7 +226,7 @@ const createDefaultContent = async (section) => {
         contentData = {
           section,
           title: section.charAt(0).toUpperCase() + section.slice(1).replace(/_/g, ' '),
-          content: 'Default content for ' + section
+          content: `Default content for ${section}`
         };
         console.log(`Default content data for section "${section}":`, contentData);
     }

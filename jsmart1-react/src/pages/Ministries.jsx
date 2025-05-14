@@ -220,7 +220,11 @@ const Ministries = () => {
                       <h3>{ministry.title}</h3>
                       <p className="ministry-leader"><strong>Leader:</strong> {ministry.leader}</p>
                       <p className="ministry-time"><strong>Meeting Time:</strong> {ministry.meetingTime}</p>
-                      <p className="ministry-description">{ministry.description}</p>
+                      <p className="ministry-description">
+                        {ministry.description && typeof ministry.description === 'string'
+                          ? `${ministry.description.replace(/<[^>]*>/g, '').substring(0, 100)}...`
+                          : 'No description available'}
+                      </p>
                       <Link to={`/ministries/${ministry._id}`} className="btn btn-sm">Learn More</Link>
                     </div>
                   </div>

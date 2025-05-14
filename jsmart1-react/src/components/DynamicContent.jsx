@@ -11,7 +11,9 @@ const DynamicContent = ({
   className = '',
   showImage = true,
   showTitle = true,
-  showContent = true
+  showContent = true,
+  truncateContent = false,
+  maxContentLength = 150
 }) => {
   const { getContentBySection, loading, error, content, refreshContent, refreshTrigger } = useContext(ContentContext);
   const [contentData, setContentData] = useState(null);
@@ -283,6 +285,9 @@ const DynamicContent = ({
           <ContentRendererFactory
             section={section}
             content={contentData.content}
+            truncate={truncateContent}
+            maxLength={maxContentLength}
+            contentId={contentData._id}
           />
         </div>
       )}

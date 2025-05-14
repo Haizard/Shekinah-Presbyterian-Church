@@ -211,7 +211,11 @@ const Events = () => {
                       <p><FontAwesomeIcon icon="clock" /> {event.time}</p>
                       <p><FontAwesomeIcon icon="map-marker-alt" /> {event.location}</p>
                     </div>
-                    <p className="event-description">{event.description}</p>
+                    <p className="event-description">
+                      {event.description && typeof event.description === 'string'
+                        ? `${event.description.replace(/<[^>]*>/g, '').substring(0, 100)}...`
+                        : 'No description available'}
+                    </p>
                     <Link to={`/events/${event._id}`} className="btn btn-sm">Learn More</Link>
                   </div>
                 </div>

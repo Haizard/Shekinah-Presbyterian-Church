@@ -203,6 +203,8 @@ const Home = () => {
             key={`about-${localRefreshTrigger}`}
             section="about"
             className="about-content"
+            truncateContent={true}
+            maxContentLength={200}
             fallback={
               <div className="about-content">
                 <div className="about-text">
@@ -223,7 +225,13 @@ const Home = () => {
                 <div className="about-content">
                   <div className="about-text">
                     {typeof content.content === 'string' && (
-                      <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                      <ContentRendererFactory
+                        section="about"
+                        content={content.content}
+                        truncate={true}
+                        maxLength={200}
+                        contentId={content._id}
+                      />
                     )}
                   </div>
                   <div className="about-image">
@@ -251,6 +259,8 @@ const Home = () => {
             key={`vision-${localRefreshTrigger}`}
             section="vision"
             className="vision-content"
+            truncateContent={true}
+            maxContentLength={200}
             fallback={
               <div className="vision-content">
                 <div className="vision-image">
@@ -278,7 +288,13 @@ const Home = () => {
                   </div>
                   <div className="vision-text">
                     {typeof content.content === 'string' && (
-                      <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                      <ContentRendererFactory
+                        section="vision"
+                        content={content.content}
+                        truncate={true}
+                        maxLength={200}
+                        contentId={content._id}
+                      />
                     )}
                   </div>
                 </div>
@@ -299,6 +315,8 @@ const Home = () => {
             key={`mission-${localRefreshTrigger}`}
             section="mission"
             className="mission-content"
+            truncateContent={true}
+            maxContentLength={200}
             fallback={
               <div className="mission-content">
                 <div className="mission-text">
@@ -341,7 +359,13 @@ const Home = () => {
                 <div className="mission-content">
                   <div className="mission-text">
                     {typeof content.content === 'string' && (
-                      <div dangerouslySetInnerHTML={{ __html: content.content }} />
+                      <ContentRendererFactory
+                        section="mission"
+                        content={content.content}
+                        truncate={true}
+                        maxLength={200}
+                        contentId={content._id}
+                      />
                     )}
                   </div>
                   <div className="mission-image">
@@ -379,9 +403,9 @@ const Home = () => {
                     // Parse the date
                     const eventDate = new Date(event.date);
                     // Make sure day is a valid number and convert to string
-                    const day = !isNaN(eventDate.getDate()) ? eventDate.getDate().toString() : '1';
+                    const day = !Number.isNaN(eventDate.getDate()) ? eventDate.getDate().toString() : '1';
                     // Make sure month is a valid string
-                    const month = !isNaN(eventDate.getTime())
+                    const month = !Number.isNaN(eventDate.getTime())
                       ? eventDate.toLocaleString('default', { month: 'short' }).toUpperCase()
                       : 'JAN';
 

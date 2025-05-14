@@ -15,7 +15,9 @@ const DynamicContentOptimized = ({
   className = '',
   showImage = true,
   showTitle = true,
-  showContent = true
+  showContent = true,
+  truncateContent = false,
+  maxContentLength = 150
 }) => {
   // Get content and functions from context
   const { content, getContentBySection, refreshContent } = useContext(ContentContext);
@@ -251,6 +253,9 @@ const DynamicContentOptimized = ({
           <ContentRendererFactory
             section={section}
             content={contentData.content}
+            truncate={truncateContent}
+            maxLength={maxContentLength}
+            contentId={contentData._id}
           />
         </div>
       )}
