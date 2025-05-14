@@ -157,6 +157,16 @@
 }
 
 /* Leadership Form */
+.leadership-form .leadership-header {
+  margin-bottom: 1.5rem;
+}
+
+.leadership-form .leadership-header h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
 .leadership-form .leader-item {
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -312,7 +322,10 @@
 }
 
 @keyframes spin {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }

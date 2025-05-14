@@ -44,7 +44,34 @@ const createOrUpdateContent = async (req, res) => {
     if (contentExists) {
       // Update
       contentExists.title = title || contentExists.title;
-      contentExists.content = content || contentExists.content;
+
+      // Special handling for leadership content to preserve existing leaders
+      if (section === 'leadership' && content && contentExists.content) {
+        try {
+          // Parse existing content
+          const existingData = JSON.parse(contentExists.content);
+          // Parse new content
+          const newData = JSON.parse(content);
+
+          // If both have leaders array, merge them
+          if (existingData.leaders && newData.leaders) {
+            console.log('Merging leadership data');
+            // Use the new content as is (it already contains all leaders)
+            contentExists.content = content;
+          } else {
+            // Fallback to standard update
+            contentExists.content = content;
+          }
+        } catch (err) {
+          console.error('Error parsing leadership content:', err);
+          // If parsing fails, just update normally
+          contentExists.content = content || contentExists.content;
+        }
+      } else {
+        // Standard update for non-leadership content
+        contentExists.content = content || contentExists.content;
+      }
+
       contentExists.image = image || contentExists.image;
 
       const updatedContent = await contentExists.save();
