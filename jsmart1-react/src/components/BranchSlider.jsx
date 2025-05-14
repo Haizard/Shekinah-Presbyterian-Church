@@ -19,7 +19,7 @@ const BranchSlider = ({ branches }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 10000, // 10 seconds per slide
+    autoplaySpeed: 5000, // 5 seconds per slide
     pauseOnHover: true,
     fade: true,
     arrows: true,
