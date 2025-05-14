@@ -178,8 +178,13 @@ const LeadershipForm = ({ initialData, onSubmit }) => {
 
     if (isValid) {
       try {
-        // Clean up the leaders data by removing temporary IDs and empty fields
-        const cleanedLeaders = leaders.map(leader => {
+        // Filter out any empty leaders
+        const validLeaders = leaders.filter(leader =>
+          leader.name.trim() && leader.position.trim()
+        );
+
+        // Clean up the leaders data by removing temporary IDs
+        const cleanedLeaders = validLeaders.map(leader => {
           // Create a clean copy without tempId
           const { tempId, ...cleanLeader } = leader;
           return cleanLeader;
@@ -194,6 +199,8 @@ const LeadershipForm = ({ initialData, onSubmit }) => {
         // Convert to JSON string
         const contentJson = JSON.stringify(contentObj);
 
+        console.log('Submitting leadership data with leaders:', cleanedLeaders.length);
+
         // Call the parent's onSubmit with the form data
         onSubmit({
           section: 'leadership',
@@ -201,6 +208,7 @@ const LeadershipForm = ({ initialData, onSubmit }) => {
           content: contentJson
         });
       } catch (err) {
+        console.error('Error in leadership form submission:', err);
         setError('Failed to save leadership data. Please try again.');
       }
     }

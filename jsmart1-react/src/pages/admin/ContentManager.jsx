@@ -445,10 +445,25 @@ const ContentManager = () => {
         image: imagePath
       };
 
+      // Special handling for leadership content
+      if (formData.section === 'leadership') {
+        console.log('ContentManager: Processing leadership content submission');
+
+        try {
+          // Parse the content to check the leaders
+          const contentObj = JSON.parse(formData.content);
+          if (contentObj.leaders && Array.isArray(contentObj.leaders)) {
+            console.log(`ContentManager: Leadership submission contains ${contentObj.leaders.length} leaders`);
+          }
+        } catch (e) {
+          console.error('ContentManager: Error parsing leadership content:', e);
+        }
+      }
+
       // Create or update content
-      console.log('ContentManager: Saving specialized form content data:', contentData);
+      console.log('ContentManager: Saving specialized form content data:', contentData.section);
       const savedContent = await api.content.createOrUpdate(contentData);
-      console.log('ContentManager: Specialized form content saved successfully:', savedContent);
+      console.log('ContentManager: Specialized form content saved successfully:', savedContent.title);
       setFormSuccess('Content saved successfully!');
 
       // Refresh content list
