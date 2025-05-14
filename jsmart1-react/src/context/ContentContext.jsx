@@ -63,7 +63,7 @@ export const ContentProvider = ({ children }) => {
       const result = await ensureContentSectionsExist([
         'hero', 'about', 'vision', 'mission', 'leadership', 'weekly_schedule',
         'featured_event', 'special_event', 'current_series', 'sermon_series',
-        'event_calendar', 'our_story'
+        'event_calendar', 'our_story', 'how_we_serve'
       ]);
       console.log('Result of ensuring content sections exist:', result);
 

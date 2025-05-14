@@ -53,11 +53,45 @@ const HowWeServeRenderer = ({ content }) => {
     if (parsedContent?.ministryAreas && Array.isArray(parsedContent.ministryAreas)) {
       parsedContent = parsedContent.ministryAreas;
       console.log('HowWeServeRenderer using nested ministryAreas array:', parsedContent);
+    } else if (parsedContent?.areas && Array.isArray(parsedContent.areas)) {
+      // Try another common property name
+      parsedContent = parsedContent.areas;
+      console.log('HowWeServeRenderer using nested areas array:', parsedContent);
+    } else if (parsedContent?.services && Array.isArray(parsedContent.services)) {
+      // Try another common property name
+      parsedContent = parsedContent.services;
+      console.log('HowWeServeRenderer using nested services array:', parsedContent);
     } else {
       // Try to convert to array if it's a single object
       if (typeof parsedContent === 'object' && parsedContent !== null) {
         console.log('HowWeServeRenderer converting single object to array:', parsedContent);
-        parsedContent = [parsedContent];
+        // Check if the object has title and description properties
+        if (parsedContent.title && parsedContent.description) {
+          parsedContent = [parsedContent];
+        } else {
+          // If it's an object with multiple properties, convert each property to an array item
+          const items = [];
+          Object.keys(parsedContent).forEach(key => {
+            if (typeof parsedContent[key] === 'object' && parsedContent[key] !== null) {
+              items.push(parsedContent[key]);
+            } else if (key !== 'introduction' && key !== 'title') {
+              // Create an item from the key-value pair
+              items.push({
+                title: key,
+                description: parsedContent[key]
+              });
+            }
+          });
+
+          if (items.length > 0) {
+            parsedContent = items;
+          } else {
+            parsedContent = [{
+              title: 'How We Serve',
+              description: JSON.stringify(parsedContent)
+            }];
+          }
+        }
       } else {
         console.error('HowWeServe content is not an array:', parsedContent);
         return <div>Invalid content format: Expected an array of ministry areas</div>;

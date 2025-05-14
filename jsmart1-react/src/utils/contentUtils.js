@@ -222,6 +222,106 @@ const createDefaultContent = async (section) => {
         console.log('Weekly schedule JSON content:', contentData.content);
         break;
 
+      case 'how_we_serve':
+        const howWeServeData = {
+          areas: [
+            {
+              title: 'Community Outreach',
+              description: 'We provide food, clothing, and support to those in need in our community.',
+              icon: 'faHandsHelping'
+            },
+            {
+              title: 'Youth Ministry',
+              description: 'Engaging programs for children and teens to grow in faith and fellowship.',
+              icon: 'faUsers'
+            },
+            {
+              title: 'Worship Services',
+              description: 'Inspiring worship services with powerful messages and uplifting music.',
+              icon: 'faChurch'
+            },
+            {
+              title: 'Bible Study',
+              description: 'In-depth Bible studies for all ages to deepen understanding of Scripture.',
+              icon: 'faBookOpen'
+            }
+          ]
+        };
+
+        contentData = {
+          section: 'how_we_serve',
+          title: 'How We Serve',
+          content: JSON.stringify(howWeServeData),
+          image: '/images/SPCT/CHURCH.jpg'
+        };
+
+        console.log('How We Serve content data:', contentData);
+        console.log('How We Serve JSON content:', contentData.content);
+        break;
+
+      case 'featured_event':
+        const featuredEventData = {
+          title: 'Sunday Worship Service',
+          date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+          time: '9:00 AM - 12:00 PM',
+          location: 'Main Sanctuary',
+          description: 'Join us for our weekly worship service. Everyone is welcome!',
+          image: '/images/SPCT/CHURCH.jpg'
+        };
+
+        contentData = {
+          section: 'featured_event',
+          title: 'Featured Event',
+          content: JSON.stringify(featuredEventData),
+          image: '/images/SPCT/CHURCH.jpg'
+        };
+
+        console.log('Featured Event content data:', contentData);
+        console.log('Featured Event JSON content:', contentData.content);
+        break;
+
+      case 'event_calendar':
+        const eventCalendarData = {
+          introduction: 'Join us for these upcoming events at our church.',
+          events: [
+            {
+              title: 'Sunday Worship Service',
+              date: new Date().toISOString().split('T')[0], // Today's date
+              startTime: '9:00 AM',
+              endTime: '12:00 PM',
+              location: 'Main Sanctuary',
+              description: 'Weekly worship service'
+            },
+            {
+              title: 'Bible Study',
+              date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 days from now
+              startTime: '6:00 PM',
+              endTime: '8:00 PM',
+              location: 'Fellowship Hall',
+              description: 'Weekly Bible study'
+            },
+            {
+              title: 'Youth Fellowship',
+              date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
+              startTime: '4:00 PM',
+              endTime: '6:00 PM',
+              location: 'Youth Center',
+              description: 'Youth fellowship meeting'
+            }
+          ]
+        };
+
+        contentData = {
+          section: 'event_calendar',
+          title: 'Event Calendar',
+          content: JSON.stringify(eventCalendarData),
+          image: '/images/SPCT/CHURCH.jpg'
+        };
+
+        console.log('Event Calendar content data:', contentData);
+        console.log('Event Calendar JSON content:', contentData.content);
+        break;
+
       default:
         contentData = {
           section,
