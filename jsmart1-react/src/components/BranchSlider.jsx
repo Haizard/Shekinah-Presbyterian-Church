@@ -19,7 +19,7 @@ const BranchSlider = ({ branches }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000, // 5 seconds per slide
+    autoplaySpeed: 10000, // 10 seconds per slide
     pauseOnHover: true,
     fade: true,
     arrows: true,
@@ -94,9 +94,6 @@ const BranchSlider = ({ branches }) => {
                   <p className="branch-contact">
                     <FontAwesomeIcon icon={faPhone} /> {branch.contactInfo}
                   </p>
-                  {branch.memberCount > 0 && (
-                    <p className="branch-members">Members: {branch.memberCount}</p>
-                  )}
                 </div>
                 {branch.description && (
                   <div className="branch-description">
