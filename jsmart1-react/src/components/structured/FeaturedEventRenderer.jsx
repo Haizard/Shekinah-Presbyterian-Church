@@ -19,7 +19,7 @@ const FeaturedEventRenderer = ({ content }) => {
       console.log('FeaturedEventRenderer parsed string content:', parsedContent);
     } catch (error) {
       console.error('Error parsing FeaturedEvent content:', error);
-      return <div>Error rendering content: Invalid JSON format</div>;
+      return null; // Return nothing if parsing fails
     }
   } else {
     // If content is already an object, use it directly
@@ -38,15 +38,15 @@ const FeaturedEventRenderer = ({ content }) => {
           parsedContent = tryParse;
         } else {
           console.error('FeaturedEvent content is not an object after parsing:', tryParse);
-          return <div>Invalid content format: Expected an object with event details</div>;
+          return null; // Return nothing if content is invalid
         }
       } catch (error) {
         console.error('FeaturedEvent content is not an object:', parsedContent);
-        return <div>Invalid content format: Expected an object with event details</div>;
+        return null; // Return nothing if content is invalid
       }
     } else {
       console.error('FeaturedEvent content is not an object:', parsedContent);
-      return <div>Invalid content format: Expected an object with event details</div>;
+      return null; // Return nothing if content is invalid
     }
   }
 

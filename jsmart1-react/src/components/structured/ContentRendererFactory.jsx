@@ -69,10 +69,12 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
       return <LeadershipRenderer content={parsedContent} />;
 
     case 'current_series':
+    case 'sermon_series':
       console.log(`ContentRendererFactory: Using CurrentSeriesRenderer for section "${section}"`);
       return <CurrentSeriesRenderer content={parsedContent} image={content?.image} />;
 
     case 'special_events':
+    case 'special_event':
       console.log(`ContentRendererFactory: Using SpecialEventsRenderer for section "${section}"`);
       return <SpecialEventsRenderer content={parsedContent} />;
 
@@ -80,7 +82,23 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
       console.log(`ContentRendererFactory: Using EventCalendarRenderer for section "${section}"`);
       return <EventCalendarRenderer content={parsedContent} />;
 
-    default:
+    case 'our_story':
+      console.log(`ContentRendererFactory: Rendering our_story content for section "${section}"`);
+      // For our_story, we can use the default HTML renderer
+      if (typeof parsedContent === 'string') {
+        return (
+          <div className="our-story-content">
+            <div dangerouslySetInnerHTML={{ __html: parsedContent }} />
+          </div>
+        );
+      }
+      return (
+        <div className="our-story-content">
+          <p>{JSON.stringify(parsedContent)}</p>
+        </div>
+      );
+
+    default: {
       // For HTML content, render with dangerouslySetInnerHTML
       if (typeof parsedContent === 'string' && isHtmlContent(parsedContent)) {
         console.log(`ContentRendererFactory: Rendering HTML content for section "${section}"`);
@@ -146,6 +164,7 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
           )}
         </div>
       );
+    }
   }
 };
 

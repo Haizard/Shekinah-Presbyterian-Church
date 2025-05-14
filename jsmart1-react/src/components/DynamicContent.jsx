@@ -3,6 +3,7 @@ import ContentContext from '../context/ContentContext';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import { parseContent, isHtmlContent } from '../utils/contentUtils';
 import ContentRendererFactory from './structured/ContentRendererFactory';
+import api from '../services/api';
 
 const DynamicContent = ({
   section,
@@ -49,6 +50,9 @@ const DynamicContent = ({
       window.refreshDynamicContent = window.refreshDynamicContent || {};
       window.refreshDynamicContent[section] = manualRefresh;
 
+      // Reset the direct fetch attempt flag when section changes
+      directFetchAttemptedRef.current = false;
+
       return () => {
         componentMounted.current = false;
         if (window.refreshDynamicContent?.[section]) {
@@ -60,6 +64,9 @@ const DynamicContent = ({
 
   // Track if we've already fetched content for this section
   const hasFetchedRef = useRef(false);
+
+  // Track if we've tried direct API fetching
+  const directFetchAttemptedRef = useRef(false);
 
   // Fetch content when component mounts, section changes, or refreshTrigger changes
   useEffect(() => {
@@ -135,7 +142,41 @@ const DynamicContent = ({
     return () => {
       clearTimeout(loadingTimeout);
     };
-  }, [section, getContentBySection, refreshTrigger, contentData]); // Added contentData to dependencies
+  }, [section, getContentBySection, refreshTrigger, contentData, isLoading]); // Added isLoading to dependencies
+
+  // Direct API fetch effect - only runs when content is not found in context
+  useEffect(() => {
+    // Only attempt direct fetch if:
+    // 1. We don't have content data
+    // 2. We're not already loading
+    // 3. We haven't already tried direct fetching
+    if (!contentData && !isLoading && !directFetchAttemptedRef.current) {
+      const fetchContentDirectly = async () => {
+        try {
+          console.log(`DynamicContent: No content found for "${section}" in context, fetching directly...`);
+          setIsLoading(true);
+          const data = await api.content.getBySection(section);
+
+          if (data) {
+            console.log(`DynamicContent: Successfully fetched content for "${section}" directly:`, data);
+            setContentData(data);
+            setLastFetchTime(Date.now());
+            setLocalRefreshCount(prev => prev + 1);
+          } else {
+            console.log(`DynamicContent: No content found for "${section}" in direct API call`);
+          }
+        } catch (err) {
+          console.error(`DynamicContent: Error fetching content for "${section}" directly:`, err);
+        } finally {
+          setIsLoading(false);
+          // Mark that we've attempted direct fetching
+          directFetchAttemptedRef.current = true;
+        }
+      };
+
+      fetchContentDirectly();
+    }
+  }, [section, contentData, isLoading]);
 
   // Refresh content periodically (every 5 minutes)
   useEffect(() => {
@@ -186,7 +227,7 @@ const DynamicContent = ({
     }, 300000 + randomOffset); // 5 minutes + random offset to stagger requests
 
     return () => clearInterval(refreshInterval);
-  }, [section, refreshContent, lastFetchTime, contentData, isLoading]);
+  }, [refreshContent, lastFetchTime, contentData, isLoading]);
 
   // If custom render function is provided, use it
   if (renderContent && contentData) {
@@ -244,9 +285,8 @@ const DynamicContent = ({
   // If we have content data, always show it even if we're refreshing in the background
   // This prevents flickering between content and loading states
 
-  // If no content found, return null (don't show anything)
-  if (!contentData) {
-    // Removed console log to prevent browser overload
+  // If no content found and we're not loading, return null
+  if (!contentData && !isLoading) {
     return null;
   }
 

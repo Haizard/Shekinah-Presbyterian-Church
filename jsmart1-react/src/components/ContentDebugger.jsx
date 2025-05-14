@@ -1,19 +1,25 @@
 import React, { useContext, useEffect, useState, useRef, useCallback } from 'react';
 import ContentContext from '../context/ContentContext';
+import api from '../services/api';
 
 /**
- * Component for debugging content fetching and rendering
+ * Enhanced component for debugging content fetching and rendering
+ * Shows all content sections and allows direct API calls to test fetching
  */
 const ContentDebugger = () => {
   const { content, getContentBySection, refreshContent } = useContext(ContentContext);
   const [sections, setSections] = useState([
-    'hero', 'about', 'vision', 'mission', 'who_we_are',
-    'weekly_schedule', 'featured_event', 'how_we_serve', 'video_gallery'
+    'hero', 'about', 'vision', 'mission', 'who_we_are', 'our_story', 'leadership',
+    'weekly_schedule', 'featured_event', 'special_event', 'current_series',
+    'sermon_series', 'event_calendar', 'how_we_serve', 'video_gallery'
   ]);
   const [selectedSection, setSelectedSection] = useState('hero');
   const [sectionContent, setSectionContent] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showAllContent, setShowAllContent] = useState(false);
+  const [directApiResults, setDirectApiResults] = useState(null);
+  const [directApiLoading, setDirectApiLoading] = useState(false);
 
   // Track if a fetch is in progress to prevent duplicate requests
   const fetchInProgressRef = useRef(false);
@@ -55,6 +61,22 @@ const ContentDebugger = () => {
     fetchSelectedContent();
   }, [refreshContent, fetchSelectedContent]);
 
+  // Direct API call to test fetching
+  const fetchDirectFromApi = useCallback(async () => {
+    setDirectApiLoading(true);
+    try {
+      console.log(`Making direct API call for section "${selectedSection}"`);
+      const result = await api.content.getBySection(selectedSection);
+      console.log(`Direct API result for "${selectedSection}":`, result);
+      setDirectApiResults(result);
+    } catch (err) {
+      console.error(`Error in direct API call for "${selectedSection}":`, err);
+      setDirectApiResults({ error: err.message || 'Error in direct API call' });
+    } finally {
+      setDirectApiLoading(false);
+    }
+  }, [selectedSection]);
+
   // Fetch content when the selected section changes
   useEffect(() => {
     if (selectedSection) {
@@ -85,15 +107,33 @@ const ContentDebugger = () => {
           disabled={loading}
           style={{ marginRight: '10px' }}
         >
-          {loading ? 'Loading...' : 'Fetch Content'}
+          {loading ? 'Loading...' : 'Fetch from Context'}
+        </button>
+
+        <button
+          type="button"
+          onClick={fetchDirectFromApi}
+          disabled={directApiLoading}
+          style={{ marginRight: '10px' }}
+        >
+          {directApiLoading ? 'Loading...' : 'Direct API Call'}
         </button>
 
         <button
           type="button"
           onClick={handleRefreshAll}
           disabled={loading}
+          style={{ marginRight: '10px' }}
         >
           Refresh All Content
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setShowAllContent(!showAllContent)}
+          style={{ marginRight: '10px' }}
+        >
+          {showAllContent ? 'Hide All Content' : 'Show All Content'}
         </button>
       </div>
 
@@ -103,8 +143,56 @@ const ContentDebugger = () => {
         </div>
       )}
 
-      <div>
-        <h3>Content for section: {selectedSection}</h3>
+      {/* Show all content sections in context */}
+      {showAllContent && (
+        <div style={{ marginBottom: '20px' }}>
+          <h3>All Content in Context</h3>
+          {Object.keys(content || {}).length > 0 ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+              gap: '10px'
+            }}>
+              {Object.keys(content).map(section => (
+                <div
+                  key={section}
+                  style={{
+                    border: '1px solid #ddd',
+                    padding: '10px',
+                    borderRadius: '4px',
+                    backgroundColor: section === selectedSection ? '#f0f8ff' : 'white'
+                  }}
+                >
+                  <h4 style={{ margin: '0 0 10px 0' }}>{section}</h4>
+                  <div><strong>Title:</strong> {content[section]?.title || 'No title'}</div>
+                  <div><strong>Has Content:</strong> {content[section]?.content ? 'Yes' : 'No'}</div>
+                  <div><strong>Has Image:</strong> {content[section]?.image ? 'Yes' : 'No'}</div>
+                  <button
+                    onClick={() => setSelectedSection(section)}
+                    style={{
+                      marginTop: '10px',
+                      padding: '5px',
+                      backgroundColor: '#007bff',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    View Details
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div>No content found in context</div>
+          )}
+        </div>
+      )}
+
+      {/* Selected section content from context */}
+      <div style={{ marginBottom: '20px' }}>
+        <h3>Content for section: {selectedSection} (from Context)</h3>
 
         {loading ? (
           <div>Loading...</div>
@@ -140,9 +228,52 @@ const ContentDebugger = () => {
             </div>
           </div>
         ) : (
-          <div>No content found for this section</div>
+          <div>No content found for this section in context</div>
         )}
       </div>
+
+      {/* Direct API results */}
+      {directApiResults && (
+        <div>
+          <h3>Direct API Results for section: {selectedSection}</h3>
+          {directApiResults.error ? (
+            <div style={{ color: 'red' }}>
+              Error: {directApiResults.error}
+            </div>
+          ) : (
+            <div>
+              <div style={{ marginBottom: '10px' }}>
+                <strong>Title:</strong> {directApiResults.title}
+              </div>
+
+              <div style={{ marginBottom: '10px' }}>
+                <strong>Content Type:</strong> {typeof directApiResults.content}
+              </div>
+
+              <div style={{ marginBottom: '10px' }}>
+                <strong>Content Preview:</strong>
+                <pre style={{
+                  whiteSpace: 'pre-wrap',
+                  backgroundColor: '#f5f5f5',
+                  padding: '10px',
+                  border: '1px solid #ddd',
+                  maxHeight: '300px',
+                  overflow: 'auto'
+                }}>
+                  {typeof directApiResults.content === 'string'
+                    ? directApiResults.content.substring(0, 500) + (directApiResults.content.length > 500 ? '...' : '')
+                    : JSON.stringify(directApiResults.content, null, 2)
+                  }
+                </pre>
+              </div>
+
+              <div>
+                <strong>Image:</strong> {directApiResults.image || 'No image'}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

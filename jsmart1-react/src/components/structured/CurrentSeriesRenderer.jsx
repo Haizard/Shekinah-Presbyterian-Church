@@ -15,12 +15,12 @@ const CurrentSeriesRenderer = ({ content, image }) => {
     // Validate the structure of seriesData
     if (!seriesData || typeof seriesData !== 'object') {
       console.error('Invalid current series data structure:', seriesData);
-      return renderFallback();
+      return null; // Return nothing if data is invalid
     }
   } catch (error) {
     console.error('Error parsing current series data:', error);
-    // Return fallback if parsing fails
-    return renderFallback();
+    // Return nothing if parsing fails
+    return null;
   }
 
   // If we have valid series data, render it
@@ -46,25 +46,8 @@ const CurrentSeriesRenderer = ({ content, image }) => {
     );
   }
 
-  // Render fallback content if no valid data
-  return renderFallback();
-
-  // Fallback content function
-  function renderFallback() {
-    return (
-      <div className="current-series">
-        <div className="series-image">
-          <img src="/images/SPCT/CHURCH.jpg" alt="Current Sermon Series" />
-        </div>
-        <div className="series-details">
-          <h3>Walking in Faith</h3>
-          <p className="series-description">A journey through the book of Hebrews exploring what it means to live by faith in today's world.</p>
-          <p className="series-meta">June 2023 - August 2023</p>
-          <Link to="/sermons/series/faith" className="btn btn-primary">View Series</Link>
-        </div>
-      </div>
-    );
-  }
+  // Return null if no valid data
+  return null;
 };
 
 export default CurrentSeriesRenderer;

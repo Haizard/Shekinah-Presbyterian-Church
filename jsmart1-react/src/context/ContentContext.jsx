@@ -61,7 +61,9 @@ export const ContentProvider = ({ children }) => {
       // Ensure required content sections exist
       console.log('Ensuring required content sections exist...');
       const result = await ensureContentSectionsExist([
-        'hero', 'about', 'vision', 'mission', 'leadership', 'weekly_schedule', 'featured_event'
+        'hero', 'about', 'vision', 'mission', 'leadership', 'weekly_schedule',
+        'featured_event', 'special_event', 'current_series', 'sermon_series',
+        'event_calendar', 'our_story'
       ]);
       console.log('Result of ensuring content sections exist:', result);
 
