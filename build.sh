@@ -33,6 +33,10 @@ node preserve-uploads.js
 echo "Copying uploads to dist directory..."
 node copy-uploads.js
 
+# Migrate images to MongoDB
+echo "Migrating images to MongoDB..."
+node migrate-images-to-mongodb.js
+
 # Restore images from MongoDB
 echo "Restoring images from MongoDB..."
 node restore-images.js
