@@ -146,18 +146,6 @@ const Home = () => {
             section="hero"
             showTitle={false}
             showContent={false}
-            fallback={
-              <img
-                src="/images/SPCT/CHURCH.jpg"
-                alt="Church Background"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'center'
-                }}
-              />
-            }
             renderContent={(content) => (
               <img
                 src={getImageUrl(content.image)}
@@ -196,26 +184,6 @@ const Home = () => {
             section="hero"
             showTitle={false}
             showImage={false}
-            fallback={
-              branches && branches.length > 0 ? (
-                <BranchSlider branches={branches} />
-              ) : (
-                <div className="hero-content">
-                  <div className="hero-main-content">
-                    <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
-                    <p>"The True Word, The True Gospel, and True Freedom"</p>
-                    <div className="hero-buttons">
-                      <a href="#about" className="btn btn-primary">Learn More</a>
-                      <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
-                    </div>
-                    <div className="service-times">
-                      <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
-                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
-                    </div>
-                  </div>
-                </div>
-              )
-            }
             renderContent={(content) => (
               <ContentRendererFactory
                 section="hero"
@@ -240,17 +208,6 @@ const Home = () => {
             className="about-content"
             truncateContent={true}
             maxContentLength={200}
-            fallback={
-              <div className="about-content">
-                <div className="about-text">
-                  <p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond. We exist to raise up mature disciples of Jesus, build Gospel-driven communities, and extend the love and truth of Christ to every sphere of life.</p>
-                  <p>We are not just building churches—we are cultivating a missional culture where every believer is equipped to live for Christ, serve others, and make disciples who make disciples.</p>
-                </div>
-                <div className="about-image">
-                  <img src="/images/SPCT/CHURCH.jpg" alt="Shekinah Church Building" />
-                </div>
-              </div>
-            }
             renderContent={(content) => {
               // Only log in development mode and only occasionally
               if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
@@ -296,17 +253,6 @@ const Home = () => {
             className="vision-content"
             truncateContent={true}
             maxContentLength={200}
-            fallback={
-              <div className="vision-content">
-                <div className="vision-image">
-                  <img src="/images/SPCT/CHURCH BCND.jpg" alt="Church Vision" />
-                </div>
-                <div className="vision-text">
-                  <p>To see a generation of disciples who are rooted in the truth, shaped by the Gospel, and released to transform communities for the glory of Christ.</p>
-                  <p>We envision believers who are spiritually mature, mission-minded, and actively involved in making Jesus known—locally and globally.</p>
-                </div>
-              </div>
-            }
             renderContent={(content) => {
               // Only log in development mode and only occasionally
               if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
@@ -352,39 +298,6 @@ const Home = () => {
             className="mission-content"
             truncateContent={true}
             maxContentLength={200}
-            fallback={
-              <div className="mission-content">
-                <div className="mission-text">
-                  <p>We exist to:</p>
-                  <ul className="mission-list">
-                    <li>
-                      <FontAwesomeIcon icon={faBookOpen} />
-                      <div>
-                        <h3>Proclaim the true Word of God</h3>
-                        <p>Teaching the uncompromised Word of God with clarity and conviction</p>
-                      </div>
-                    </li>
-                    <li>
-                      <FontAwesomeIcon icon={faCross} />
-                      <div>
-                        <h3>Spread the true Gospel of Jesus Christ</h3>
-                        <p>Proclaiming the Good News through disciple-making and church planting</p>
-                      </div>
-                    </li>
-                    <li>
-                      <FontAwesomeIcon icon={faDove} />
-                      <div>
-                        <h3>Lead people into true freedom</h3>
-                        <p>Helping people experience the real freedom found in Christ alone</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div className="mission-image">
-                  <img src="/images/SPCT/CHURCH.jpg" alt="Church Mission" />
-                </div>
-              </div>
-            }
             renderContent={(content) => {
               // Only log in development mode and only occasionally
               if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {

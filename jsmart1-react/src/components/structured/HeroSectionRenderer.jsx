@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import BranchSlider from '../BranchSlider';
 import api from '../../services/api';
-import { getImageUrl, handleImageError } from '../../utils/imageUtils';
 
 /**
  * Component for rendering the "hero" structured content
  * Follows the same pattern as LeadershipRenderer
+ * Only displays real data from the backend, no static fallbacks
  */
 const HeroSectionRenderer = ({ content, backgroundImage }) => {
   const [branches, setBranches] = useState([]);
@@ -23,12 +20,11 @@ const HeroSectionRenderer = ({ content, backgroundImage }) => {
     // Validate the structure of heroData
     if (!heroData || typeof heroData !== 'object') {
       console.error('Invalid hero data structure:', heroData);
-      return renderFallback();
+      return null; // Return nothing if data is invalid
     }
   } catch (error) {
     console.error('Error parsing hero section data:', error);
-    // Return fallback if parsing fails
-    return renderFallback();
+    return null; // Return nothing if parsing fails
   }
 
   // Fetch branches on component mount
@@ -63,37 +59,15 @@ const HeroSectionRenderer = ({ content, backgroundImage }) => {
     }
   }, [heroData]);
 
-  // Render branch slider if showBranchSlider is true and we have branches
+  // Only render branch slider if showBranchSlider is true and we have branches
+  // Otherwise return null (display nothing) instead of using static fallback data
   if (heroData.showBranchSlider !== false && branches.length > 0) {
     return <BranchSlider branches={branches} />;
   }
 
-  // Render fallback content if no branches or showBranchSlider is false
-  return renderFallback();
-
-  // Fallback content function
-  function renderFallback() {
-    return (
-      <div className="hero-content">
-        <div className="hero-main-content">
-          <h2>Welcome to Shekinah Presbyterian Church Tanzania</h2>
-          {heroData?.subtitle ? (
-            <p>{heroData.subtitle}</p>
-          ) : (
-            <p>"The True Word, The True Gospel, and True Freedom"</p>
-          )}
-          <div className="hero-buttons">
-            <a href="#about" className="btn btn-primary">Learn More</a>
-            <Link to="/contact" className="btn btn-secondary">Plan Your Visit</Link>
-          </div>
-          <div className="service-times">
-            <p><FontAwesomeIcon icon={faClock} /> Sunday Service: 9:00 AM</p>
-            <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Return null if no branches or showBranchSlider is false
+  // This ensures we don't display any static fallback content
+  return null;
 };
 
 export default HeroSectionRenderer;

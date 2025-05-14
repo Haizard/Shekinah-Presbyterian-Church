@@ -212,9 +212,9 @@ const DynamicContentOptimized = ({
     );
   }
 
-  // If no content found, show fallback
+  // If no content found, return null (don't show anything)
   if (!contentData) {
-    return fallback || null;
+    return null;
   }
 
   // Debug: Log the content data

@@ -46,7 +46,7 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
   switch (section) {
     case 'hero':
       console.log(`ContentRendererFactory: Using HeroSectionRenderer for section "${section}"`);
-      return <HeroSectionRenderer content={parsedContent} />;
+      return <HeroSectionRenderer content={parsedContent} backgroundImage={content?.image} />;
 
     case 'how_we_serve':
       console.log(`ContentRendererFactory: Using HowWeServeRenderer for section "${section}"`);

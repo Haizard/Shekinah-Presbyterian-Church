@@ -244,10 +244,10 @@ const DynamicContent = ({
   // If we have content data, always show it even if we're refreshing in the background
   // This prevents flickering between content and loading states
 
-  // If no content found, show fallback
+  // If no content found, return null (don't show anything)
   if (!contentData) {
     // Removed console log to prevent browser overload
-    return fallback || null;
+    return null;
   }
 
   // Removed debug logging to prevent browser overload
