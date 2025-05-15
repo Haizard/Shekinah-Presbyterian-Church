@@ -259,6 +259,7 @@ import Give from './pages/Give'
 import TestPage from './pages/TestPage'
 import SimpleTest from './pages/SimpleTest'
 import SimpleEventDetail from './pages/SimpleEventDetail'
+import TestBranches from './pages/TestBranches'
 
 // Admin Pages
 import AdminLogin from './pages/admin/Login'
@@ -393,6 +394,7 @@ const LocationAwareRoutes = () => {
             } />
             <Route path="/simple-test" element={<SimpleTest />} />
             <Route path="/simple-event" element={<SimpleEventDetail />} />
+            <Route path="/test-branches" element={<TestBranches />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />

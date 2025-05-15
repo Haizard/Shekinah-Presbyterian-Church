@@ -44,6 +44,17 @@
   --border: #E5E7EB;
   --border-dark: #D1D5DB;
 
+  /* Admin Theme Colors */
+  --admin: #1a2533;
+  --admin-light: #3498db;
+  --admin-dark: #0f1922;
+  --admin-rgb: 26, 37, 51;
+  --admin-light-rgb: 52, 152, 219;
+  --admin-dark-rgb: 15, 25, 34;
+  --admin-gradient-vibrant: linear-gradient(135deg, var(--admin-dark) 0%, var(--admin) 100%);
+  --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+
   /* Typography */
   --font-heading: 'Montserrat', sans-serif;
   --font-body: 'Open Sans', sans-serif;
