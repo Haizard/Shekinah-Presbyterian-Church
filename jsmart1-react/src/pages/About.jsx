@@ -190,20 +190,19 @@ const About = () => {
             <h2>Our Motto</h2>
             <div className="divider" />
           </div>
-          <div className="motto-content animate-fade-in" style={{animationDelay: '0.2s'}}>
-            <div className="motto-quote">
-              <h3 className="animate-slide-bottom" style={{animationDelay: '0.3s'}}>"The True Word, The True Gospel, and True Freedom"</h3>
-              <p className="motto-verse animate-slide-bottom" style={{animationDelay: '0.4s'}}>Matthew 9:35</p>
-            </div>
-            <div className="motto-explanation">
-              <p>This motto shapes everything we do. Inspired by the ministry of Jesus—who went through towns and villages teaching, preaching the Gospel of the Kingdom, and healing—we are committed to:</p>
-              <ul>
-                <li className="animate-slide-right" style={{animationDelay: '0.5s'}}><strong>The True Word</strong> - Teaching the uncompromised Word of God as the foundation of life, discipleship, and mission.</li>
-                <li className="animate-slide-right" style={{animationDelay: '0.6s'}}><strong>The True Gospel</strong> - Proclaiming the Good News of Jesus Christ clearly, boldly, and faithfully—calling all people to repentance, faith, and new life.</li>
-                <li className="animate-slide-right" style={{animationDelay: '0.7s'}}><strong>True Freedom</strong> - Helping people experience the real freedom found in Christ alone—freedom from sin, fear, brokenness, and spiritual darkness.</li>
-              </ul>
-            </div>
-          </div>
+          <DynamicContent
+            section="motto"
+            className="animate-fade-in"
+            renderContent={(content) => (
+              <div className="animate-fade-in" style={{animationDelay: '0.2s'}}>
+                <ContentRendererFactory
+                  section="motto"
+                  content={content.content}
+                  contentId={content._id}
+                />
+              </div>
+            )}
+          />
         </div>
       </section>
 

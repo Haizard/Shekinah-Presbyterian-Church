@@ -9,6 +9,7 @@ import HeroSectionRenderer from './HeroSectionRenderer';
 import CurrentSeriesRenderer from './CurrentSeriesRenderer';
 import SpecialEventsRenderer from './SpecialEventsRenderer';
 import CompactEventCalendarRenderer from './CompactEventCalendarRenderer';
+import OurMottoRenderer from './OurMottoRenderer';
 import { parseContent, isHtmlContent, truncateHtmlContent } from '../../utils/contentUtils';
 
 /**
@@ -70,6 +71,10 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
     case 'leadership':
       console.log(`ContentRendererFactory: Using LeadershipRenderer for section "${section}"`);
       return <LeadershipRenderer content={parsedContent} />;
+
+    case 'motto':
+      console.log(`ContentRendererFactory: Using OurMottoRenderer for section "${section}"`);
+      return <OurMottoRenderer content={parsedContent} />;
 
     case 'current_series':
     case 'sermon_series':

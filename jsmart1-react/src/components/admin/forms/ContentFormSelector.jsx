@@ -10,6 +10,7 @@ import AboutUsForm from './AboutUsForm';
 import OurStoryForm from './OurStoryForm';
 import OurMissionForm from './OurMissionForm';
 import OurVisionForm from './OurVisionForm';
+import OurMottoForm from './OurMottoForm';
 import CurrentSeriesForm from './CurrentSeriesForm';
 import SpecialEventsForm from './SpecialEventsForm';
 import EventCalendarForm from './EventCalendarForm';
@@ -32,6 +33,9 @@ const ContentFormSelector = ({ section, initialData, onSubmit }) => {
 
     case 'vision':
       return <OurVisionForm initialData={initialData} onSubmit={onSubmit} />;
+
+    case 'motto':
+      return <OurMottoForm initialData={initialData} onSubmit={onSubmit} />;
 
     case 'weekly_schedule':
       return <WeeklyScheduleForm initialData={initialData} onSubmit={onSubmit} />;
