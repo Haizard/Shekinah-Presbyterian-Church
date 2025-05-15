@@ -134,15 +134,15 @@ const About = () => {
             className="mission-content"
             renderContent={(content) => {
               return (
-                <div className="mission-content reveal">
-                  <div className="mission-text animate-slide-right">
+                <div className="mission-content">
+                  <div className="mission-text">
                     <ContentRendererFactory
                       section="mission"
                       content={content.content || 'Default content for mission'}
                       contentId={content._id}
                     />
                   </div>
-                  <div className="mission-image animate-slide-left">
+                  <div className="mission-image">
                     <img
                       src={getImageUrl(content.image)}
                       alt={content.title}
