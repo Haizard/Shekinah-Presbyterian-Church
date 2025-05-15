@@ -4,6 +4,9 @@ import { getImageUrl, handleImageError } from '../../../utils/imageUtils';
 import api from '../../../services/api';
 import ConfirmDialog from '../ConfirmDialog';
 
+// Import modern styles
+import '../../../styles/forms.css';
+
 const HeroSectionForm = ({ initialData, onSubmit }) => {
   const [title, setTitle] = useState('Hero Section');
   const [subtitle, setSubtitle] = useState('');
@@ -217,7 +220,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
   };
 
   return (
-    <div className="specialized-form hero-section-form">
+    <div className="form-container animate-fade-in">
       {/* Confirmation Dialog */}
       <ConfirmDialog
         show={showConfirmDialog}
@@ -233,6 +236,11 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
         confirmIcon="save"
       />
 
+      <div className="form-header">
+        <h2 className="form-title">Hero Section Configuration</h2>
+        <p className="form-subtitle">Configure the hero section that appears at the top of your homepage</p>
+      </div>
+
       {error && (
         <div className="alert alert-danger">
           <FontAwesomeIcon icon="exclamation-circle" /> {error}
@@ -246,65 +254,80 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="title">Section Title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="subtitle">Subtitle</label>
-          <textarea
-            id="subtitle"
-            value={subtitle}
-            onChange={(e) => setSubtitle(e.target.value)}
-            rows="2"
-            placeholder="Enter a subtitle for the hero section..."
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="background-image">Background Image</label>
-          <div className="image-upload-container">
-            {(imagePreview || backgroundImage) && (
-              <div className="image-preview">
-                <img
-                  src={imagePreview || getImageUrl(backgroundImage)}
-                  alt="Background Preview"
-                  onError={(e) => handleImageError(e)}
-                />
-              </div>
-            )}
-
-            <div className="upload-controls">
+        <div className="form-row">
+          <div className="form-col">
+            <div className="form-group">
+              <label htmlFor="title" className="form-label form-label-required">Section Title</label>
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                id="background-image"
-                className="file-input"
+                type="text"
+                id="title"
+                className="form-control"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
               />
-              <label htmlFor="background-image" className="btn btn-secondary">
-                <FontAwesomeIcon icon="upload" /> Choose Image
-              </label>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="subtitle" className="form-label">Subtitle</label>
+              <textarea
+                id="subtitle"
+                className="form-control"
+                value={subtitle}
+                onChange={(e) => setSubtitle(e.target.value)}
+                rows="3"
+                placeholder="Enter a subtitle for the hero section..."
+              />
+              <span className="form-help-text">This text will appear below the main title in the hero section</span>
+            </div>
+          </div>
+
+          <div className="form-col">
+            <div className="form-group">
+              <label htmlFor="background-image" className="form-label">Background Image</label>
+              <div className="image-upload-container">
+                {(imagePreview || backgroundImage) ? (
+                  <div className="image-preview">
+                    <img
+                      src={imagePreview || getImageUrl(backgroundImage)}
+                      alt="Background Preview"
+                      onError={(e) => handleImageError(e)}
+                    />
+                  </div>
+                ) : (
+                  <div className="image-preview">
+                    <FontAwesomeIcon icon="image" size="3x" style={{ color: 'var(--text-tertiary)' }} />
+                  </div>
+                )}
+
+                <div className="upload-controls">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    id="background-image"
+                    className="file-input"
+                  />
+                  <label htmlFor="background-image" className="file-input-label">
+                    <FontAwesomeIcon icon="upload" /> Choose Image
+                  </label>
+                </div>
+                <span className="form-help-text">Recommended size: 1920x1080px. Max file size: 5MB</span>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="form-group">
-          <div className="checkbox-container">
+          <div className="form-switch">
             <input
               type="checkbox"
               id="showBranchSlider"
+              className="form-switch-input"
               checked={showBranchSlider}
               onChange={(e) => setShowBranchSlider(e.target.checked)}
             />
-            <label htmlFor="showBranchSlider">Show Branch Slider</label>
+            <label htmlFor="showBranchSlider" className="form-switch-label">Show Branch Slider</label>
           </div>
           <p className="form-help-text">
             When enabled, the hero section will display a slider of church branches from the Branch Manager.
@@ -313,39 +336,45 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
         </div>
 
         {showBranchSlider && (
-          <div className="form-group">
-            <fieldset>
-              <legend>Select Branches to Display</legend>
+          <div className="form-group card">
+            <div className="card-header">
+              <h3 className="card-title">Select Branches to Display</h3>
+            </div>
+            <div className="card-body">
               <p className="form-help-text">
                 Select which branches to display in the slider. If none are selected, all branches will be shown.
                 Branches are managed in the Branch Manager section of the admin panel.
               </p>
 
-              <div className="branches-selection">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {branches.length > 0 ? (
                   branches.map(branch => (
-                    <div key={branch._id} className="branch-checkbox">
+                    <div key={branch._id} className="form-check">
                       <input
                         type="checkbox"
                         id={`branch-${branch._id}`}
+                        className="form-check-input"
                         checked={selectedBranches.includes(branch._id)}
                         onChange={() => handleBranchSelection(branch._id)}
                       />
-                      <label htmlFor={`branch-${branch._id}`}>{branch.name}</label>
+                      <label htmlFor={`branch-${branch._id}`} className="form-check-label">{branch.name}</label>
                     </div>
                   ))
                 ) : (
-                  <p>No branches available. <a href="/admin/branches" target="_blank" rel="noopener noreferrer">Create branches</a> first.</p>
+                  <div className="col-span-3 text-center p-4">
+                    <FontAwesomeIcon icon="exclamation-triangle" className="text-warning" />
+                    <p>No branches available. <a href="/admin/branches" target="_blank" rel="noopener noreferrer" className="underline-effect">Create branches</a> first.</p>
+                  </div>
                 )}
               </div>
-            </fieldset>
+            </div>
           </div>
         )}
 
         <div className="form-actions">
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn btn-ghost"
             onClick={resetForm}
             disabled={loading}
           >

@@ -6,6 +6,8 @@ import ContentFormSelector from '../../components/admin/forms/ContentFormSelecto
 import api from '../../services/api';
 import { getImageUrl, handleImageError } from '../../utils/imageUtils';
 import '../../styles/admin/DataManager.css';
+// Import our new modern styles
+import '../../styles/main.css';
 
 const ContentManager = () => {
   const { refreshContent } = useContext(ContentContext);
@@ -627,13 +629,13 @@ const ContentManager = () => {
 
   return (
     <AdminLayout>
-      <div className="data-manager">
-        <div className="manager-header">
+      <div className="data-manager animate-fade-in">
+        <div className="dashboard-header">
           <h1>Content Manager</h1>
-          <div className="header-actions">
+          <div className="flex gap-3">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-outline"
               onClick={() => {
                 refreshContent();
                 fetchContents();
@@ -647,55 +649,64 @@ const ContentManager = () => {
           </div>
         </div>
 
-        <div className="filter-controls">
-          <div className="search-box">
-            <FontAwesomeIcon icon="search" />
-            <input
-              type="text"
-              placeholder="Search content..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                className="clear-search"
-                onClick={() => setSearchTerm('')}
-                title="Clear search"
-              >
-                <FontAwesomeIcon icon="times" />
-              </button>
-            )}
-          </div>
+        <div className="card shadow-md mb-6">
+          <div className="card-body">
+            <div className="table-filters">
+              <div className="filter-group">
+                <div className="header-search">
+                  <input
+                    type="text"
+                    placeholder="Search content..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="filter-control"
+                  />
+                  <FontAwesomeIcon icon="search" />
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      className="action-btn"
+                      onClick={() => setSearchTerm('')}
+                      title="Clear search"
+                      style={{ position: 'absolute', right: '10px' }}
+                    >
+                      <FontAwesomeIcon icon="times" />
+                    </button>
+                  )}
+                </div>
+              </div>
 
-          <div className="filter-box">
-            <label htmlFor="filter-section">Filter by section:</label>
-            <select
-              id="filter-section"
-              value={filterSection}
-              onChange={handleFilterChange}
-            >
-              <option value="">All Sections</option>
-              {contentSections.map(section => (
-                <option key={section.value} value={section.value}>
-                  {section.label}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="filter-group">
+                <label htmlFor="filter-section" className="filter-label">Filter by section:</label>
+                <select
+                  id="filter-section"
+                  value={filterSection}
+                  onChange={handleFilterChange}
+                  className="filter-control"
+                >
+                  <option value="">All Sections</option>
+                  {contentSections.map(section => (
+                    <option key={section.value} value={section.value}>
+                      {section.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          {selectedItems.length > 0 && (
-            <div className="bulk-actions">
-              <span>{selectedItems.length} items selected</span>
-              <button
-                type="button"
-                className="btn btn-sm btn-danger"
-                onClick={() => handleBulkDelete()}
-              >
-                <FontAwesomeIcon icon="trash-alt" /> Delete Selected
-              </button>
+              {selectedItems.length > 0 && (
+                <div className="flex items-center gap-2 bg-error bg-opacity-10 text-error p-2 rounded-md">
+                  <span className="badge badge-danger">{selectedItems.length} items selected</span>
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleBulkDelete()}
+                  >
+                    <FontAwesomeIcon icon="trash-alt" /> Delete Selected
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
         {error && (
@@ -707,23 +718,31 @@ const ContentManager = () => {
 
         {loading ? (
           <div className="loading-container">
-            <div className="spinner-large" />
-            <p>Loading content...</p>
+            <div className="table-loading-spinner" />
+            <p className="mt-4 text-lg">Loading content...</p>
           </div>
         ) : (
           <>
             {contents.length === 0 ? (
-              <div className="no-data">
-                <p>No content found. Click "Add New Content" to create one.</p>
+              <div className="empty-state">
+                <div className="empty-state-icon">
+                  <FontAwesomeIcon icon="file-alt" />
+                </div>
+                <h3 className="empty-state-title">No Content Found</h3>
+                <p className="empty-state-description">Click "Add New Content" to create your first content item.</p>
+                <button type="button" className="btn btn-primary" onClick={handleAddNew}>
+                  <FontAwesomeIcon icon="plus" /> Add New Content
+                </button>
               </div>
             ) : (
-              <div className="data-table-container">
-                <table className="data-table">
+              <div className="table-container">
+                <table className="table table-striped">
                   <thead>
                     <tr>
-                      <th className="select-column">
+                      <th className="text-center" style={{width: '40px'}}>
                         <input
                           type="checkbox"
+                          className="form-check-input"
                           onChange={(e) => {
                             if (e.target.checked) {
                               setSelectedItems(filteredContents.map(item => item._id));
@@ -734,12 +753,12 @@ const ContentManager = () => {
                           checked={selectedItems.length === filteredContents.length && filteredContents.length > 0}
                         />
                       </th>
-                      <th className={sortField === 'section' ? `sorted-${sortDirection}` : ''}>
-                        <div className="th-content">
+                      <th className={sortField === 'section' ? `sorted-${sortDirection}` : ''} style={{width: '25%'}}>
+                        <div className="flex items-center gap-2">
                           <span>Section</span>
                           <button
                             type="button"
-                            className="sort-button"
+                            className="action-btn"
                             onClick={() => handleSortChange('section')}
                             aria-label={`Sort by section ${sortField === 'section' && sortDirection === 'asc' ? 'descending' : 'ascending'}`}
                           >
@@ -747,12 +766,12 @@ const ContentManager = () => {
                           </button>
                         </div>
                       </th>
-                      <th className={sortField === 'title' ? `sorted-${sortDirection}` : ''}>
-                        <div className="th-content">
+                      <th className={sortField === 'title' ? `sorted-${sortDirection}` : ''} style={{width: '35%'}}>
+                        <div className="flex items-center gap-2">
                           <span>Title</span>
                           <button
                             type="button"
-                            className="sort-button"
+                            className="action-btn"
                             onClick={() => handleSortChange('title')}
                             aria-label={`Sort by title ${sortField === 'title' && sortDirection === 'asc' ? 'descending' : 'ascending'}`}
                           >
@@ -760,12 +779,12 @@ const ContentManager = () => {
                           </button>
                         </div>
                       </th>
-                      <th className={sortField === 'updatedAt' ? `sorted-${sortDirection}` : ''}>
-                        <div className="th-content">
+                      <th className={sortField === 'updatedAt' ? `sorted-${sortDirection}` : ''} style={{width: '20%'}}>
+                        <div className="flex items-center gap-2">
                           <span>Last Updated</span>
                           <button
                             type="button"
-                            className="sort-button"
+                            className="action-btn"
                             onClick={() => handleSortChange('updatedAt')}
                             aria-label={`Sort by last updated ${sortField === 'updatedAt' && sortDirection === 'asc' ? 'descending' : 'ascending'}`}
                           >
@@ -773,25 +792,35 @@ const ContentManager = () => {
                           </button>
                         </div>
                       </th>
-                      <th>Actions</th>
+                      <th style={{width: '120px'}}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredContents.length === 0 ? (
                       <tr>
-                        <td colSpan="5" className="no-results">
-                          No content found matching your search criteria.
+                        <td colSpan="5" className="text-center py-8">
+                          <div className="table-empty">
+                            <FontAwesomeIcon icon="search" className="table-empty-icon" />
+                            <p className="table-empty-message">No content found matching your search criteria.</p>
+                            <button type="button" className="btn btn-outline" onClick={() => {
+                              setSearchTerm('');
+                              setFilterSection('');
+                            }}>
+                              Clear Filters
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ) : (
                       filteredContents.map(content => (
                         <tr
                           key={content._id}
-                          className={selectedItems.includes(content._id) ? 'selected-row' : ''}
+                          className={selectedItems.includes(content._id) ? 'table-row-active' : ''}
                         >
-                          <td className="select-column">
+                          <td className="text-center">
                             <input
                               type="checkbox"
+                              className="form-check-input"
                               checked={selectedItems.includes(content._id)}
                               onChange={(e) => {
                                 if (e.target.checked) {
@@ -802,34 +831,36 @@ const ContentManager = () => {
                               }}
                             />
                           </td>
-                          <td>{getSectionLabel(content.section)}</td>
-                          <td>{content.title}</td>
+                          <td><span className="badge bg-primary text-white">{getSectionLabel(content.section)}</span></td>
+                          <td className="cell-highlight">{content.title}</td>
                           <td>{new Date(content.updatedAt).toLocaleDateString()}</td>
-                          <td className="actions">
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-view"
-                              onClick={() => handleViewContent(content)}
-                              title="View Content"
-                            >
-                              <FontAwesomeIcon icon="eye" />
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-edit"
-                              onClick={() => handleEdit(content)}
-                              title="Edit Content"
-                            >
-                              <FontAwesomeIcon icon="edit" />
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-delete"
-                              onClick={() => handleDeleteConfirm(content)}
-                              title="Delete Content"
-                            >
-                              <FontAwesomeIcon icon="trash-alt" />
-                            </button>
+                          <td>
+                            <div className="table-actions">
+                              <button
+                                type="button"
+                                className="action-btn action-btn-view"
+                                onClick={() => handleViewContent(content)}
+                                title="View Content"
+                              >
+                                <FontAwesomeIcon icon="eye" />
+                              </button>
+                              <button
+                                type="button"
+                                className="action-btn action-btn-edit"
+                                onClick={() => handleEdit(content)}
+                                title="Edit Content"
+                              >
+                                <FontAwesomeIcon icon="edit" />
+                              </button>
+                              <button
+                                type="button"
+                                className="action-btn action-btn-delete"
+                                onClick={() => handleDeleteConfirm(content)}
+                                title="Delete Content"
+                              >
+                                <FontAwesomeIcon icon="trash-alt" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -843,28 +874,29 @@ const ContentManager = () => {
 
         {/* Form Modal */}
         {showForm && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h2>{editMode ? 'Edit Content' : 'Add New Content'}</h2>
-                <button type="button" className="close-btn" onClick={() => setShowForm(false)}>
+          <div className="modal-overlay animate-fade-in">
+            <div className="modal-content card shadow-xl animate-slide-bottom">
+              <div className="card-header">
+                <h2 className="card-title">{editMode ? 'Edit Content' : 'Add New Content'}</h2>
+                <button type="button" className="action-btn" onClick={() => setShowForm(false)}>
                   <FontAwesomeIcon icon="times" />
                 </button>
               </div>
 
-              {formError && (
-                <div className="alert alert-danger">
-                  <FontAwesomeIcon icon="exclamation-circle" />
-                  {formError}
-                </div>
-              )}
+              <div className="card-body">
+                {formError && (
+                  <div className="alert alert-danger">
+                    <FontAwesomeIcon icon="exclamation-circle" />
+                    {formError}
+                  </div>
+                )}
 
-              {formSuccess && (
-                <div className="alert alert-success">
-                  <FontAwesomeIcon icon="check-circle" />
-                  {formSuccess}
-                </div>
-              )}
+                {formSuccess && (
+                  <div className="alert alert-success">
+                    <FontAwesomeIcon icon="check-circle" />
+                    {formSuccess}
+                  </div>
+                )}
 
               {formStep === 1 ? (
                 <form onSubmit={(e) => {
@@ -874,7 +906,7 @@ const ContentManager = () => {
                   }
                 }}>
                   <div className="form-group">
-                    <label htmlFor="section">Section <span className="required">*</span></label>
+                    <label htmlFor="section" className="form-label form-label-required">Section</label>
                     <select
                       id="section"
                       name="section"
@@ -882,6 +914,7 @@ const ContentManager = () => {
                       onChange={handleChange}
                       disabled={editMode}
                       required
+                      className="form-select"
                     >
                       <option value="">Select a section</option>
                       {contentSections.map(section => (
@@ -890,10 +923,11 @@ const ContentManager = () => {
                         </option>
                       ))}
                     </select>
+                    <span className="form-help-text">Select the section of the website where this content will appear.</span>
                   </div>
 
                   <div className="form-actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>
+                    <button type="button" className="btn btn-ghost" onClick={() => setShowForm(false)}>
                       Cancel
                     </button>
                     <button
@@ -901,7 +935,7 @@ const ContentManager = () => {
                       className="btn btn-primary"
                       disabled={!formData.section}
                     >
-                      Next
+                      <FontAwesomeIcon icon="arrow-right" /> Next
                     </button>
                   </div>
                 </form>
@@ -912,30 +946,37 @@ const ContentManager = () => {
                   onSubmit={handleSpecializedFormSubmit}
                 />
               )}
+              </div>
             </div>
           </div>
         )}
 
         {/* View Content Modal */}
         {showViewModal && currentContent && (
-          <div className="modal-overlay">
-            <div className="modal-content view-modal">
-              <div className="modal-header">
-                <h2>{currentContent.title}</h2>
-                <button type="button" className="close-btn" onClick={handleCloseViewModal}>
+          <div className="modal-overlay animate-fade-in">
+            <div className="modal-content card shadow-xl animate-slide-bottom">
+              <div className="card-header">
+                <h2 className="card-title">{currentContent.title}</h2>
+                <button type="button" className="action-btn" onClick={handleCloseViewModal}>
                   <FontAwesomeIcon icon="times" />
                 </button>
               </div>
 
-              <div className="content-view">
-                <div className="content-info">
-                  <div className="info-item">
-                    <span className="info-label">Section:</span>
-                    <span className="info-value">{getSectionLabel(currentContent.section)}</span>
+              <div className="card-body">
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="card shadow-sm">
+                    <div className="card-body">
+                      <h3 className="text-sm text-tertiary mb-1">Section</h3>
+                      <p className="text-lg font-semibold">
+                        <span className="badge badge-primary">{getSectionLabel(currentContent.section)}</span>
+                      </p>
+                    </div>
                   </div>
-                  <div className="info-item">
-                    <span className="info-label">Last Updated:</span>
-                    <span className="info-value">{new Date(currentContent.updatedAt).toLocaleString()}</span>
+                  <div className="card shadow-sm">
+                    <div className="card-body">
+                      <h3 className="text-sm text-tertiary mb-1">Last Updated</h3>
+                      <p className="text-lg font-semibold">{new Date(currentContent.updatedAt).toLocaleString()}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -1094,8 +1135,8 @@ const ContentManager = () => {
                 )}
               </div>
 
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={handleCloseViewModal}>
+              <div className="card-footer">
+                <button type="button" className="btn btn-ghost" onClick={handleCloseViewModal}>
                   Close
                 </button>
                 <button
@@ -1115,26 +1156,32 @@ const ContentManager = () => {
 
         {/* Delete Confirmation Modal */}
         {confirmDelete && (
-          <div className="modal-overlay">
-            <div className="modal-content confirm-modal">
-              <div className="modal-header">
-                <h2>Confirm Delete</h2>
-                <button type="button" className="close-btn" onClick={handleDeleteCancel}>
+          <div className="modal-overlay animate-fade-in">
+            <div className="modal-content card shadow-xl animate-slide-bottom" style={{maxWidth: '500px'}}>
+              <div className="card-header">
+                <h2 className="card-title">Confirm Delete</h2>
+                <button type="button" className="action-btn" onClick={handleDeleteCancel}>
                   <FontAwesomeIcon icon="times" />
                 </button>
               </div>
 
-              <div className="confirm-content">
-                <p>Are you sure you want to delete the content <strong>{confirmDelete.title}</strong>?</p>
-                <p className="warning">This action cannot be undone.</p>
+              <div className="card-body">
+                <div className="text-center p-6">
+                  <div className="text-error mb-4">
+                    <FontAwesomeIcon icon="exclamation-triangle" size="3x" />
+                  </div>
+                  <h3 className="text-xl mb-2">Delete Confirmation</h3>
+                  <p className="mb-4">Are you sure you want to delete the content <strong>{confirmDelete.title}</strong>?</p>
+                  <p className="text-error text-sm mb-6">This action cannot be undone.</p>
+                </div>
               </div>
 
-              <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={handleDeleteCancel}>
+              <div className="card-footer">
+                <button type="button" className="btn btn-ghost" onClick={handleDeleteCancel}>
                   Cancel
                 </button>
                 <button type="button" className="btn btn-danger" onClick={() => handleDelete(confirmDelete.section)}>
-                  Delete
+                  <FontAwesomeIcon icon="trash-alt" /> Delete
                 </button>
               </div>
             </div>

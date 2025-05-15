@@ -1,54 +1,63 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AuthContext from '../../context/AuthContext';
-import '../../styles/admin/AdminHeader.css';
+// Import our modern design system
+import '../../styles/main.css';
 
 const AdminHeader = () => {
   const { user, logout } = useContext(AuthContext);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const handleLogout = () => {
     logout();
   };
 
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
   return (
     <header className="admin-header">
       <div className="header-search">
+        <input type="text" placeholder="Search..." className="form-control" />
         <FontAwesomeIcon icon="search" />
-        <input type="text" placeholder="Search..." />
       </div>
-      
+
       <div className="header-actions">
         <div className="notifications">
-          <button className="icon-button">
+          <button className="header-icon-btn">
             <FontAwesomeIcon icon="bell" />
-            <span className="badge">3</span>
+            <span className="notification-badge"></span>
           </button>
         </div>
-        
-        <div className="user-dropdown">
-          <button className="dropdown-toggle">
-            <div className="user-avatar">
-              <FontAwesomeIcon icon="user-circle" />
-            </div>
-            <span className="user-name">{user?.name || 'Admin'}</span>
-            <FontAwesomeIcon icon="chevron-down" />
-          </button>
-          
-          <div className="dropdown-menu">
-            <Link to="/admin/profile">
-              <FontAwesomeIcon icon="user" />
-              Profile
-            </Link>
-            <Link to="/admin/settings">
-              <FontAwesomeIcon icon="cog" />
-              Settings
-            </Link>
-            <button onClick={handleLogout}>
-              <FontAwesomeIcon icon="sign-out-alt" />
-              Logout
-            </button>
+
+        <div className="user-profile" onClick={toggleDropdown}>
+          <div className="user-avatar">
+            <FontAwesomeIcon icon="user-circle" size="2x" />
           </div>
+          <div className="user-info">
+            <span className="user-name">{user?.name || 'Admin'}</span>
+            <span className="user-role">{user?.role || 'Administrator'}</span>
+          </div>
+          <FontAwesomeIcon icon="chevron-down" className="ml-2" />
+
+          {showDropdown && (
+            <div className="dropdown-menu animate-fade-in">
+              <Link to="/admin/profile" className="dropdown-item">
+                <FontAwesomeIcon icon="user" className="mr-2" />
+                <span>Profile</span>
+              </Link>
+              <Link to="/admin/settings" className="dropdown-item">
+                <FontAwesomeIcon icon="cog" className="mr-2" />
+                <span>Settings</span>
+              </Link>
+              <button onClick={handleLogout} className="dropdown-item text-error">
+                <FontAwesomeIcon icon="sign-out-alt" className="mr-2" />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

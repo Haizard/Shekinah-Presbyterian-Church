@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import '../styles/Give.css';
+import '../styles/modern-give.css';
 
 const Give = () => {
   const [donationAmount, setDonationAmount] = useState('');
@@ -368,10 +370,15 @@ const Give = () => {
       {/* Call to Action */}
       <section className="cta-section">
         <div className="container">
-          <h2>Partner with Us in Ministry</h2>
-          <p>Your generosity helps advance the Kingdom of God in Tanzania and beyond</p>
-          <button type="button" className="btn btn-primary" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            Give Now
+          <h2 className="animate-fade-in">Partner with Us in Ministry</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>Your generosity helps advance the Kingdom of God in Tanzania and beyond</p>
+          <button
+            type="button"
+            className="btn btn-primary btn-lg animate-slide-bottom"
+            style={{animationDelay: '0.4s'}}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            Give Now <FontAwesomeIcon icon={faArrowRight} />
           </button>
         </div>
       </section>

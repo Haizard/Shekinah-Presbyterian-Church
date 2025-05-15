@@ -3,8 +3,8 @@ import { Navigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
-import '../../styles/admin/modern-admin.css';
-import '../../styles/admin/AdminLayout.css';
+// Import our modern design system
+import '../../styles/main.css';
 
 const AdminLayout = ({ children }) => {
   const { isAuthenticated, isAdmin, isFinance, userRole, loading } = useContext(AuthContext);
@@ -15,9 +15,9 @@ const AdminLayout = ({ children }) => {
   // Show loading state
   if (loading && !bypassAuth) {
     return (
-      <div className="admin-loading">
-        <div className="admin-spinner" />
-        <p className="text-secondary">Loading...</p>
+      <div className="loading-container">
+        <div className="spinner" />
+        <p className="mt-4">Loading admin panel...</p>
       </div>
     );
   }
@@ -38,9 +38,9 @@ const AdminLayout = ({ children }) => {
   }
 
   return (
-    <div className="admin-layout" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div className="admin-layout">
       <AdminSidebar />
-      <div className="admin-main" style={{ flex: 1, overflow: 'auto' }}>
+      <div className="admin-main">
         <AdminHeader />
         <main className="admin-content">
           {children}

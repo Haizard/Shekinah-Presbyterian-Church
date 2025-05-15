@@ -1,0 +1,494 @@
+/* 
+ * Shekinah Church Modern Give Page
+ * Premium styling for the Shekinah Presbyterian Church Tanzania give page
+ */
+
+/* Import the design system */
+@import './design-system.css';
+
+/* Page Banner */
+.page-banner {
+  position: relative;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: var(--spacing-16) 0;
+  text-align: center;
+  margin-top: 0;
+}
+
+.page-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-color: var(--primary);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.page-banner h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+  animation: fadeInUp 1s ease-out;
+}
+
+.page-banner p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* Giving Introduction */
+.giving-intro {
+  max-width: 800px;
+  margin: 0 auto var(--spacing-8);
+  text-align: center;
+}
+
+.giving-intro p {
+  color: var(--text-secondary);
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-4);
+}
+
+/* Giving Options */
+.giving-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .giving-options {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+/* Giving Form */
+.giving-form-container {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.giving-form-container h3 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--spacing-6);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.form-section {
+  margin-bottom: var(--spacing-6);
+}
+
+.form-section h4 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--spacing-3);
+  color: var(--text-primary);
+}
+
+.amount-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.amount-options button {
+  background-color: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.amount-options button:hover {
+  background-color: var(--surface-3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.amount-options button.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.custom-amount {
+  margin-top: var(--spacing-4);
+}
+
+.custom-amount label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: var(--spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background-color: var(--surface);
+  transition: all var(--transition-normal);
+}
+
+.input-with-icon input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+}
+
+/* Radio Options */
+.radio-options {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+}
+
+.radio-label input {
+  margin: 0;
+}
+
+.radio-label span {
+  font-size: var(--text-base);
+  color: var(--text-primary);
+}
+
+/* Payment Methods */
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-3);
+}
+
+@media (min-width: 640px) {
+  .payment-methods {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.payment-method {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.payment-method:hover {
+  background-color: var(--surface-3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.payment-method.active {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.payment-method input {
+  margin: 0;
+}
+
+.payment-method svg {
+  font-size: var(--text-2xl);
+  color: var(--primary);
+}
+
+.payment-method span {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Other Ways to Give */
+.other-ways {
+  display: flex;
+  flex-direction: column;
+}
+
+.other-ways h3 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--spacing-6);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.giving-methods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.giving-method {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: all var(--transition-normal);
+}
+
+.giving-method:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.method-icon {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xl);
+  margin-bottom: var(--spacing-3);
+}
+
+.giving-method h4 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--spacing-2);
+  color: var(--text-primary);
+}
+
+.giving-method p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2);
+}
+
+.bank-details,
+.mobile-details {
+  background-color: var(--surface-2);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  margin-top: var(--spacing-2);
+}
+
+.bank-details p,
+.mobile-details p {
+  margin-bottom: var(--spacing-1);
+  font-size: var(--text-sm);
+}
+
+/* Impact Grid */
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.impact-card {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  text-align: center;
+  transition: all var(--transition-normal);
+}
+
+.impact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.impact-icon {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-2xl);
+  margin: 0 auto var(--spacing-4);
+}
+
+.impact-card h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--spacing-3);
+  color: var(--text-primary);
+}
+
+.impact-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* FAQ Section */
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  margin-bottom: var(--spacing-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  background-color: var(--surface);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-align: left;
+}
+
+.faq-question h3 {
+  font-size: var(--text-lg);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.faq-icon {
+  color: var(--primary);
+  font-size: var(--text-lg);
+  transition: transform var(--transition-normal);
+}
+
+.faq-question.active {
+  background-color: rgba(var(--primary-rgb), 0.05);
+}
+
+.faq-question:hover {
+  background-color: var(--surface-2);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-normal);
+}
+
+.faq-answer.show {
+  max-height: 500px;
+}
+
+.faq-answer p {
+  padding: var(--spacing-4) var(--spacing-6);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+.faq-contact {
+  text-align: center;
+  margin-top: var(--spacing-8);
+  color: var(--text-secondary);
+}
+
+.faq-contact a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+}
+
+.faq-contact a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Call to Action */
+.cta-section {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: var(--spacing-16) 0;
+  text-align: center;
+  position: relative;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-color: var(--surface-2);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.cta-section h2 {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+}
+
+.cta-section p {
+  font-size: var(--text-lg);
+  max-width: 600px;
+  margin: 0 auto var(--spacing-8);
+}
+
+.cta-section .btn {
+  font-size: var(--text-lg);
+  padding: var(--spacing-3) var(--spacing-8);
+  border-radius: var(--radius-full);
+  background-color: white;
+  color: var(--primary);
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-lg);
+}
+
+.cta-section .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl);
+  background-color: var(--accent);
+  color: white;
+}

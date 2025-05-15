@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import '../styles/Gallery.css';
+import '../styles/modern-gallery.css';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
@@ -306,9 +308,11 @@ const Gallery = () => {
       {/* Call to Action */}
       <section className="cta-section">
         <div className="container">
-          <h2>Share Your Photos</h2>
-          <p>Have photos from a church event? We'd love to add them to our gallery!</p>
-          <a href="mailto:photos@spctanzania.org" className="btn btn-primary">Submit Photos</a>
+          <h2 className="animate-fade-in">Share Your Photos</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>Have photos from a church event? We'd love to add them to our gallery!</p>
+          <a href="mailto:photos@spctanzania.org" className="btn btn-primary btn-lg animate-slide-bottom" style={{animationDelay: '0.4s'}}>
+            Submit Photos <FontAwesomeIcon icon={faArrowRight} />
+          </a>
         </div>
       </section>
     </main>

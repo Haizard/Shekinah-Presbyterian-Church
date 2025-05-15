@@ -13,7 +13,9 @@ import {
   faInstagram,
   faYoutube
 } from '@fortawesome/free-brands-svg-icons';
-import '../styles/Footer.css';
+// Import our modern design system
+import '../styles/main.css';
+import '../styles/modern-footer.css';
 
 const Footer = () => {
   useEffect(() => {

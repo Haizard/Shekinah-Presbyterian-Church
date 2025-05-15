@@ -68,6 +68,8 @@ const BranchSlider = ({ branches }) => {
     );
   }
 
+  console.log('Branches to display in slider:', branches.length);
+
   return (
     <div className="branch-slider-container">
       <h2 className="branch-slider-title">

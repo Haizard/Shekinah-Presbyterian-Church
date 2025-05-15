@@ -10,9 +10,12 @@ import {
   faPlay,
   faHeadphones,
   faDownload,
-  faFileAlt
+  faFileAlt,
+  faArrowRight
 } from '@fortawesome/free-solid-svg-icons';
-import '../styles/Home.css';
+// Import our modern design system
+import '../styles/main.css';
+import '../styles/modern-home.css';
 import DynamicContent from '../components/DynamicContent';
 import ContentContext from '../context/ContentContext';
 import api from '../services/api';
@@ -117,17 +120,19 @@ const Home = () => {
         <div className="hero-overlay"></div>
 
         {/* Content - Branch Slider */}
-        <div className="hero-content branches-only">
+        <div className="hero-content branches-only animate-fade-in">
           <DynamicContent
             section="hero"
             showTitle={false}
             showImage={false}
             renderContent={(content) => (
-              <ContentRendererFactory
-                section="hero"
-                content={content.content}
-                backgroundImage={content.image}
-              />
+              <div className="animate-slide-bottom" style={{animationDelay: '0.3s'}}>
+                <ContentRendererFactory
+                  section="hero"
+                  content={content.content}
+                  backgroundImage={content.image}
+                />
+              </div>
             )}
           />
         </div>
@@ -136,7 +141,7 @@ const Home = () => {
       {/* About Section */}
       <section id="about" className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>About Us</h2>
             <div className="divider" />
           </div>
@@ -146,8 +151,8 @@ const Home = () => {
             className="about-content"
             renderContent={(content) => {
               return (
-                <div className="about-content">
-                  <div className="about-text">
+                <div className="about-content reveal">
+                  <div className="about-text animate-slide-right">
                     {typeof content.content === 'string' && (
                       <ContentRendererFactory
                         section="about"
@@ -156,7 +161,7 @@ const Home = () => {
                       />
                     )}
                   </div>
-                  <div className="about-image">
+                  <div className="about-image animate-slide-left">
                     <img
                       src={getImageUrl(content.image)}
                       alt={content.title}
@@ -173,7 +178,7 @@ const Home = () => {
       {/* Vision Section */}
       <section id="vision" className="section bg-light">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Our Vision</h2>
             <div className="divider" />
           </div>
@@ -183,15 +188,15 @@ const Home = () => {
             className="vision-content"
             renderContent={(content) => {
               return (
-                <div className="vision-content">
-                  <div className="vision-image">
+                <div className="vision-content reveal">
+                  <div className="vision-image animate-slide-right">
                     <img
                       src={getImageUrl(content.image)}
                       alt={content.title}
                       onError={(e) => handleImageError(e)}
                     />
                   </div>
-                  <div className="vision-text">
+                  <div className="vision-text animate-slide-left">
                     {typeof content.content === 'string' && (
                       <ContentRendererFactory
                         section="vision"
@@ -210,7 +215,7 @@ const Home = () => {
       {/* Mission Section */}
       <section id="mission" className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Our Mission</h2>
             <div className="divider" />
           </div>
@@ -220,8 +225,8 @@ const Home = () => {
             className="mission-content"
             renderContent={(content) => {
               return (
-                <div className="mission-content">
-                  <div className="mission-text">
+                <div className="mission-content reveal">
+                  <div className="mission-text animate-slide-right">
                     {typeof content.content === 'string' && (
                       <ContentRendererFactory
                         section="mission"
@@ -230,7 +235,7 @@ const Home = () => {
                       />
                     )}
                   </div>
-                  <div className="mission-image">
+                  <div className="mission-image animate-slide-left">
                     <img
                       src={getImageUrl(content.image)}
                       alt={content.title}
@@ -247,21 +252,21 @@ const Home = () => {
       {/* Upcoming Events Section */}
       <section id="events" className="section bg-light">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Upcoming Events</h2>
             <div className="divider" />
           </div>
 
           {loading ? (
             <div className="loading-container">
-              <div className="spinner-small" />
+              <div className="spinner" />
               <p>Loading events...</p>
             </div>
           ) : (
             <>
               <div className="events-grid">
                 {upcomingEvents.length > 0 ? (
-                  upcomingEvents.map((event) => {
+                  upcomingEvents.map((event, index) => {
                     // Parse the date
                     const eventDate = new Date(event.date);
                     // Make sure day is a valid number and convert to string
@@ -272,7 +277,11 @@ const Home = () => {
                       : 'JAN';
 
                     return (
-                      <div className="event-card" key={event._id}>
+                      <div
+                        className="event-card animate-slide-bottom"
+                        key={event._id}
+                        style={{animationDelay: `${0.1 * (index + 1)}s`}}
+                      >
                         <div className="event-date">
                           <span className="day">{day}</span>
                           <span className="month">{month}</span>
@@ -281,19 +290,25 @@ const Home = () => {
                           <h3>{event.title}</h3>
                           <p><FontAwesomeIcon icon={faClock} /> {event.time}</p>
                           <p><FontAwesomeIcon icon={faMapMarkerAlt} /> {event.location}</p>
-                          <Link to={`/events/${event._id}`} className="btn btn-sm">Learn More</Link>
+                          <Link to={`/events/${event._id}`} className="btn btn-primary btn-sm">
+                            Learn More <FontAwesomeIcon icon={faArrowRight} />
+                          </Link>
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <div className="no-events">
-                    <p>No upcoming events at this time. Check back soon!</p>
+                  <div className="empty-state">
+                    <FontAwesomeIcon icon="calendar-alt" className="empty-state-icon" />
+                    <p className="empty-state-title">No upcoming events at this time</p>
+                    <p className="empty-state-description">Check back soon for new events!</p>
                   </div>
                 )}
               </div>
-              <div className="text-center mt-4">
-                <Link to="/events" className="btn btn-primary">View All Events</Link>
+              <div className="text-center mt-4 animate-fade-in" style={{animationDelay: '0.5s'}}>
+                <Link to="/events" className="btn btn-primary btn-lg">
+                  View All Events <FontAwesomeIcon icon={faArrowRight} />
+                </Link>
               </div>
             </>
           )}
@@ -303,22 +318,26 @@ const Home = () => {
       {/* Sermons Section */}
       <section id="sermons" className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Latest Sermons</h2>
             <div className="divider" />
           </div>
 
           {loading ? (
             <div className="loading-container">
-              <div className="spinner-small" />
+              <div className="spinner" />
               <p>Loading sermons...</p>
             </div>
           ) : (
             <>
               <div className="sermons-grid">
                 {latestSermons.length > 0 ? (
-                  latestSermons.map((sermon) => (
-                    <div className="sermon-card" key={sermon._id}>
+                  latestSermons.map((sermon, index) => (
+                    <div
+                      className="sermon-card animate-slide-bottom"
+                      key={sermon._id}
+                      style={{animationDelay: `${0.1 * (index + 1)}s`}}
+                    >
                       <div className="sermon-thumbnail">
                         <img
                           src={getImageUrl(sermon.image)}
@@ -337,17 +356,17 @@ const Home = () => {
                         <p className="sermon-verse">{sermon.scripture}</p>
                         <div className="sermon-links">
                           {sermon.audioUrl && (
-                            <a href={sermon.audioUrl} target="_blank" rel="noopener noreferrer">
+                            <a href={sermon.audioUrl} target="_blank" rel="noopener noreferrer" className="underline-effect">
                               <FontAwesomeIcon icon={faHeadphones} /> Listen
                             </a>
                           )}
                           {sermon.audioUrl && (
-                            <a href={sermon.audioUrl} download>
+                            <a href={sermon.audioUrl} download className="underline-effect">
                               <FontAwesomeIcon icon={faDownload} /> Download
                             </a>
                           )}
                           {sermon.notesUrl && (
-                            <a href={sermon.notesUrl} target="_blank" rel="noopener noreferrer">
+                            <a href={sermon.notesUrl} target="_blank" rel="noopener noreferrer" className="underline-effect">
                               <FontAwesomeIcon icon={faFileAlt} /> Notes
                             </a>
                           )}
@@ -356,13 +375,17 @@ const Home = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="no-sermons">
-                    <p>No sermons available at this time. Check back soon!</p>
+                  <div className="empty-state">
+                    <FontAwesomeIcon icon="bible" className="empty-state-icon" />
+                    <p className="empty-state-title">No sermons available at this time</p>
+                    <p className="empty-state-description">Check back soon for new sermons!</p>
                   </div>
                 )}
               </div>
-              <div className="text-center mt-4">
-                <Link to="/sermons" className="btn btn-primary">View All Sermons</Link>
+              <div className="text-center mt-4 animate-fade-in" style={{animationDelay: '0.5s'}}>
+                <Link to="/sermons" className="btn btn-primary btn-lg">
+                  View All Sermons <FontAwesomeIcon icon={faArrowRight} />
+                </Link>
               </div>
             </>
           )}

@@ -2,12 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap');
 
 :root {
-  --primary-color: #3B82F6; /* Modern Blue */
-  --primary-rgb: 59, 130, 246; /* RGB values for primary color */
-  --primary-dark: #2563EB; /* Darker Blue for hover states */
+  --primary-color: #8B0000; /* Deep Red */
+  --primary-rgb: 139, 0, 0; /* RGB values for primary color */
+  --primary-dark: #660000; /* Darker Red for hover states */
   --secondary-color: #1F2937; /* Dark Slate */
-  --accent-color: #F59E0B; /* Amber for accents */
-  --accent-light: #FBBF24; /* Lighter amber for hover states */
+  --accent-color: #FFD700; /* Gold for accents */
+  --accent-light: #FFDF4D; /* Lighter gold for hover states */
   --text-color: #374151;
   --text-light: #6B7280;
   --text-dark: #1F2937;

@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../styles/Sermons.css';
+import { faArrowRight, faPlay, faHeadphones, faDownload, faFileAlt, faSearch } from '@fortawesome/free-solid-svg-icons';
+// Import our modern design system
+import '../styles/main.css';
+import '../styles/modern-home.css';
+import '../styles/modern-about.css';
+import '../styles/modern-events.css';
+import '../styles/modern-sermons.css';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
@@ -72,19 +78,19 @@ const Sermons = () => {
       {/* Page Banner */}
       <section className="page-banner">
         <div className="container">
-          <h2>Sermons</h2>
-          <p>Listen to the Word of God preached with clarity and conviction</p>
+          <h2 className="animate-fade-in">Sermons</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>Listen to the Word of God preached with clarity and conviction</p>
         </div>
       </section>
 
       {/* Current Series Section */}
       <section className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Current Series</h2>
             <div className="divider" />
           </div>
-          <div className="current-series">
+          <div className="current-series animate-fade-in" style={{animationDelay: '0.2s'}}>
             <div className="series-image">
               <img src="/images/SPCT/CHURCH.jpg" alt="Current Sermon Series" />
             </div>
@@ -92,7 +98,9 @@ const Sermons = () => {
               <h3>Walking in Faith</h3>
               <p className="series-description">A journey through the book of Hebrews exploring what it means to live by faith in today's world.</p>
               <p className="series-meta">June 2023 - August 2023</p>
-              <Link to="/sermons/series/faith" className="btn btn-primary">View Series</Link>
+              <Link to="/sermons/series/faith" className="btn btn-primary btn-lg">
+                View Series <FontAwesomeIcon icon={faArrowRight} />
+              </Link>
             </div>
           </div>
         </div>
@@ -101,13 +109,13 @@ const Sermons = () => {
       {/* Sermons Section */}
       <section className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Latest Sermons</h2>
             <div className="divider" />
           </div>
 
           {/* Search and Filter */}
-          <div className="sermons-filters">
+          <div className="sermons-filters animate-fade-in" style={{animationDelay: '0.2s'}}>
             <div className="search-box">
               <input
                 type="text"
@@ -115,7 +123,7 @@ const Sermons = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button type="button"><FontAwesomeIcon icon="search" /></button>
+              <button type="button"><FontAwesomeIcon icon={faSearch} /></button>
             </div>
             <div className="category-filter">
               <select value={filter} onChange={(e) => setFilter(e.target.value)}>
@@ -139,11 +147,17 @@ const Sermons = () => {
               </div>
             ) : error ? (
               <div className="error-container">
-                <p>{error}</p>
+                <FontAwesomeIcon icon="exclamation-circle" className="error-icon" />
+                <p className="error-message">{error}</p>
+                <button className="btn btn-primary" onClick={() => window.location.reload()}>Try Again</button>
               </div>
             ) : filteredSermons.length > 0 ? (
-              filteredSermons.map(sermon => (
-                <div className="sermon-card" key={sermon._id}>
+              filteredSermons.map((sermon, index) => (
+                <div
+                  className="sermon-card animate-slide-bottom"
+                  key={sermon._id}
+                  style={{animationDelay: `${0.1 * (index + 1)}s`}}
+                >
                   <div className="sermon-thumbnail">
                     <img
                       src={getImageUrl(sermon.image)}
@@ -151,7 +165,7 @@ const Sermons = () => {
                       onError={(e) => handleImageError(e)}
                     />
                     <div className="play-button">
-                      <FontAwesomeIcon icon="play" />
+                      <FontAwesomeIcon icon={faPlay} />
                     </div>
                   </div>
                   <div className="sermon-details">
@@ -161,30 +175,40 @@ const Sermons = () => {
                     <p className="sermon-description">{sermon.description}</p>
                     <div className="sermon-links">
                       {sermon.audioUrl && (
-                        <a href={sermon.audioUrl}><FontAwesomeIcon icon="headphones" /> Listen</a>
+                        <a href={sermon.audioUrl} className="underline-effect">
+                          <FontAwesomeIcon icon={faHeadphones} /> Listen
+                        </a>
                       )}
                       {sermon.videoUrl && (
-                        <a href={sermon.videoUrl}><FontAwesomeIcon icon="play" /> Watch</a>
+                        <a href={sermon.videoUrl} className="underline-effect">
+                          <FontAwesomeIcon icon={faPlay} /> Watch
+                        </a>
                       )}
                       {sermon.notesUrl && (
-                        <a href={sermon.notesUrl}><FontAwesomeIcon icon="file-alt" /> Notes</a>
+                        <a href={sermon.notesUrl} className="underline-effect">
+                          <FontAwesomeIcon icon={faFileAlt} /> Notes
+                        </a>
                       )}
                       {sermon.audioUrl && (
-                        <a href={sermon.audioUrl} download><FontAwesomeIcon icon="download" /> Download</a>
+                        <a href={sermon.audioUrl} download className="underline-effect">
+                          <FontAwesomeIcon icon={faDownload} /> Download
+                        </a>
                       )}
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="no-sermons">
-                <p>No sermons found matching your criteria. Please try a different search or filter.</p>
+              <div className="empty-state">
+                <FontAwesomeIcon icon="bible" className="empty-state-icon" />
+                <p className="empty-state-title">No sermons found matching your criteria</p>
+                <p className="empty-state-description">Please try a different search or filter</p>
               </div>
             )}
           </div>
 
           {/* Pagination */}
-          <div className="pagination">
+          <div className="pagination animate-fade-in" style={{animationDelay: '0.5s'}}>
             <button type="button" className="active">1</button>
             <button type="button">2</button>
             <button type="button">3</button>
@@ -196,39 +220,45 @@ const Sermons = () => {
       {/* Series Section */}
       <section className="section bg-light">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Sermon Series</h2>
             <div className="divider" />
           </div>
           <div className="series-grid">
-            <div className="series-card">
+            <div className="series-card animate-slide-bottom" style={{animationDelay: '0.1s'}}>
               <div className="series-image">
                 <img src="/images/SPCT/CHURCH.jpg" alt="Foundations of Faith" />
               </div>
               <div className="series-details">
                 <h3>Foundations of Faith</h3>
                 <p>A 6-part series exploring the core beliefs of the Christian faith</p>
-                <a href="/sermons/series/foundations" className="btn btn-sm">View Series</a>
+                <a href="/sermons/series/foundations" className="btn btn-primary btn-sm">
+                  View Series <FontAwesomeIcon icon={faArrowRight} />
+                </a>
               </div>
             </div>
-            <div className="series-card">
+            <div className="series-card animate-slide-bottom" style={{animationDelay: '0.2s'}}>
               <div className="series-image">
                 <img src="/images/SPCT/CHURCH.jpg" alt="Kingdom Living" />
               </div>
               <div className="series-details">
                 <h3>Kingdom Living</h3>
                 <p>A study of the Sermon on the Mount and its implications for daily life</p>
-                <a href="/sermons/series/kingdom" className="btn btn-sm">View Series</a>
+                <a href="/sermons/series/kingdom" className="btn btn-primary btn-sm">
+                  View Series <FontAwesomeIcon icon={faArrowRight} />
+                </a>
               </div>
             </div>
-            <div className="series-card">
+            <div className="series-card animate-slide-bottom" style={{animationDelay: '0.3s'}}>
               <div className="series-image">
                 <img src="/images/SPCT/CHURCH.jpg" alt="Spiritual Disciplines" />
               </div>
               <div className="series-details">
                 <h3>Spiritual Disciplines</h3>
                 <p>Practical guidance on prayer, Bible study, fasting, and more</p>
-                <a href="/sermons/series/disciplines" className="btn btn-sm">View Series</a>
+                <a href="/sermons/series/disciplines" className="btn btn-primary btn-sm">
+                  View Series <FontAwesomeIcon icon={faArrowRight} />
+                </a>
               </div>
             </div>
           </div>
@@ -236,28 +266,28 @@ const Sermons = () => {
       </section>
 
       {/* Subscribe Section */}
-      <section className="section bg-light">
+      <section className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Subscribe to Our Sermons</h2>
             <div className="divider" />
           </div>
-          <div className="subscribe-content">
+          <div className="subscribe-content animate-fade-in" style={{animationDelay: '0.2s'}}>
             <p>Never miss a sermon! Subscribe to our podcast and receive the latest messages directly on your device.</p>
             <div className="podcast-platforms">
-              <a href="https://apple.com/podcasts" target="_blank" rel="noopener noreferrer" className="podcast-link">
+              <a href="https://apple.com/podcasts" target="_blank" rel="noopener noreferrer" className="podcast-link animate-slide-bottom" style={{animationDelay: '0.3s'}}>
                 <FontAwesomeIcon icon={['fab', 'apple']} />
                 <span>Apple Podcasts</span>
               </a>
-              <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="podcast-link">
+              <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="podcast-link animate-slide-bottom" style={{animationDelay: '0.4s'}}>
                 <FontAwesomeIcon icon={['fab', 'spotify']} />
                 <span>Spotify</span>
               </a>
-              <a href="https://podcasts.google.com" target="_blank" rel="noopener noreferrer" className="podcast-link">
+              <a href="https://podcasts.google.com" target="_blank" rel="noopener noreferrer" className="podcast-link animate-slide-bottom" style={{animationDelay: '0.5s'}}>
                 <FontAwesomeIcon icon={['fab', 'google']} />
                 <span>Google Podcasts</span>
               </a>
-              <a href="/rss-feed" className="podcast-link">
+              <a href="/rss-feed" className="podcast-link animate-slide-bottom" style={{animationDelay: '0.6s'}}>
                 <FontAwesomeIcon icon="rss" />
                 <span>RSS Feed</span>
               </a>
@@ -269,9 +299,11 @@ const Sermons = () => {
       {/* Call to Action */}
       <section className="cta-section">
         <div className="container">
-          <h2>Join Us This Sunday</h2>
-          <p>Experience the presence of God and the fellowship of believers</p>
-          <a href="/contact" className="btn btn-primary">Plan Your Visit</a>
+          <h2 className="animate-fade-in">Join Us This Sunday</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>Experience the presence of God and the fellowship of believers</p>
+          <Link to="/contact" className="btn btn-primary btn-lg animate-slide-bottom" style={{animationDelay: '0.4s'}}>
+            Plan Your Visit <FontAwesomeIcon icon={faArrowRight} />
+          </Link>
         </div>
       </section>
     </main>

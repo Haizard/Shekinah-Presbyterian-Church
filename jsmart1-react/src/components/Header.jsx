@@ -3,7 +3,9 @@ import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import ForceNavLink from './ForceNavLink';
-import '../styles/Header.css';
+// Import our modern design system
+import '../styles/main.css';
+import '../styles/modern-header.css';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,6 +31,7 @@ const Header = () => {
   };
 
   // State to track which dropdown is active on mobile
+  // Initialize with null to ensure all dropdowns are closed by default
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   // Close the menu when a link is clicked
@@ -48,6 +51,32 @@ const Header = () => {
       setActiveDropdown(dropdownName);
     }
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Only close dropdown if we're on mobile or tablet view
+      if (window.innerWidth <= 1024) {
+        const dropdownElements = document.querySelectorAll('.dropdown');
+        let clickedOutside = true;
+
+        dropdownElements.forEach(element => {
+          if (element.contains(event.target)) {
+            clickedOutside = false;
+          }
+        });
+
+        if (clickedOutside && activeDropdown) {
+          setActiveDropdown(null);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [activeDropdown]);
 
   return (
     <header className={isScrolled ? 'scrolled' : ''}>
@@ -89,13 +118,14 @@ const Header = () => {
                   aria-label="Toggle About dropdown"
                   onClick={(e) => {
                     e.preventDefault();
+                    e.stopPropagation(); // Prevent event bubbling
                     toggleDropdown('about');
                   }}
                 >
                   <FontAwesomeIcon icon={faChevronDown} />
                 </button>
               </div>
-              <div className="dropdown-content">
+              <div className="dropdown-menu">
                 <a href="/about#vision" onClick={(e) => {
                   closeMenu();
                   // If we're already on the about page, prevent default navigation and just scroll

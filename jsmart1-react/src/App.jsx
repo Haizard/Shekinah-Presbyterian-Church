@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import './App.css'
+import './styles/main.css' // Import our modern design system
 import { AuthProvider } from './context/AuthContext'
 import { ContentProvider } from './context/ContentContext'
 import ErrorBoundary from './components/common/ErrorBoundary'
@@ -115,7 +116,10 @@ import {
   faMoneyCheck,
   faMoneyCheckAlt,
   faColumns,
-  faSyncAlt
+  faSyncAlt,
+  faImage,
+  faUpload,
+  faUndo
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -229,7 +233,10 @@ library.add(
   faMoneyCheck,
   faMoneyCheckAlt,
   faColumns,
-  faSyncAlt
+  faSyncAlt,
+  faImage,
+  faUpload,
+  faUndo
 )
 
 // Components

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import '../styles/Contact.css';
+import '../styles/modern-contact.css';
 import api from '../services/api';
 
 const Contact = () => {
@@ -349,9 +351,11 @@ const Contact = () => {
       {/* Call to Action */}
       <section className="cta-section">
         <div className="container">
-          <h2>Join Us This Sunday</h2>
-          <p>Experience the presence of God and the fellowship of believers</p>
-          <Link to="/events" className="btn btn-primary">View Service Times</Link>
+          <h2 className="animate-fade-in">Join Us This Sunday</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>Experience the presence of God and the fellowship of believers</p>
+          <Link to="/events" className="btn btn-primary btn-lg animate-slide-bottom" style={{animationDelay: '0.4s'}}>
+            View Service Times <FontAwesomeIcon icon={faArrowRight} />
+          </Link>
         </div>
       </section>
     </main>

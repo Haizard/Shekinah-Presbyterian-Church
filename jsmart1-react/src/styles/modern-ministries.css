@@ -1,0 +1,395 @@
+/* 
+ * Shekinah Church Modern Ministries Page
+ * Premium styling for the Shekinah Presbyterian Church Tanzania ministries page
+ */
+
+/* Import the design system */
+@import './design-system.css';
+
+/* Page Banner */
+.page-banner {
+  position: relative;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: var(--spacing-16) 0;
+  text-align: center;
+  margin-top: 0;
+}
+
+.page-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-color: var(--primary);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.page-banner h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+  animation: fadeInUp 1s ease-out;
+}
+
+.page-banner p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* Ministries Introduction */
+.ministries-intro {
+  max-width: 800px;
+  margin: 0 auto var(--spacing-8);
+  text-align: center;
+}
+
+.ministries-intro p {
+  margin-bottom: var(--spacing-4);
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.ministry-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  justify-content: center;
+  margin-top: var(--spacing-6);
+}
+
+.ministry-buttons .btn {
+  margin: var(--spacing-1);
+  transition: all var(--transition-normal);
+}
+
+.ministry-buttons .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Ministry Categories */
+.ministry-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-8);
+  justify-content: center;
+}
+
+.ministry-categories button {
+  background-color: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.ministry-categories button:hover {
+  background-color: var(--surface-2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.ministry-categories button.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+/* Ministries Grid */
+.ministries-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+.ministry-card {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  border: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ministry-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.ministry-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.ministry-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.ministry-card:hover .ministry-image img {
+  transform: scale(1.1);
+}
+
+.ministry-details {
+  padding: var(--spacing-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ministry-details h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--spacing-2);
+  color: var(--text-primary);
+}
+
+.ministry-leader, .ministry-time {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2);
+}
+
+.ministry-description {
+  margin-bottom: var(--spacing-4);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.ministry-details .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+/* Detailed Ministry Sections */
+.ministry-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .ministry-content {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .ministry-content.reverse {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .ministry-content.reverse .ministry-image {
+    order: 2;
+  }
+  
+  .ministry-content.reverse .ministry-details {
+    order: 1;
+  }
+}
+
+.ministry-content .ministry-image {
+  height: 100%;
+  min-height: 300px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.ministry-content .ministry-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--spacing-4);
+}
+
+.ministry-content .ministry-details h2 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--spacing-2);
+}
+
+.ministry-content .ministry-details p {
+  margin-bottom: var(--spacing-4);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.ministry-content .ministry-details h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--spacing-2);
+  margin-top: var(--spacing-4);
+}
+
+.ministry-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--spacing-4);
+}
+
+.ministry-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  color: var(--text-secondary);
+}
+
+.ministry-list li svg {
+  color: var(--primary);
+  font-size: var(--text-lg);
+}
+
+/* Get Involved Section */
+.get-involved-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .get-involved-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.get-involved-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.get-involved-text p {
+  margin-bottom: var(--spacing-4);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.get-involved-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-4);
+}
+
+.get-involved-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-4);
+}
+
+@media (min-width: 640px) {
+  .get-involved-steps {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.step {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.step:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.step-number {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--text-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.step h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--spacing-2);
+  color: var(--text-primary);
+}
+
+.step p {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+/* Call to Action */
+.cta-section {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: var(--spacing-16) 0;
+  text-align: center;
+  position: relative;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-color: var(--surface-2);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.cta-section h2 {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+}
+
+.cta-section p {
+  font-size: var(--text-lg);
+  max-width: 600px;
+  margin: 0 auto var(--spacing-8);
+}
+
+.cta-section .btn {
+  font-size: var(--text-lg);
+  padding: var(--spacing-3) var(--spacing-8);
+  border-radius: var(--radius-full);
+  background-color: white;
+  color: var(--primary);
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-lg);
+}
+
+.cta-section .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl);
+  background-color: var(--accent);
+  color: white;
+}

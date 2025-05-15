@@ -1,7 +1,12 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../styles/Events.css';
+import { faArrowRight, faClock, faMapMarkerAlt, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+// Import our modern design system
+import '../styles/main.css';
+import '../styles/modern-home.css';
+import '../styles/modern-about.css';
+import '../styles/modern-events.css';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 import DynamicContent from '../components/DynamicContent';
@@ -66,41 +71,47 @@ const Events = () => {
       {/* Page Banner */}
       <section className="page-banner">
         <div className="container">
-          <h2>Events</h2>
-          <p>Join us for worship, fellowship, and growth</p>
+          <h2 className="animate-fade-in">Events</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>Join us for worship, fellowship, and growth</p>
         </div>
       </section>
 
       {/* Featured Event Section */}
       <section className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Featured Event</h2>
             <div className="divider" />
           </div>
-          <DynamicContent
-            section="featured_event"
-            fallback={
-              <div className="featured-event-container">
-                <p className="text-center">No featured event at this time. Check our upcoming events below.</p>
-              </div>
-            }
-            showContent={true}
-            className="featured-event-container"
-          />
+          <div className="animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <DynamicContent
+              section="featured_event"
+              fallback={
+                <div className="featured-event-container">
+                  <div className="empty-state">
+                    <FontAwesomeIcon icon={faCalendarAlt} className="empty-state-icon" />
+                    <p className="empty-state-title">No featured event at this time</p>
+                    <p className="empty-state-description">Check our upcoming events below</p>
+                  </div>
+                </div>
+              }
+              showContent={true}
+              className="featured-event-container"
+            />
+          </div>
         </div>
       </section>
 
       {/* Events Section */}
       <section className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Upcoming Events</h2>
             <div className="divider" />
           </div>
 
           {/* Event Filters */}
-          <div className="event-filters">
+          <div className="event-filters animate-fade-in" style={{animationDelay: '0.2s'}}>
             <button
               type="button"
               className={filter === 'all' ? 'active' : ''}
@@ -161,11 +172,17 @@ const Events = () => {
               </div>
             ) : error ? (
               <div className="error-container">
-                <p>{error}</p>
+                <FontAwesomeIcon icon="exclamation-circle" className="error-icon" />
+                <p className="error-message">{error}</p>
+                <button className="btn btn-primary" onClick={() => window.location.reload()}>Try Again</button>
               </div>
             ) : filteredEvents.length > 0 ? (
-              filteredEvents.map(event => (
-                <div className="event-card" key={event._id}>
+              filteredEvents.map((event, index) => (
+                <div
+                  className="event-card animate-slide-bottom"
+                  key={event._id}
+                  style={{animationDelay: `${0.1 * (index + 1)}s`}}
+                >
                   <div className="event-image">
                     <img
                       src={getImageUrl(event.image)}
@@ -180,21 +197,25 @@ const Events = () => {
                   <div className="event-details">
                     <h3>{event.title}</h3>
                     <div className="event-meta">
-                      <p><FontAwesomeIcon icon="clock" /> {event.time}</p>
-                      <p><FontAwesomeIcon icon="map-marker-alt" /> {event.location}</p>
+                      <p><FontAwesomeIcon icon={faClock} /> {event.time}</p>
+                      <p><FontAwesomeIcon icon={faMapMarkerAlt} /> {event.location}</p>
                     </div>
                     <p className="event-description">
                       {event.description && typeof event.description === 'string'
                         ? `${event.description.replace(/<[^>]*>/g, '').substring(0, 100)}...`
                         : 'No description available'}
                     </p>
-                    <Link to={`/events/${event._id}`} className="btn btn-sm">Learn More</Link>
+                    <Link to={`/events/${event._id}`} className="btn btn-primary btn-sm">
+                      Learn More <FontAwesomeIcon icon={faArrowRight} />
+                    </Link>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="no-results">
-                <p>No events found in this category.</p>
+              <div className="empty-state">
+                <FontAwesomeIcon icon={faCalendarAlt} className="empty-state-icon" />
+                <p className="empty-state-title">No events found in this category</p>
+                <p className="empty-state-description">Try selecting a different category or check back later</p>
               </div>
             )}
           </div>
@@ -204,47 +225,59 @@ const Events = () => {
       {/* Calendar Section */}
       <section className="section bg-light">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Event Calendar</h2>
             <div className="divider" />
           </div>
-          <DynamicContent
-            section="event_calendar"
-            fallback={
-              <div className="calendar-container">
-                <p className="text-center">No events have been added to the calendar yet. Check back later for updates.</p>
-              </div>
-            }
-            showContent={true}
-            className="event-calendar-container"
-          />
+          <div className="animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <DynamicContent
+              section="event_calendar"
+              fallback={
+                <div className="event-calendar-container">
+                  <div className="empty-state">
+                    <FontAwesomeIcon icon={faCalendarAlt} className="empty-state-icon" />
+                    <p className="empty-state-title">No events have been added to the calendar yet</p>
+                    <p className="empty-state-description">Check back later for updates</p>
+                  </div>
+                </div>
+              }
+              showContent={true}
+              className="event-calendar-container"
+            />
+          </div>
         </div>
       </section>
 
       {/* Weekly Schedule Section */}
-      <section className="section bg-light">
+      <section className="section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Weekly Schedule</h2>
             <div className="divider" />
           </div>
-          <DynamicContent
-            section="weekly_schedule"
-            fallback={
-              <div className="weekly-schedule">
-                <p className="text-center">Weekly schedule is being updated. Please check back later.</p>
-              </div>
-            }
-            showContent={true}
-            className="weekly-schedule-container"
-          />
+          <div className="animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <DynamicContent
+              section="weekly_schedule"
+              fallback={
+                <div className="weekly-schedule-container">
+                  <div className="empty-state">
+                    <FontAwesomeIcon icon={faClock} className="empty-state-icon" />
+                    <p className="empty-state-title">Weekly schedule is being updated</p>
+                    <p className="empty-state-description">Please check back later</p>
+                  </div>
+                </div>
+              }
+              showContent={true}
+              className="weekly-schedule-container"
+            />
+          </div>
         </div>
       </section>
 
       {/* Special Events Section */}
-      <section className="section">
+      <section className="section bg-light">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header animate-fade-in">
             <h2>Special Events</h2>
             <div className="divider" />
           </div>
@@ -257,8 +290,12 @@ const Events = () => {
             className="special-events-container"
           />
           */}
-          <div className="special-events-container">
-            <p className="text-center">No special events at this time. Check back later for updates.</p>
+          <div className="special-events-container animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <div className="empty-state">
+              <FontAwesomeIcon icon="star" className="empty-state-icon" />
+              <p className="empty-state-title">No special events at this time</p>
+              <p className="empty-state-description">Check back later for updates</p>
+            </div>
           </div>
         </div>
       </section>
@@ -266,9 +303,11 @@ const Events = () => {
       {/* Call to Action */}
       <section className="cta-section">
         <div className="container">
-          <h2>Get Involved</h2>
-          <p>There are many ways to connect and serve in our church community</p>
-          <Link to="/ministries" className="btn btn-primary">Explore Ministries</Link>
+          <h2 className="animate-fade-in">Get Involved</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>There are many ways to connect and serve in our church community</p>
+          <Link to="/ministries" className="btn btn-primary btn-lg animate-slide-bottom" style={{animationDelay: '0.4s'}}>
+            Explore Ministries <FontAwesomeIcon icon={faArrowRight} />
+          </Link>
         </div>
       </section>
     </main>

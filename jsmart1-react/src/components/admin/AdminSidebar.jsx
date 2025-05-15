@@ -2,7 +2,8 @@ import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AuthContext from '../../context/AuthContext';
-import '../../styles/admin/AdminSidebar.css';
+// Import our modern design system
+import '../../styles/main.css';
 
 const AdminSidebar = () => {
   const location = useLocation();

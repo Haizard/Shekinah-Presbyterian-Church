@@ -63,8 +63,30 @@ const HeroSectionRenderer = ({ content, backgroundImage }) => {
   // Otherwise return null (display nothing) instead of using static fallback data
   if (heroData.showBranchSlider !== false && branches.length > 0) {
     return (
-      <div className="hero-branch-slider">
-        <BranchSlider branches={branches} />
+      <div className="hero-branch-slider" style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/images/CHURCH.jpg)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        position: 'relative',
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 1
+        }}></div>
+        <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+          <BranchSlider branches={branches} />
+        </div>
       </div>
     );
   }

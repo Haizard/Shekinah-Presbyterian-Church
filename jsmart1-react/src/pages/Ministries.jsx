@@ -1,9 +1,11 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import DynamicContent from '../components/DynamicContent';
 import VideoGallery from '../components/VideoGallery';
 import '../styles/Ministries.css';
+import '../styles/modern-ministries.css';
 import api from '../services/api';
 import { getImageUrl, handleImageError, debugImage } from '../utils/imageUtils';
 
@@ -450,9 +452,11 @@ const Ministries = () => {
       {/* Call to Action */}
       <section className="cta-section">
         <div className="container">
-          <h2>Ready to Make a Difference?</h2>
-          <p>Join one of our ministry teams and use your gifts to serve God and others</p>
-          <Link to="/contact" className="btn btn-primary">Contact Us to Get Started</Link>
+          <h2 className="animate-fade-in">Ready to Make a Difference?</h2>
+          <p className="animate-fade-in" style={{animationDelay: '0.2s'}}>Join one of our ministry teams and use your gifts to serve God and others</p>
+          <Link to="/contact" className="btn btn-primary btn-lg animate-slide-bottom" style={{animationDelay: '0.4s'}}>
+            Contact Us to Get Started <FontAwesomeIcon icon={faArrowRight} />
+          </Link>
         </div>
       </section>
     </main>

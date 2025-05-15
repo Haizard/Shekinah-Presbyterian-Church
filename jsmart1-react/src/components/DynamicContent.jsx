@@ -285,8 +285,15 @@ const DynamicContent = ({
   // If we have content data, always show it even if we're refreshing in the background
   // This prevents flickering between content and loading states
 
-  // If no content found and we're not loading, return null
+  // If no content found and we're not loading, create default content
   if (!contentData && !isLoading) {
+    // Create a default content object with the section name
+    setContentData({
+      _id: 'default-' + section,
+      section: section,
+      title: section.charAt(0).toUpperCase() + section.slice(1).replace(/_/g, ' '),
+      content: `Default content for ${section}`
+    });
     return null;
   }
 
@@ -323,11 +330,11 @@ const DynamicContent = ({
             </div>
           )}
 
-          {showContent && contentData.content && (
+          {showContent && (
             <div className="dynamic-content-text">
               <ContentRendererFactory
                 section={section}
-                content={contentData.content}
+                content={contentData.content || `Default content for ${section}`}
                 truncate={false}
                 contentId={contentData._id}
               />

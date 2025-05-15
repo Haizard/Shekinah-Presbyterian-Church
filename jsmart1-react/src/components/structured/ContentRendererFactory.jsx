@@ -121,7 +121,7 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
         // Display full JSON content
         return (
           <div className="json-content">
-            <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.9em' }}>
+            <pre>
               {JSON.stringify(parsedContent, null, 2)}
             </pre>
           </div>
@@ -134,7 +134,7 @@ const ContentRendererFactory = ({ section, content, truncate = false, maxLength 
       // Always display full text content
       return (
         <div className="text-content">
-          <p>{String(parsedContent)}</p>
+          <p>{String(parsedContent || 'Default content for ' + section)}</p>
         </div>
       );
     }
