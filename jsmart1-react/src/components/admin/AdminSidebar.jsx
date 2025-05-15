@@ -157,6 +157,12 @@ const AdminSidebar = () => {
                   <span>Image Debugger</span>
                 </Link>
               </li>
+              <li className={isActive('/admin/content-migration') ? 'active' : ''}>
+                <Link to="/admin/content-migration">
+                  <FontAwesomeIcon icon="sync" />
+                  <span>Content Migration</span>
+                </Link>
+              </li>
             </>
           )}
         </ul>

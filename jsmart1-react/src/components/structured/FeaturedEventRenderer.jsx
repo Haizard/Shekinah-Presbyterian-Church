@@ -6,8 +6,30 @@ import { getImageUrl, handleImageError } from '../../utils/imageUtils';
 
 /**
  * Component for rendering the "featured_event" structured content
+ * Enhanced with better error handling and default content
  */
 const FeaturedEventRenderer = ({ content, image }) => {
+  // Define a high-quality default event to use as fallback
+  const defaultEvent = {
+    title: 'Sunday Worship Service',
+    description: 'Join us for our weekly worship service with praise, prayer, and powerful teaching from God\'s Word.',
+    date: getNextSunday(),
+    time: '10:00 AM - 12:00 PM',
+    location: 'Main Sanctuary',
+    link: '/events',
+    buttonText: 'Learn More'
+  };
+
+  // Helper function to get the next Sunday's date
+  function getNextSunday() {
+    const today = new Date();
+    const daysUntilSunday = 7 - today.getDay();
+    const nextSunday = new Date(today);
+    nextSunday.setDate(today.getDate() + (daysUntilSunday === 7 ? 0 : daysUntilSunday));
+    return nextSunday;
+  }
+
+  // For debugging only - will be removed in production
   console.log('FeaturedEventRenderer received content:', content);
   console.log('FeaturedEventRenderer received image:', image);
 
@@ -17,69 +39,45 @@ const FeaturedEventRenderer = ({ content, image }) => {
   // Special handling for the "[object Object]" format
   if (typeof content === 'string' && content.includes('[object Object]')) {
     console.log('Content appears to be a stringified object that lost its structure');
-
-    // Extract any text that might be useful
-    const contentLines = content.split('\n');
-    const eventInfo = {
-      title: 'Featured Event',
-      description: 'Event details coming soon',
-      date: new Date().toLocaleDateString(),
-      time: 'TBD',
-      location: 'Main Sanctuary',
-      link: '/events'
-    };
-
-    // Try to extract meaningful information from the content
-    for (const line of contentLines) {
-      const trimmedLine = line.trim();
-      if (trimmedLine && !trimmedLine.includes('[object Object]')) {
-        // If we find a line that looks like a title, use it
-        if (!eventInfo.title || eventInfo.title === 'Featured Event') {
-          eventInfo.title = trimmedLine;
-        } else if (!eventInfo.description || eventInfo.description === 'Event details coming soon') {
-          eventInfo.description = trimmedLine;
-        }
-      }
-    }
-
-    parsedContent = eventInfo;
+    parsedContent = defaultEvent;
   }
   // If content is a string, try to parse it
   else if (typeof content === 'string') {
     try {
-      parsedContent = JSON.parse(content);
-      console.log('FeaturedEventRenderer parsed string content:', parsedContent);
+      // Only try to parse if it looks like JSON (starts with { and ends with })
+      if (content.trim().startsWith('{') && content.trim().endsWith('}')) {
+        parsedContent = JSON.parse(content);
+        console.log('FeaturedEventRenderer parsed string content:', parsedContent);
+      } else if (content.includes('Default content for')) {
+        // Handle default content case - use our better defaults
+        console.log('Using default event content instead of placeholder text');
+        parsedContent = defaultEvent;
+      } else {
+        // If it's a string but not JSON, use it as the event description
+        parsedContent = {
+          ...defaultEvent,
+          description: content
+        };
+      }
     } catch (error) {
       console.error('Error parsing FeaturedEvent content:', error);
-
-      // If parsing fails, create a simple event object from the string content
-      parsedContent = {
-        title: 'Featured Event',
-        description: content,
-        date: new Date().toLocaleDateString(),
-        time: 'TBD',
-        location: 'Main Sanctuary',
-        link: '/events'
-      };
+      // If parsing fails, use default content
+      parsedContent = defaultEvent;
     }
-  } else {
+  } else if (typeof content === 'object' && content !== null) {
     // If content is already an object, use it directly
     parsedContent = content;
     console.log('FeaturedEventRenderer using object content directly:', parsedContent);
+  } else {
+    // For null or undefined, use default
+    parsedContent = defaultEvent;
   }
 
-  // If parsedContent is still not an object, create a default one
-  if (typeof parsedContent !== 'object' || parsedContent === null) {
-    console.error('FeaturedEvent content is not an object:', parsedContent);
-    parsedContent = {
-      title: 'Featured Event',
-      description: 'Event details coming soon',
-      date: new Date().toLocaleDateString(),
-      time: 'TBD',
-      location: 'Main Sanctuary',
-      link: '/events'
-    };
-  }
+  // Ensure parsedContent has all required properties by merging with defaults
+  parsedContent = {
+    ...defaultEvent,
+    ...parsedContent
+  };
 
   // Format the date if it exists
   let formattedDate = '';
