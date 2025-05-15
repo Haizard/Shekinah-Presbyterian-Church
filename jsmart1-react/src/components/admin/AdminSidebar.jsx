@@ -25,7 +25,7 @@ const AdminSidebar = () => {
   return (
     <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
-        <h2>{isFinanceUser ? 'Finance Panel' : 'Admin Panel'}</h2>
+        <h2>{isFinanceUser ? 'Finance Panel' : 'Admin Panel - TEST'}</h2>
         <button type="button" className="toggle-btn" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={collapsed ? 'chevron-right' : 'chevron-left'} />
         </button>
