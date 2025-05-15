@@ -1,0 +1,174 @@
+/*
+ * Shekinah Church Content Renderers
+ * Styles for content rendering components
+ */
+
+/* Import the design system */
+@import './design-system.css';
+
+/* HTML Content Renderer */
+.html-content {
+  width: 100%;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  opacity: 1 !important; /* Force content to be visible */
+  visibility: visible !important; /* Force content to be visible */
+}
+
+.html-content h1,
+.html-content h2,
+.html-content h3,
+.html-content h4,
+.html-content h5,
+.html-content h6 {
+  color: var(--text-primary);
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-3);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.html-content h1 {
+  font-size: var(--text-3xl);
+}
+
+.html-content h2 {
+  font-size: var(--text-2xl);
+}
+
+.html-content h3 {
+  font-size: var(--text-xl);
+}
+
+.html-content h4 {
+  font-size: var(--text-lg);
+}
+
+.html-content h5 {
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.html-content h6 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.html-content p {
+  margin-bottom: var(--spacing-4);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+}
+
+.html-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  transition: color var(--transition-normal);
+}
+
+.html-content a:hover {
+  color: var(--primary-dark);
+}
+
+.html-content ul,
+.html-content ol {
+  margin-bottom: var(--spacing-4);
+  padding-left: var(--spacing-6);
+}
+
+.html-content ul li,
+.html-content ol li {
+  margin-bottom: var(--spacing-2);
+}
+
+.html-content blockquote {
+  border-left: 4px solid var(--primary);
+  padding-left: var(--spacing-4);
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: var(--spacing-4);
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+.html-content pre {
+  background-color: var(--surface-2);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--spacing-4);
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.html-content code {
+  background-color: var(--surface-2);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.html-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-4);
+}
+
+.html-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--spacing-4);
+}
+
+.html-content table th,
+.html-content table td {
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border);
+}
+
+.html-content table th {
+  background-color: var(--surface-2);
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Text Content Renderer */
+.text-content {
+  width: 100%;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  opacity: 1 !important; /* Force content to be visible */
+  visibility: visible !important; /* Force content to be visible */
+}
+
+.text-content p {
+  margin-bottom: var(--spacing-4);
+  font-size: var(--text-base);
+  white-space: pre-wrap;
+  opacity: 1 !important; /* Force content to be visible */
+  visibility: visible !important; /* Force content to be visible */
+}
+
+/* JSON Content Renderer */
+.json-content {
+  width: 100%;
+  background-color: var(--surface-2);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--spacing-4);
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.json-content pre {
+  margin: 0;
+  white-space: pre-wrap;
+}

@@ -1,0 +1,463 @@
+/* Specialized Forms Styles */
+.specialized-form {
+  padding: 1rem 0;
+}
+
+.specialized-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.specialized-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.specialized-form .required {
+  color: #e74c3c;
+}
+
+.specialized-form input[type="text"],
+.specialized-form input[type="url"],
+.specialized-form textarea,
+.specialized-form select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.specialized-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.specialized-form .form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.specialized-form .form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.specialized-form .form-help-text {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+}
+
+.specialized-form .field-help {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-top: 0.25rem;
+}
+
+.specialized-form .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* Weekly Schedule Form */
+.weekly-schedule-form .schedule-day {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.weekly-schedule-form .day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.weekly-schedule-form .events-container {
+  margin-top: 1rem;
+}
+
+.weekly-schedule-form .event-item {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.weekly-schedule-form .remove-event {
+  align-self: flex-end;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Video Gallery Form */
+.video-gallery-form .video-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.video-gallery-form .video-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.video-gallery-form .thumbnail-upload {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.video-gallery-form .image-preview {
+  width: 150px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.video-gallery-form .image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-gallery-form .upload-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Featured Event Form */
+.featured-event-form .image-upload-container {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.featured-event-form .image-preview {
+  width: 200px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.featured-event-form .image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Leadership Form */
+.leadership-form .leadership-header {
+  margin-bottom: 1.5rem;
+}
+
+.leadership-form .leadership-header h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.leadership-form .leader-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.leadership-form .leader-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.leadership-form .leader-image-upload {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.leadership-form .image-preview {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.leadership-form .image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* How We Serve Form */
+.how-we-serve-form .ministry-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.how-we-serve-form .ministry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.how-we-serve-form .ministry-image-upload {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.how-we-serve-form .image-preview {
+  width: 150px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.how-we-serve-form .image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Sermon Series Form */
+.sermon-series-form .series-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.sermon-series-form .series-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sermon-series-form .sermons-container {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.sermon-series-form .sermon-item {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sermon-series-form .sermon-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.sermon-series-form .sermon-header h5 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.sermon-series-form .series-image-upload {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.sermon-series-form .image-preview {
+  width: 150px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.sermon-series-form .image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Hero Section Form */
+.hero-section-form .branches-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.hero-section-form .branch-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.hero-section-form .branch-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.hero-section-form .branch-checkbox label {
+  margin-bottom: 0;
+  font-weight: normal;
+}
+
+.hero-section-form .checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-section-form .checkbox-container input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.hero-section-form .checkbox-container label {
+  margin-bottom: 0;
+  font-weight: normal;
+}
+
+/* Special Events Form */
+.special-events-form .event-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #eee;
+}
+
+.special-events-form .event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.special-events-form .event-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.special-events-form .events-header {
+  margin-bottom: 1.5rem;
+}
+
+.special-events-form .events-header h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+/* Event Calendar Form */
+.event-calendar-form .calendar-event-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #eee;
+}
+
+.event-calendar-form .event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.event-calendar-form .event-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.event-calendar-form .events-header {
+  margin-bottom: 1.5rem;
+}
+
+.event-calendar-form .events-header h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+/* File Input Styling */
+.file-input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.file-input + label {
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* Alert Styles */
+.specialized-form .alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.specialized-form .alert-danger {
+  background-color: #fde8e8;
+  color: #e74c3c;
+  border-left: 4px solid #e74c3c;
+}
+
+.specialized-form .alert-success {
+  background-color: #e8f8f0;
+  color: #27ae60;
+  border-left: 4px solid #27ae60;
+}
+
+/* Spinner */
+.spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

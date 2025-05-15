@@ -1,0 +1,205 @@
+/* Unified Dashboard Styles */
+
+.unified-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.dashboard-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: #555;
+}
+
+.filter-group select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.last-refreshed {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: right;
+  margin-top: -1rem;
+}
+
+/* Budget vs Actual Section */
+.budget-vs-actual-section {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.budget-vs-actual-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  color: #2c3e50;
+}
+
+.chart-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.chart-item {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.chart-item h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #555;
+  text-align: center;
+}
+
+/* Menu Row */
+.menu-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1.5rem 0 2.5rem;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  background-color: #3498db;
+  border-radius: 6px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  text-align: center;
+  margin: 0 0.75rem;
+  font-weight: bold;
+}
+
+.menu-item:first-child {
+  margin-left: 0;
+}
+
+.menu-item:last-child {
+  margin-right: 0;
+}
+
+.menu-item:hover {
+  background-color: #2980b9;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item svg {
+  font-size: 1.2rem;
+  margin-right: 0.75rem;
+  color: white;
+}
+
+.menu-item span {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* No Data State */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+  gap: 1rem;
+}
+
+.no-data svg {
+  font-size: 2rem;
+}
+
+.no-data p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .dashboard-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group select {
+    flex: 1;
+  }
+
+  .chart-container {
+    grid-template-columns: 1fr;
+  }
+
+  /* Keep menu items in a row on mobile */
+  .menu-row {
+    flex-direction: row;
+  }
+
+  .menu-item {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    margin: 0 0.25rem;
+  }
+
+  .menu-item svg {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+  }
+}

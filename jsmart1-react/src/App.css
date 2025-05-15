@@ -1,0 +1,8 @@
+/* App-specific styles */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* The rest of the styles will be imported from components */

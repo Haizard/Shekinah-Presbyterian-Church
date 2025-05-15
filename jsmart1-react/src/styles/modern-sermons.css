@@ -1,0 +1,379 @@
+/* 
+ * Shekinah Church Modern Sermons Page
+ * Premium styling for the Shekinah Presbyterian Church Tanzania sermons page
+ */
+
+/* Import the design system */
+@import './design-system.css';
+
+/* Sermons Filters */
+.sermons-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-8);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  padding-right: var(--spacing-10);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  transition: all var(--transition-normal);
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+}
+
+.search-box button {
+  position: absolute;
+  right: var(--spacing-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.search-box button:hover {
+  color: var(--primary);
+}
+
+.category-filter select {
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  background-color: var(--surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 180px;
+}
+
+.category-filter select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+}
+
+/* Sermons Grid */
+.sermons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+.sermon-card {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  border: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sermon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.sermon-thumbnail {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.sermon-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.sermon-card:hover .sermon-thumbnail img {
+  transform: scale(1.1);
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background-color: rgba(var(--primary-rgb), 0.8);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--text-xl);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.sermon-card:hover .play-button {
+  background-color: var(--primary);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.sermon-details {
+  padding: var(--spacing-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sermon-details h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--spacing-2);
+  color: var(--text-primary);
+}
+
+.sermon-meta {
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-2);
+}
+
+.sermon-verse {
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2);
+  font-size: var(--text-sm);
+}
+
+.sermon-description {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.sermon-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-top: auto;
+}
+
+.sermon-links a {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--primary);
+  font-size: var(--text-sm);
+  transition: all var(--transition-normal);
+  text-decoration: none;
+}
+
+.sermon-links a:hover {
+  color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Current Series */
+.current-series {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: var(--spacing-8);
+  border: 1px solid var(--border);
+}
+
+@media (min-width: 768px) {
+  .current-series {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.series-image {
+  height: 100%;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.series-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.current-series:hover .series-image img {
+  transform: scale(1.05);
+}
+
+.series-details {
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+}
+
+.series-details h3 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--spacing-3);
+  color: var(--text-primary);
+}
+
+.series-description {
+  margin-bottom: var(--spacing-4);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.series-meta {
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-6);
+}
+
+/* Series Grid */
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.series-card {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  border: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.series-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.series-card .series-image {
+  height: 180px;
+}
+
+.series-card .series-details {
+  padding: var(--spacing-4);
+}
+
+.series-card .series-details h3 {
+  font-size: var(--text-xl);
+}
+
+.series-card .series-details p {
+  margin-bottom: var(--spacing-4);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* Subscribe Section */
+.subscribe-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.subscribe-content p {
+  margin-bottom: var(--spacing-6);
+  color: var(--text-secondary);
+  font-size: var(--text-lg);
+}
+
+.podcast-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  justify-content: center;
+}
+
+.podcast-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--surface);
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.podcast-link:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-8);
+}
+
+.pagination button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.pagination button:hover {
+  background-color: var(--surface-2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.pagination button.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}

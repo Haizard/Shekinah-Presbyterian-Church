@@ -1,0 +1,285 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faMapMarkerAlt, faCalendarAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import SocialShare from '../components/SocialShare';
+import api from '../services/api';
+import { getImageUrl, handleImageError } from '../utils/imageUtils';
+import '../styles/EventDetail.css';
+
+const EventDetail = () => {
+  const { id } = useParams();
+  const [event, setEvent] = useState(null);
+  const [relatedEvents, setRelatedEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchEventAndRelated = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch the main event
+        const data = await api.events.getById(id);
+        setEvent(data);
+        
+        // Fetch related events (same category or upcoming events)
+        if (data?.category) {
+          try {
+            const allEvents = await api.events.getAll();
+            
+            // Filter events: same category but different ID, limit to 3
+            const related = allEvents
+              .filter(e => e._id !== id && (e.category === data.category || new Date(e.date) > new Date()))
+              .slice(0, 3);
+              
+            setRelatedEvents(related);
+          } catch (relatedErr) {
+            console.error('Error fetching related events:', relatedErr);
+            // Don't set an error for related events, just leave the array empty
+          }
+        }
+        
+        setError(null);
+        
+        // Scroll to top when event loads
+        window.scrollTo(0, 0);
+      } catch (err) {
+        console.error('Error fetching event:', err);
+        setError('Failed to load event details. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventAndRelated();
+  }, [id]);
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return 'TBD';
+    
+    const parts = dateString.split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0]} ${parts[1].replace(',', '')}${parts.length > 2 ? `, ${parts[2]}` : ''}`;
+    }
+    return dateString;
+  };
+
+  return (
+    <main style={{ padding: '60px 0', minHeight: '70vh' }}>
+      <div className="container">
+        <div style={{ marginBottom: '20px' }}>
+          <Link to="/events" style={{ display: 'inline-flex', alignItems: 'center', color: '#333', textDecoration: 'none', fontWeight: '500' }}>
+            <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '8px' }} /> Back to Events
+          </Link>
+        </div>
+
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '50px 20px' }}>
+            <div style={{
+              margin: '0 auto 20px',
+              width: '50px',
+              height: '50px',
+              border: '5px solid rgba(0, 0, 0, 0.1)',
+              borderRadius: '50%',
+              borderTopColor: 'var(--primary-color)',
+              animation: 'spin 1s ease-in-out infinite'
+            }} />
+            <p>Loading event details...</p>
+          </div>
+        ) : error ? (
+          <div style={{ textAlign: 'center', padding: '50px 20px' }}>
+            <p style={{ marginBottom: '20px', color: '#666' }}>{error}</p>
+            <Link to="/events" className="btn btn-primary">Return to Events</Link>
+          </div>
+        ) : event ? (
+          <div style={{
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              padding: '30px',
+              backgroundColor: 'var(--primary-color)',
+              color: 'white'
+            }}>
+              <h1 style={{ margin: '0 0 15px 0', fontSize: '2.2rem' }}>{event.title}</h1>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '20px',
+                fontSize: '1rem'
+              }}>
+                {event.date && (
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                    <FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '8px' }} /> {event.date}
+                  </span>
+                )}
+                {event.time && (
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                    <FontAwesomeIcon icon={faClock} style={{ marginRight: '8px' }} /> {event.time}
+                  </span>
+                )}
+                {event.location && (
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                    <FontAwesomeIcon icon={faMapMarkerAlt} style={{ marginRight: '8px' }} /> {event.location}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div style={{ padding: '30px' }}>
+              <div style={{
+                position: 'relative',
+                marginBottom: '30px',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                maxHeight: '400px'
+              }}>
+                <img
+                  src={getImageUrl(event.image)}
+                  alt={event.title}
+                  onError={(e) => handleImageError(e)}
+                  style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+                />
+                {event.date && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '20px',
+                    left: '20px',
+                    backgroundColor: 'var(--primary-color)',
+                    color: 'white',
+                    padding: '10px 15px',
+                    borderRadius: '5px',
+                    textAlign: 'center',
+                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)'
+                  }}>
+                    <span style={{
+                      display: 'block',
+                      fontSize: '1rem',
+                      fontWeight: '700',
+                      textTransform: 'uppercase'
+                    }}>{event.date.split(' ')[0]}</span>
+                    <span style={{
+                      display: 'block',
+                      fontSize: '1.5rem',
+                      fontWeight: '700'
+                    }}>{formatDate(event.date)}</span>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ marginBottom: '30px', lineHeight: '1.6', fontSize: '1.1rem' }}>
+                {event.description ? (
+                  <div dangerouslySetInnerHTML={{ __html: event.description }} />
+                ) : (
+                  <p>No description available for this event.</p>
+                )}
+              </div>
+
+              {event.category && (
+                <div style={{
+                  marginBottom: '30px',
+                  padding: '15px',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '5px'
+                }}>
+                  <span style={{ fontWeight: '600', marginRight: '10px' }}>Category:</span>
+                  <span>{event.category}</span>
+                </div>
+              )}
+
+              <div style={{ marginTop: '30px' }}>
+                <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
+                  {event.registrationLink && (
+                    <a href={event.registrationLink} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                      Register Now
+                    </a>
+                  )}
+                  <Link to="/contact" className="btn btn-secondary">
+                    Contact Us
+                  </Link>
+                </div>
+                
+                <div style={{ 
+                  marginTop: '20px', 
+                  padding: '15px', 
+                  backgroundColor: '#f8f9fa', 
+                  borderRadius: '5px' 
+                }}>
+                  <SocialShare 
+                    title={event.title} 
+                    description={`Join us for ${event.title} on ${event.date} at ${event.location}`} 
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Related Events Section */}
+            {relatedEvents.length > 0 && (
+              <div style={{ marginTop: '40px', padding: '30px', borderTop: '1px solid #eee' }}>
+                <h3 style={{ marginBottom: '20px', color: 'var(--primary-color)' }}>Related Events</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                  {relatedEvents.map(relatedEvent => (
+                    <div key={relatedEvent._id} style={{
+                      backgroundColor: '#f8f9fa',
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                    }}>
+                      <Link
+                        to={`/events/${relatedEvent._id}`}
+                        style={{
+                          display: 'block',
+                          textDecoration: 'none',
+                          color: 'inherit',
+                        }}
+                      >
+                        <div style={{ height: '140px', overflow: 'hidden' }}>
+                          <img
+                            src={getImageUrl(relatedEvent.image)}
+                            alt={relatedEvent.title}
+                            onError={(e) => handleImageError(e)}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        </div>
+                        <div style={{ padding: '15px' }}>
+                          <h4 style={{ margin: '0 0 10px 0', fontSize: '1.1rem' }}>{relatedEvent.title}</h4>
+                          {relatedEvent.date && (
+                            <div style={{ fontSize: '0.9rem', color: '#666', display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                              <FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '5px', fontSize: '0.8rem' }} />
+                              {relatedEvent.date}
+                            </div>
+                          )}
+                          <span style={{
+                            color: 'var(--primary-color)',
+                            fontWeight: '500',
+                            fontSize: '0.9rem',
+                            display: 'inline-block',
+                            marginTop: '5px'
+                          }}>
+                            View Details →
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '50px 20px' }}>
+            <h2>Event Not Found</h2>
+            <p style={{ marginBottom: '20px', color: '#666' }}>The event you're looking for doesn't exist or has been removed.</p>
+            <Link to="/events" className="btn btn-primary">Browse All Events</Link>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+};
+
+export default EventDetail;

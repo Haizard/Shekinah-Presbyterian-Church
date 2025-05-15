@@ -1,0 +1,45 @@
+{
+  "name": "shekinah-church-website",
+  "version": "1.0.0",
+  "description": "Shekinah Presbyterian Church Tanzania Website with Admin Panel",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "cd jsmart1-react && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "init-admin": "node initAdmin.js",
+    "seed-data": "node seedData.js",
+    "build": "cd jsmart1-react && npm install --include=dev && npm run build && cd .. && node preserve-uploads.js && node copy-uploads.js && node migrate-images-to-mongodb.js && node restore-images.js",
+    "install-client": "cd jsmart1-react && npm install --include=dev",
+    "setup": "node setup.js",
+    "preserve-uploads": "node preserve-uploads.js",
+    "copy-uploads": "node copy-uploads.js",
+    "restore-images": "node restore-images.js",
+    "migrate-images": "node migrate-images-to-mongodb.js",
+    "render-postbuild": "chmod +x build.sh && ./build.sh && node preserve-uploads.js && node copy-uploads.js && node migrate-images-to-mongodb.js && node restore-images.js",
+    "fix-images": "node migrate-images-to-mongodb.js && node restore-images.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "chart.js": "^4.4.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
+    "mime-types": "^2.1.35",
+    "mongoose": "^8.14.1",
+    "multer": "^1.4.5-lts.2",
+    "react-chartjs-2": "^5.3.0",
+    "slick-carousel": "^1.8.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.10"
+  }
+}

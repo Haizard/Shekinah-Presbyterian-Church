@@ -1,0 +1,467 @@
+/* 
+ * Shekinah Church Modern Contact Page
+ * Premium styling for the Shekinah Presbyterian Church Tanzania contact page
+ */
+
+/* Import the design system */
+@import './design-system.css';
+
+/* Page Banner */
+.page-banner {
+  position: relative;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: var(--spacing-16) 0;
+  text-align: center;
+  margin-top: 0;
+}
+
+.page-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-color: var(--primary);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.page-banner h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+  animation: fadeInUp 1s ease-out;
+}
+
+.page-banner p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* Contact Content */
+.contact-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .contact-content {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* Contact Info */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+}
+
+.contact-item svg {
+  font-size: var(--text-2xl);
+  color: var(--primary);
+  margin-top: var(--spacing-1);
+}
+
+.contact-item h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--spacing-1);
+  color: var(--text-primary);
+}
+
+.contact-item p {
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+.contact-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+}
+
+.contact-link:hover {
+  color: var(--primary);
+}
+
+.social-links {
+  display: flex;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-4);
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--surface-2);
+  color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-normal);
+}
+
+.social-links a:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Contact Form */
+.contact-form {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-4);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background-color: var(--surface);
+  transition: all var(--transition-normal);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.contact-form .btn {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+/* Alert Messages */
+.alert {
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.alert svg {
+  font-size: var(--text-xl);
+}
+
+.alert-success {
+  background-color: rgba(var(--success-rgb), 0.1);
+  border: 1px solid rgba(var(--success-rgb), 0.2);
+  color: var(--success);
+}
+
+.alert-danger {
+  background-color: rgba(var(--error-rgb), 0.1);
+  border: 1px solid rgba(var(--error-rgb), 0.2);
+  color: var(--error);
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: var(--spacing-2);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Contact Cards */
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.contact-card {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  text-align: center;
+  transition: all var(--transition-normal);
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.contact-icon {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-2xl);
+  margin: 0 auto var(--spacing-4);
+}
+
+.contact-card h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--spacing-3);
+  color: var(--text-primary);
+}
+
+.contact-card p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2);
+}
+
+/* Map Container */
+.map-container {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  height: 450px;
+}
+
+.map-container iframe {
+  border: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Prayer Request Section */
+.prayer-request-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .prayer-request-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.prayer-request-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.prayer-request-text p {
+  margin-bottom: var(--spacing-4);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.prayer-request-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-card {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.form-header {
+  margin-bottom: var(--spacing-4);
+  text-align: center;
+}
+
+.form-header h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--spacing-2);
+  color: var(--text-primary);
+}
+
+.form-header p {
+  color: var(--text-secondary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-4);
+}
+
+@media (min-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+}
+
+.form-required::after {
+  content: '*';
+  color: var(--error);
+  margin-left: var(--spacing-1);
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.form-checkbox input {
+  margin-top: 0.25rem;
+}
+
+.form-checkbox label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* Social Connect */
+.social-connect {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.social-connect p {
+  margin-bottom: var(--spacing-6);
+  color: var(--text-secondary);
+  font-size: var(--text-lg);
+}
+
+.social-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  justify-content: center;
+}
+
+.social-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  min-width: 120px;
+}
+
+.social-icon svg {
+  font-size: var(--text-2xl);
+  color: var(--primary);
+}
+
+.social-icon:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  background-color: var(--primary);
+  color: white;
+}
+
+.social-icon:hover svg {
+  color: white;
+}
+
+/* Call to Action */
+.cta-section {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: var(--spacing-16) 0;
+  text-align: center;
+  position: relative;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-color: var(--surface-2);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.cta-section h2 {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+}
+
+.cta-section p {
+  font-size: var(--text-lg);
+  max-width: 600px;
+  margin: 0 auto var(--spacing-8);
+}
+
+.cta-section .btn {
+  font-size: var(--text-lg);
+  padding: var(--spacing-3) var(--spacing-8);
+  border-radius: var(--radius-full);
+  background-color: white;
+  color: var(--primary);
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-lg);
+}
+
+.cta-section .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl);
+  background-color: var(--accent);
+  color: white;
+}
