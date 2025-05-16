@@ -279,7 +279,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
                 placeholder="Enter a subtitle for the hero section..."
                 style={{ borderLeft: '3px solid var(--accent)' }}
               />
-              <span className="form-help-text">This text will appear below the main title in the hero section</span>
+              <span className="form-help-text">This text will appear below the main title in the hero sectio</span>
             </div>
           </div>
 
