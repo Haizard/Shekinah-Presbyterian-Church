@@ -37,9 +37,23 @@ if (process.env.NODE_ENV === 'production') {
   }));
 
   // Serve static files from the React build directory
-  app.use(express.static(path.join(__dirname, 'jsmart1-react', 'dist'), {
-    maxAge: '1d' // Cache for 1 day
-  }));
+  const distPath = path.join(__dirname, 'jsmart1-react', 'dist');
+  console.log('Checking if dist directory exists:', distPath);
+  if (fs.existsSync(distPath)) {
+    console.log('Dist directory exists, serving static files from:', distPath);
+    app.use(express.static(distPath, {
+      maxAge: '1d' // Cache for 1 day
+    }));
+  } else {
+    console.error('ERROR: Dist directory does not exist at:', distPath);
+    console.log('Current directory contents:', fs.readdirSync(__dirname));
+    const jsmart1Path = path.join(__dirname, 'jsmart1-react');
+    if (fs.existsSync(jsmart1Path)) {
+      console.log('jsmart1-react directory exists, contents:', fs.readdirSync(jsmart1Path));
+    } else {
+      console.error('ERROR: jsmart1-react directory does not exist');
+    }
+  }
 
   console.log('Static file paths configured for production:');
   console.log('- Public: ' + path.join(__dirname, 'public'));
@@ -111,7 +125,41 @@ const imageVerifyRoutes = require('./routes/image-verify');
 
 // Health check endpoint for Render
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Server is running' });
+  // Check if critical directories exist
+  const criticalPaths = [
+    { path: path.join(__dirname, 'jsmart1-react'), name: 'jsmart1-react directory' },
+    { path: path.join(__dirname, 'jsmart1-react', 'dist'), name: 'dist directory' },
+    { path: path.join(__dirname, 'jsmart1-react', 'dist', 'index.html'), name: 'index.html file' },
+    { path: path.join(__dirname, 'public'), name: 'public directory' },
+    { path: path.join(__dirname, 'public', 'uploads'), name: 'uploads directory' },
+  ];
+
+  const pathStatus = criticalPaths.map(({ path: pathToCheck, name }) => {
+    const exists = fs.existsSync(pathToCheck);
+    return { name, exists };
+  });
+
+  const allPathsExist = pathStatus.every(p => p.exists);
+
+  if (allPathsExist) {
+    res.status(200).json({
+      status: 'ok',
+      message: 'Server is running and all critical paths exist',
+      paths: pathStatus,
+      environment: process.env.NODE_ENV,
+      serverTime: new Date().toISOString()
+    });
+  } else {
+    // Still return 200 to prevent Render from restarting the service
+    // but include detailed error information
+    res.status(200).json({
+      status: 'warning',
+      message: 'Server is running but some critical paths are missing',
+      paths: pathStatus,
+      environment: process.env.NODE_ENV,
+      serverTime: new Date().toISOString()
+    });
+  }
 });
 
 // Use Routes
@@ -133,7 +181,22 @@ app.use('/api/image-verify', imageVerifyRoutes);
 // Serve React app for any other routes in production
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'jsmart1-react', 'dist', 'index.html'));
+    const indexPath = path.join(__dirname, 'jsmart1-react', 'dist', 'index.html');
+    console.log('Checking if index.html exists at:', indexPath);
+
+    if (fs.existsSync(indexPath)) {
+      console.log('index.html found, serving from:', indexPath);
+      res.sendFile(indexPath);
+    } else {
+      console.error('ERROR: index.html not found at:', indexPath);
+      res.status(404).send(`
+        <h1>Server Error</h1>
+        <p>The React app's index.html file could not be found at ${indexPath}.</p>
+        <p>This is likely a deployment issue. Please check the build process.</p>
+        <p>Current directory: ${__dirname}</p>
+        <p>Environment: ${process.env.NODE_ENV}</p>
+      `);
+    }
   });
 }
 
@@ -177,12 +240,44 @@ const restoreImagesFromMongoDB = async () => {
     }
 
     // Create dist/uploads directory if it doesn't exist
-    const distUploadsDir = path.join(__dirname, 'jsmart1-react', 'dist', 'uploads');
-    if (fs.existsSync(path.join(__dirname, 'jsmart1-react', 'dist'))) {
+    const distPath = path.join(__dirname, 'jsmart1-react', 'dist');
+    const distUploadsDir = path.join(distPath, 'uploads');
+
+    console.log('Checking if dist directory exists:', distPath);
+    if (fs.existsSync(distPath)) {
+      console.log('Dist directory exists, checking for uploads directory');
       if (!fs.existsSync(distUploadsDir)) {
+        console.log('Creating dist/uploads directory');
         fs.mkdirSync(distUploadsDir, { recursive: true });
         console.log('Created dist/uploads directory:', distUploadsDir);
+      } else {
+        console.log('Dist/uploads directory already exists:', distUploadsDir);
       }
+    } else {
+      console.error('ERROR: Dist directory does not exist at:', distPath);
+      console.log('Creating dist directory and uploads subdirectory');
+      fs.mkdirSync(distPath, { recursive: true });
+      fs.mkdirSync(distUploadsDir, { recursive: true });
+      console.log('Created dist and dist/uploads directories');
+
+      // Create an empty index.html file to prevent 404 errors
+      const indexPath = path.join(distPath, 'index.html');
+      fs.writeFileSync(indexPath, `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Shekinah Presbyterian Church Tanzania</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body>
+          <h1>Shekinah Presbyterian Church Tanzania</h1>
+          <p>This is a temporary page. The React app build was not found.</p>
+          <p>Please check the build process in the deployment configuration.</p>
+        </body>
+        </html>
+      `);
+      console.log('Created temporary index.html file at:', indexPath);
     }
 
     // Restore each image to the filesystem

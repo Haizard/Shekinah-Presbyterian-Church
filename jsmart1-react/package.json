@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node ./node_modules/vite/bin/vite.js build",
+    "build": "echo 'Running build script' && node ./node_modules/vite/bin/vite.js build && echo 'Build complete, checking dist directory:' && ls -la dist",
     "preview": "vite preview"
   },
   "dependencies": {

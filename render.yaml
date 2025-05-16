@@ -3,9 +3,33 @@ services:
     name: shekinah-church-website
     runtime: node
     buildCommand: >
-      cd jsmart1-react && npm install && npm run build && cd .. &&
+      echo "Starting build process..." &&
+      echo "Current directory: $(pwd)" &&
+      echo "Directory contents: $(ls -la)" &&
+      cd jsmart1-react &&
+      echo "Installing React app dependencies..." &&
+      npm install --include=dev &&
+      echo "Building React app..." &&
+      npm run build &&
+      echo "React build complete. Checking dist directory:" &&
+      ls -la dist || echo "ERROR: dist directory not found" &&
+      cd .. &&
+      echo "Back to root directory. Installing server dependencies..." &&
       npm install &&
-      node preserve-uploads.js && node copy-uploads.js && node migrate-images-to-mongodb.js && node restore-images.js
+      echo "Running build environment check script..." &&
+      node check-build-env.js &&
+      echo "Running preserve-uploads script..." &&
+      node preserve-uploads.js &&
+      echo "Running copy-uploads script..." &&
+      node copy-uploads.js &&
+      echo "Running migrate-images-to-mongodb script..." &&
+      node migrate-images-to-mongodb.js &&
+      echo "Running restore-images script..." &&
+      node restore-images.js &&
+      echo "Running final build environment check..." &&
+      node check-build-env.js &&
+      echo "Build process complete. Final directory structure:" &&
+      find . -type d -name "dist" | xargs ls -la
     startCommand: node server.js
     envVars:
       - key: NODE_ENV

@@ -12,10 +12,53 @@ console.log('Running enhanced copy-uploads script...');
 
 // Source and destination directories
 const sourceDir = path.join(__dirname, 'public', 'uploads');
-const destDir = path.join(__dirname, 'jsmart1-react', 'dist', 'uploads');
+const jsmart1ReactDir = path.join(__dirname, 'jsmart1-react');
+const distDir = path.join(jsmart1ReactDir, 'dist');
+const destDir = path.join(distDir, 'uploads');
 
 // Also copy to the public directory in the dist folder to ensure images are accessible
-const publicDestDir = path.join(__dirname, 'jsmart1-react', 'dist', 'public', 'uploads');
+const publicDir = path.join(distDir, 'public');
+const publicDestDir = path.join(publicDir, 'uploads');
+
+// Ensure the jsmart1-react directory exists
+if (!fs.existsSync(jsmart1ReactDir)) {
+  console.error('ERROR: jsmart1-react directory does not exist:', jsmart1ReactDir);
+  console.log('Creating jsmart1-react directory');
+  fs.mkdirSync(jsmart1ReactDir, { recursive: true });
+}
+
+// Ensure the dist directory exists
+if (!fs.existsSync(distDir)) {
+  console.log('Creating dist directory:', distDir);
+  fs.mkdirSync(distDir, { recursive: true });
+
+  // Create an empty index.html file to prevent 404 errors
+  const indexPath = path.join(distDir, 'index.html');
+  fs.writeFileSync(indexPath, `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Shekinah Presbyterian Church Tanzania</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+      <h1>Shekinah Presbyterian Church Tanzania</h1>
+      <p>This is a temporary page. The React app build was not found.</p>
+      <p>Please check the build process in the deployment configuration.</p>
+    </body>
+    </html>
+  `);
+  console.log('Created temporary index.html file at:', indexPath);
+} else {
+  console.log('Dist directory exists:', distDir);
+}
+
+// Ensure the public directory in dist exists
+if (!fs.existsSync(publicDir)) {
+  console.log('Creating public directory in dist:', publicDir);
+  fs.mkdirSync(publicDir, { recursive: true });
+}
 
 // Ensure the source directory exists
 if (!fs.existsSync(sourceDir)) {
