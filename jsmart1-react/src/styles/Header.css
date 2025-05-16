@@ -1,20 +1,32 @@
 /* Header & Navigation Styles */
 header {
-  background: linear-gradient(135deg, #1a4b8c 0%, #2c5eaa 50%, #1a4b8c 100%);
+  background: #0f172a; /* Darker background for better contrast */
   color: var(--light-color);
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: var(--box-shadow);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: all 0.4s ease;
-  border-bottom: 3px solid #f3c623;
+  border-bottom: 3px solid #eab308;
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--blue-yellow-gradient);
+  z-index: 1;
 }
 
 header.scrolled {
-  box-shadow: var(--box-shadow-lg);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   padding: 0.7rem 0;
-  background: linear-gradient(135deg, #153a6f 0%, #1a4b8c 50%, #153a6f 100%);
+  background: #0f172a; /* Keep the same dark background */
 }
 
 header .container {
@@ -54,39 +66,67 @@ nav ul li {
 
 nav ul li a,
 nav ul li button {
-  color: var(--light-color);
+  color: white;
   padding: 0.5rem 1rem;
-  font-weight: 500;
+  font-weight: 700;
   font-family: 'Montserrat', sans-serif;
   transition: var(--transition);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   cursor: pointer;
   text-align: left;
   display: block;
   width: 100%;
   text-decoration: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  margin: 0 2px;
 }
 
 nav ul li a:hover,
 nav ul li a.active,
 nav ul li button:hover,
 nav ul li button.active {
-  color: #f3c623;
+  color: var(--accent-color);
+  transform: translateY(-2px);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn-give {
-  background-color: #f3c623;
-  color: #1a4b8c !important;
+  background-color: var(--accent-color);
+  color: #000000 !important;
   padding: 0.5rem 1.5rem !important;
   border-radius: var(--border-radius);
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   transition: var(--transition);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--accent-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-give::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: all 0.5s ease;
+  z-index: 1;
 }
 
 .btn-give:hover {
-  background-color: #e5b71f;
+  background-color: var(--accent-dark);
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-give:hover::after {
+  left: 100%;
 }
 
 .dropdown {
@@ -99,22 +139,29 @@ nav ul li button.active {
 }
 
 .dropdown-toggle {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.2);
   border: none;
-  color: var(--light-color);
+  color: white;
   padding: 0.5rem;
   margin-left: -0.5rem;
   cursor: pointer;
   display: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .dropdown-content {
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: var(--light-color);
+  background-color: white;
   min-width: 200px;
-  box-shadow: var(--box-shadow);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: var(--border-radius);
   padding: 0.5rem 0;
   opacity: 0;
@@ -122,6 +169,7 @@ nav ul li button.active {
   transform: translateY(10px);
   transition: all 0.3s ease;
   z-index: 1;
+  border-top: 3px solid var(--accent-color);
 }
 
 .dropdown:hover .dropdown-content {
@@ -135,7 +183,7 @@ nav ul li button.active {
   color: var(--text-color) !important;
   padding: 0.7rem 1.5rem !important;
   display: block;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   font-size: 0.9rem;
   background: transparent;
   border: none;
@@ -143,12 +191,17 @@ nav ul li button.active {
   text-align: left;
   width: 100%;
   text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+  border-left: 0 solid var(--accent-color);
 }
 
 .dropdown-content a:hover,
 .dropdown-content button:hover {
-  background-color: var(--light-bg);
+  background-color: rgba(var(--primary-rgb), 0.05);
   color: var(--primary-color) !important;
+  padding-left: 2rem !important;
+  border-left: 4px solid var(--accent-color);
 }
 
 .hamburger {
@@ -184,11 +237,12 @@ nav ul li button.active {
     top: 100%;
     left: 0;
     width: 100%;
-    background: linear-gradient(135deg, #1a4b8c 0%, #2c5eaa 50%, #1a4b8c 100%);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-dark) 100%);
     padding: 1rem 0;
-    box-shadow: var(--box-shadow);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
     transition: all 0.4s ease;
+    border-top: 3px solid var(--accent-color);
   }
 
   nav.active {
@@ -218,12 +272,20 @@ nav ul li button.active {
   }
 
   .dropdown-toggle {
-    display: block;
-    color: var(--light-color);
+    display: flex;
+    color: white;
+    background: rgba(0, 0, 0, 0.2);
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
   }
 
   .dropdown-toggle:hover {
-    color: #f3c623;
+    color: var(--accent-color);
+    background: rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
   }
 
   .dropdown-content {
@@ -254,14 +316,20 @@ nav ul li button.active {
 
   .dropdown-content a,
   .dropdown-content button {
-    color: var(--light-color) !important;
+    color: white !important;
     padding: 0.5rem 0 !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border-left: 3px solid rgba(var(--accent-rgb), 0.3);
+    padding-left: 1rem !important;
   }
 
   .dropdown-content a:hover,
   .dropdown-content button:hover {
-    background-color: transparent;
-    color: #f3c623 !important;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--accent-color) !important;
+    padding-left: 1.5rem !important;
+    border-left: 3px solid var(--accent-color);
   }
 
   .btn-give {

@@ -6,30 +6,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Color System */
-  --primary: #8B0000;
-  --primary-light: #B22222;
-  --primary-dark: #660000;
-  --primary-rgb: 139, 0, 0;
+  /* Color System - Blue and Yellow Theme */
+  --primary: #1a56db;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e40af;
+  --primary-rgb: 26, 86, 219;
 
-  --secondary: #10B981;
-  --secondary-light: #34D399;
-  --secondary-dark: #059669;
-  --secondary-rgb: 16, 185, 129;
+  --secondary: #1a56db;
+  --secondary-light: #3b82f6;
+  --secondary-dark: #1e40af;
+  --secondary-rgb: 26, 86, 219;
 
-  --accent: #F59E0B;
-  --accent-light: #FBBF24;
-  --accent-dark: #D97706;
-  --accent-rgb: 245, 158, 11;
+  --accent: #eab308;
+  --accent-light: #facc15;
+  --accent-dark: #ca8a04;
+  --accent-rgb: 234, 179, 8;
 
-  --success: #10B981;
-  --success-rgb: 16, 185, 129;
-  --error: #EF4444;
-  --error-rgb: 239, 68, 68;
-  --warning: #F59E0B;
-  --warning-rgb: 245, 158, 11;
-  --info: #3B82F6;
-  --info-rgb: 59, 130, 246;
+  --success: #1a56db;
+  --success-rgb: 26, 86, 219;
+  --error: #1a56db;
+  --error-rgb: 26, 86, 219;
+  --warning: #fbbf24;
+  --warning-rgb: 251, 191, 36;
+  --info: #1a56db;
+  --info-rgb: 26, 86, 219;
 
   --background: #F9FAFB;
   --surface: #FFFFFF;
@@ -45,15 +45,18 @@
   --border-dark: #D1D5DB;
 
   /* Admin Theme Colors */
-  --admin: #1a2533;
-  --admin-light: #3498db;
-  --admin-dark: #0f1922;
-  --admin-rgb: 26, 37, 51;
-  --admin-light-rgb: 52, 152, 219;
-  --admin-dark-rgb: 15, 25, 34;
+  --admin: #1a56db;
+  --admin-light: #3b82f6;
+  --admin-dark: #1e40af;
+  --admin-rgb: 26, 86, 219;
+  --admin-light-rgb: 59, 130, 246;
+  --admin-dark-rgb: 30, 64, 175;
   --admin-gradient-vibrant: linear-gradient(135deg, var(--admin-dark) 0%, var(--admin) 100%);
   --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  --blue-yellow-gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  --blue-yellow-soft-gradient: linear-gradient(135deg, rgba(var(--primary-rgb), 0.9) 0%, rgba(var(--accent-rgb), 0.9) 100%);
+  --blue-yellow-diagonal-gradient: linear-gradient(45deg, var(--primary-dark) 0%, var(--primary) 50%, var(--accent) 100%);
 
   /* Typography */
   --font-heading: 'Montserrat', sans-serif;

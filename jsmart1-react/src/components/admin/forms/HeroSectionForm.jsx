@@ -277,8 +277,9 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
                 onChange={(e) => setSubtitle(e.target.value)}
                 rows="3"
                 placeholder="Enter a subtitle for the hero section..."
+                style={{ borderLeft: '3px solid var(--accent)' }}
               />
-              <span className="form-help-text">This text will appear below the main title in the hero sectinn</span>
+              <span className="form-help-text">This text will appear below the main title in the hero section</span>
             </div>
           </div>
 
@@ -296,7 +297,7 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
                   </div>
                 ) : (
                   <div className="image-preview">
-                    <FontAwesomeIcon icon="image" size="3x" style={{ color: 'var(--text-tertiary)' }} />
+                    <FontAwesomeIcon icon="image" size="3x" style={{ color: 'var(--primary)' }} />
                   </div>
                 )}
 
@@ -371,7 +372,12 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
           </div>
         )}
 
-        <div className="form-actions">
+        <div className="form-actions" style={{
+          background: 'linear-gradient(to right, rgba(var(--primary-rgb), 0.05), rgba(var(--accent-rgb), 0.05))',
+          padding: '20px',
+          borderRadius: 'var(--radius-md)',
+          marginTop: '30px'
+        }}>
           <button
             type="button"
             className="btn btn-ghost"
@@ -380,7 +386,9 @@ const HeroSectionForm = ({ initialData, onSubmit }) => {
           >
             <FontAwesomeIcon icon="undo" /> Reset
           </button>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button type="submit" className="btn btn-primary" disabled={loading} style={{
+            minWidth: '180px'
+          }}>
             {loading ? (
               <>
                 <span className="spinner-small" /> Saving...

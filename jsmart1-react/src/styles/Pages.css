@@ -1,7 +1,7 @@
 /* Common styles for all pages */
 
 .page-banner {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/page-banner.jpg');
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/images/CHURCH.jpg');
   background-size: cover;
   background-position: center;
   color: var(--light-color);
@@ -15,6 +15,7 @@
   margin-bottom: 0;
   color: var(--light-color);
   position: relative;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .page-banner h1::after {

@@ -1,4 +1,4 @@
-/* 
+/*
  * Shekinah Church Modern Home Page
  * Premium styling for the Shekinah Presbyterian Church Tanzania home page
  */
@@ -45,7 +45,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+  background: linear-gradient(135deg,
+    rgba(26, 86, 219, 0.7) 0%,
+    rgba(30, 64, 175, 0.6) 50%,
+    rgba(234, 179, 8, 0.3) 100%
+  );
   z-index: -1;
 }
 
@@ -115,7 +119,7 @@
 .divider {
   width: 80px;
   height: 4px;
-  background: var(--primary);
+  background: var(--accent);
   margin: 0 auto;
   border-radius: var(--radius-full);
   position: relative;
@@ -127,7 +131,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  background: var(--primary);
+  background: var(--accent);
   border-radius: var(--radius-full);
   top: -3px;
 }
@@ -155,7 +159,7 @@
   .mission-content {
     grid-template-columns: 1.5fr 1fr;
   }
-  
+
   .vision-content {
     grid-template-columns: 1fr 1.5fr;
   }
@@ -173,6 +177,7 @@
   font-size: var(--text-2xl);
   margin-bottom: var(--spacing-4);
   color: var(--primary);
+  text-shadow: 1px 1px 2px rgba(251, 191, 36, 0.3);
 }
 
 .about-text p,
@@ -233,8 +238,8 @@
 }
 
 .event-date {
-  background: var(--primary);
-  color: white;
+  background: var(--accent);
+  color: var(--text-primary);
   padding: var(--spacing-4);
   display: flex;
   flex-direction: column;
@@ -336,11 +341,13 @@
   font-size: var(--text-xl);
   cursor: pointer;
   transition: all var(--transition-normal);
+  border: 2px solid var(--accent);
 }
 
 .sermon-card:hover .play-button {
   background-color: var(--primary);
   transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.5);
 }
 
 .sermon-details {
@@ -382,9 +389,12 @@
   color: var(--primary);
   font-size: var(--text-sm);
   transition: all var(--transition-normal);
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
 }
 
 .sermon-links a:hover {
-  color: var(--primary-dark);
+  color: var(--accent);
   transform: translateY(-2px);
+  background-color: rgba(var(--primary-rgb), 0.1);
 }
