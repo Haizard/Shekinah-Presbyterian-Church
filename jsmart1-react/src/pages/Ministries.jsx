@@ -93,7 +93,7 @@ const Ministries = () => {
             fallback={
               <div className="ministries-intro">
                 <p>At Shekinah Presbyterian Mission Tanzania, ministry is not just what we do — it's who we are. We serve with the conviction that the Gospel of Christ transforms lives, families, communities, and nations.</p>
-                <p>Whether you're called to pray, serve, give, or spread the word — there's a place for you in this mission. We invite you to explore our ministries and find where God is calling you to get involved.</p>
+                <p>Whether you're called to pray, serve, donation, or spread the word — there's a place for you in this mission. We invite you to explore our ministries and find where God is calling you to get involved.</p>
                 <div className="ministry-buttons">
                   <a href="#worship" className="btn btn-sm">Worship</a>
                   <a href="#discipleship" className="btn btn-sm">Discipleship</a>
@@ -270,7 +270,7 @@ const Ministries = () => {
               <div className="step">
                 <div className="step-number">1</div>
                 <h3>Discover Your Gifts</h3>
-                <p>Take our spiritual gifts assessment to identify your God-given abilities and passions.</p>
+                <p>Take our spiritual gifts assessment to identify your God-donationn abilities and passions.</p>
               </div>
               <div className="step">
                 <div className="step-number">2</div>

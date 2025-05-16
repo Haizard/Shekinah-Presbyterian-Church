@@ -20,7 +20,7 @@
 /* Admin Sidebar */
 .admin-sidebar {
   width: 320px; /* Increased width for better visibility */
-  background: var(--admin-gradient-vibrant);
+  background: #0f172a; /* Same dark background as navbar */
   color: white;
   display: flex;
   flex-direction: column;
@@ -33,6 +33,7 @@
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
   overflow-x: hidden;
+  border-right: 3px solid var(--accent); /* Yellow accent border like navbar */
 }
 
 /* Create a mesh gradient effect with multiple radial gradients */

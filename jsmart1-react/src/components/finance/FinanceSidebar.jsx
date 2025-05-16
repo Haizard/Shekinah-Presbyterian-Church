@@ -7,7 +7,7 @@ const FinanceSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
-  // Check if the current path matches the given path
+  // Check if the current path matches the donationn path
   const isActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };

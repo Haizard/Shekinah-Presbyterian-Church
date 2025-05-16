@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import '../styles/Give.css';
+import '../styles/give.css';
 import '../styles/modern-give.css';
 
 const Give = () => {
-  const [donationAmount, setDonationAmount] = useState('');
+  const [giftAmount, setGiftAmount] = useState('');
   const [customAmount, setCustomAmount] = useState('');
-  const [donationType, setDonationType] = useState('one-time');
+  const [giftType, setGiftType] = useState('one-time');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [activeFaq, setActiveFaq] = useState(null);
 
   const handleAmountClick = (amount) => {
-    setDonationAmount(amount);
+    setGiftAmount(amount);
     setCustomAmount('');
   };
 
   const handleCustomAmountChange = (e) => {
     setCustomAmount(e.target.value);
-    setDonationAmount('custom');
+    setGiftAmount('custom');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const finalAmount = donationAmount === 'custom' ? customAmount : donationAmount;
-    alert(`Thank you for your ${donationType} donation of $${finalAmount} via ${paymentMethod}!`);
+    const finalAmount = giftAmount === 'custom' ? customAmount : giftAmount;
+    alert(`Thank you for your ${giftType} gift of $${finalAmount} via ${paymentMethod}!`);
   };
 
   const toggleFaq = (index) => {
@@ -64,42 +64,42 @@ const Give = () => {
                   <div className="amount-options">
                     <button
                       type="button"
-                      className={donationAmount === '10' ? 'active' : ''}
+                      className={giftAmount === '10' ? 'active' : ''}
                       onClick={() => handleAmountClick('10')}
                     >
                       $10
                     </button>
                     <button
                       type="button"
-                      className={donationAmount === '25' ? 'active' : ''}
+                      className={giftAmount === '25' ? 'active' : ''}
                       onClick={() => handleAmountClick('25')}
                     >
                       $25
                     </button>
                     <button
                       type="button"
-                      className={donationAmount === '50' ? 'active' : ''}
+                      className={giftAmount === '50' ? 'active' : ''}
                       onClick={() => handleAmountClick('50')}
                     >
                       $50
                     </button>
                     <button
                       type="button"
-                      className={donationAmount === '100' ? 'active' : ''}
+                      className={giftAmount === '100' ? 'active' : ''}
                       onClick={() => handleAmountClick('100')}
                     >
                       $100
                     </button>
                     <button
                       type="button"
-                      className={donationAmount === '250' ? 'active' : ''}
+                      className={giftAmount === '250' ? 'active' : ''}
                       onClick={() => handleAmountClick('250')}
                     >
                       $250
                     </button>
                     <button
                       type="button"
-                      className={donationAmount === '500' ? 'active' : ''}
+                      className={giftAmount === '500' ? 'active' : ''}
                       onClick={() => handleAmountClick('500')}
                     >
                       $500
@@ -122,25 +122,25 @@ const Give = () => {
                 </div>
 
                 <div className="form-section">
-                  <h4>Donation Type</h4>
+                  <h4>Gift Type</h4>
                   <div className="radio-options">
                     <label className="radio-label">
                       <input
                         type="radio"
-                        name="donationType"
+                        name="giftType"
                         value="one-time"
-                        checked={donationType === 'one-time'}
-                        onChange={() => setDonationType('one-time')}
+                        checked={giftType === 'one-time'}
+                        onChange={() => setGiftType('one-time')}
                       />
                       <span>One-time Gift</span>
                     </label>
                     <label className="radio-label">
                       <input
                         type="radio"
-                        name="donationType"
+                        name="giftType"
                         value="monthly"
-                        checked={donationType === 'monthly'}
-                        onChange={() => setDonationType('monthly')}
+                        checked={giftType === 'monthly'}
+                        onChange={() => setGiftType('monthly')}
                       />
                       <span>Monthly Recurring</span>
                     </label>
@@ -188,7 +188,7 @@ const Give = () => {
                 </div>
 
                 <button type="submit" className="btn btn-primary btn-lg">
-                  {donationType === 'one-time' ? 'Give Now' : 'Set Up Monthly Giving'}
+                  {giftType === 'one-time' ? 'Give Now' : 'Set Up Monthly Giving'}
                 </button>
               </form>
             </div>
@@ -287,13 +287,13 @@ const Give = () => {
                 className={`faq-question ${activeFaq === 0 ? 'active' : ''}`}
                 onClick={() => toggleFaq(0)}
               >
-                <h3>Is my donation tax-deductible?</h3>
+                <h3>Is my gift tax-deductible?</h3>
                 <span className="faq-icon">
                   <FontAwesomeIcon icon={activeFaq === 0 ? 'minus' : 'plus'} />
                 </span>
               </button>
               <div className={`faq-answer ${activeFaq === 0 ? 'show' : ''}`}>
-                <p>Yes, all donations to Shekinah Presbyterian Church Tanzania are tax-deductible. We provide receipts for all donations upon request.</p>
+                <p>Yes, all gifts to Shekinah Presbyterian Church Tanzania are tax-deductible. We provide receipts for all gifts upon request.</p>
               </div>
             </div>
 
@@ -303,13 +303,13 @@ const Give = () => {
                 className={`faq-question ${activeFaq === 1 ? 'active' : ''}`}
                 onClick={() => toggleFaq(1)}
               >
-                <h3>How is my donation used?</h3>
+                <h3>How is my gift used?</h3>
                 <span className="faq-icon">
                   <FontAwesomeIcon icon={activeFaq === 1 ? 'minus' : 'plus'} />
                 </span>
               </button>
               <div className={`faq-answer ${activeFaq === 1 ? 'show' : ''}`}>
-                <p>Your donation supports our church's mission, including worship services, discipleship programs, community outreach, missions, and facility maintenance.</p>
+                <p>Your gift supports our church's mission, including worship services, discipleship programs, community outreach, missions, and facility maintenance.</p>
               </div>
             </div>
 
@@ -357,7 +357,7 @@ const Give = () => {
                 </span>
               </button>
               <div className={`faq-answer ${activeFaq === 4 ? 'show' : ''}`}>
-                <p>You can give via mobile money, bank transfer, or in person. We also welcome in-kind donations such as land, Bibles, training materials, or logistics support. Details can be found on our "Support" page.</p>
+                <p>You can give via mobile money, bank transfer, or in person. We also welcome in-kind gifts such as land, Bibles, training materials, or logistics support. Details can be found on our "Support" page.</p>
               </div>
             </div>
           </div>
