@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import '../styles/give.css';
+import '../styles/Give.css';
 import '../styles/modern-give.css';
 
 const Give = () => {

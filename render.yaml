@@ -9,6 +9,8 @@ services:
       cd jsmart1-react &&
       echo "Installing React app dependencies..." &&
       npm install --include=dev &&
+      echo "Renaming give.css to Give.css..." &&
+      node ../rename-give-css.js &&
       echo "Building React app..." &&
       npm run build &&
       echo "React build complete. Checking dist directory:" &&
@@ -18,6 +20,12 @@ services:
       npm install &&
       echo "Running build environment check script..." &&
       node check-build-env.js &&
+      echo "Checking for case-sensitive imports..." &&
+      node check-imports.js &&
+      echo "Checking for case-sensitivity issues..." &&
+      node check-case-sensitivity.js &&
+      echo "Fixing Give.jsx imports..." &&
+      node fix-give-imports.js &&
       echo "Running preserve-uploads script..." &&
       node preserve-uploads.js &&
       echo "Running copy-uploads script..." &&
