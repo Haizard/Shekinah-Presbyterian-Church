@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const PaymentConfigList = ({ paymentConfigs, loading, error, onView, onEdit, onDelete }) => {
+const PaymentConfigList = ({ paymentConfigs, loading, error, onView, onEdit, onDelete, viewOnly = false }) => {
   // Helper function to get gateway type display name
   const getGatewayTypeDisplay = (type) => {
     const types = {
@@ -11,10 +11,10 @@ const PaymentConfigList = ({ paymentConfigs, loading, error, onView, onEdit, onD
       bank: 'Bank Account',
       card: 'Card Payment'
     };
-    
+
     return types[type] || type;
   };
-  
+
   // Helper function to get gateway icon
   const getGatewayIcon = (type) => {
     const icons = {
@@ -24,20 +24,20 @@ const PaymentConfigList = ({ paymentConfigs, loading, error, onView, onEdit, onD
       bank: 'university',
       card: 'credit-card'
     };
-    
+
     return icons[type] || 'question-circle';
   };
-  
+
   // Helper function to get status badge class
   const getStatusBadgeClass = (isActive) => {
     return isActive ? 'badge-success' : 'badge-danger';
   };
-  
+
   // Helper function to get status text
   const getStatusText = (isActive) => {
     return isActive ? 'Active' : 'Inactive';
   };
-  
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -46,7 +46,7 @@ const PaymentConfigList = ({ paymentConfigs, loading, error, onView, onEdit, onD
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div className="error-container">
@@ -58,17 +58,21 @@ const PaymentConfigList = ({ paymentConfigs, loading, error, onView, onEdit, onD
       </div>
     );
   }
-  
+
   if (paymentConfigs.length === 0) {
     return (
       <div className="empty-state">
         <FontAwesomeIcon icon="credit-card" size="3x" />
         <h3>No Payment Configurations Found</h3>
-        <p>Add a new payment configuration to get started.</p>
+        {viewOnly ? (
+          <p>No payment configurations have been created yet.</p>
+        ) : (
+          <p>Add a new payment configuration to get started.</p>
+        )}
       </div>
     );
   }
-  
+
   return (
     <div className="data-table-container">
       <table className="data-table">
@@ -107,27 +111,36 @@ const PaymentConfigList = ({ paymentConfigs, loading, error, onView, onEdit, onD
               </td>
               <td>
                 <div className="action-buttons">
-                  <button 
-                    className="btn btn-icon btn-view" 
+                  <button
+                    className="btn btn-icon btn-view"
                     onClick={() => onView(config)}
                     title="View Details"
                   >
                     <FontAwesomeIcon icon="eye" />
                   </button>
-                  <button 
-                    className="btn btn-icon btn-edit" 
-                    onClick={() => onEdit(config)}
-                    title="Edit Configuration"
-                  >
-                    <FontAwesomeIcon icon="edit" />
-                  </button>
-                  <button 
-                    className="btn btn-icon btn-delete" 
-                    onClick={() => onDelete(config._id)}
-                    title="Delete Configuration"
-                  >
-                    <FontAwesomeIcon icon="trash-alt" />
-                  </button>
+                  {!viewOnly && (
+                    <>
+                      <button
+                        className="btn btn-icon btn-edit"
+                        onClick={() => onEdit(config)}
+                        title="Edit Configuration"
+                      >
+                        <FontAwesomeIcon icon="edit" />
+                      </button>
+                      <button
+                        className="btn btn-icon btn-delete"
+                        onClick={() => onDelete(config._id)}
+                        title="Delete Configuration"
+                      >
+                        <FontAwesomeIcon icon="trash-alt" />
+                      </button>
+                    </>
+                  )}
+                  {viewOnly && (
+                    <span className="view-only-indicator" title="View Only Mode">
+                      <FontAwesomeIcon icon="lock" />
+                    </span>
+                  )}
                 </div>
               </td>
             </tr>

@@ -1,27 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AuthContext from '../../context/AuthContext';
 import '../../styles/finance/FinanceSidebar.css';
+import '../../styles/main.css';
 
-const FinanceSidebar = () => {
+const FinanceSidebar = ({ onToggle }) => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { userRole } = useContext(AuthContext);
 
-  // Check if the current path matches the donationn path
+  // Check if the current path matches the path
   const isActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
 
   // Toggle sidebar collapse state
   const toggleSidebar = () => {
-    setCollapsed(!collapsed);
+    const newCollapsedState = !collapsed;
+    setCollapsed(newCollapsedState);
+
+    // Notify parent component about the sidebar state change
+    if (onToggle) {
+      onToggle(newCollapsedState);
+    }
   };
 
   // Set sidebar state based on screen size
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setCollapsed(true);
+      const shouldCollapse = window.innerWidth < 768;
+      setCollapsed(shouldCollapse);
+
+      // Notify parent component about the sidebar state change
+      if (onToggle) {
+        onToggle(shouldCollapse);
       }
     };
 
@@ -35,7 +48,7 @@ const FinanceSidebar = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [onToggle]);
 
   return (
     <aside className={`finance-sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -51,7 +64,7 @@ const FinanceSidebar = () => {
           <li className={isActive('/finance') || isActive('/finance/dashboard') || isActive('/finance/unified') ? 'active' : ''}>
             <Link to="/finance/dashboard">
               <FontAwesomeIcon icon="tachometer-alt" />
-              <span>Unified Dashboard</span>
+              <span>Dashboard</span>
             </Link>
           </li>
           <li className={isActive('/finance/classic-dashboard') ? 'active' : ''}>
@@ -89,11 +102,35 @@ const FinanceSidebar = () => {
               <span>Budget Report</span>
             </Link>
           </li>
+
+          {/* Donation Management */}
+          <li className="nav-section-title">
+            <span>Donation Management</span>
+          </li>
+          <li className={isActive('/finance/donations') ? 'active' : ''}>
+            <Link to="/finance/donations">
+              <FontAwesomeIcon icon="hand-holding-usd" />
+              <span>Donations</span>
+            </Link>
+          </li>
+          <li className={isActive('/finance/payment-config') ? 'active' : ''}>
+            <Link to="/finance/payment-config">
+              <FontAwesomeIcon icon="credit-card" />
+              <span>Payment Settings</span>
+            </Link>
+          </li>
         </ul>
       </nav>
 
       <div className="sidebar-footer">
-        <span>Finance User</span>
+        <Link to="/" className="view-site">
+          <FontAwesomeIcon icon="external-link-alt" />
+          <span>View Website</span>
+        </Link>
+        <div className="user-role">
+          <FontAwesomeIcon icon="user-tag" />
+          <span>Finance User</span>
+        </div>
       </div>
     </aside>
   );

@@ -1,0 +1,411 @@
+/* Finance Manager Styles - Matching Admin Manager Styles */
+
+/* Main container */
+.finance-manager {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+/* Page header */
+.finance-manager .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.finance-manager .title-section h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.finance-manager .title-section p {
+  color: #64748b;
+  margin: 0;
+}
+
+.finance-manager .action-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.finance-manager .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  gap: 0.5rem;
+}
+
+.finance-manager .btn-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.finance-manager .btn-primary:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.finance-manager .btn-secondary {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+.finance-manager .btn-secondary:hover {
+  background-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.finance-manager .btn-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.finance-manager .btn-danger:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
+}
+
+/* Filter tabs */
+.finance-manager .filter-tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.finance-manager .tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.finance-manager .tabs button {
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  border: none;
+  border-radius: 0.375rem;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.finance-manager .tabs button:hover {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.finance-manager .tabs button.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.finance-manager .filter-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.finance-manager .form-control {
+  padding: 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  min-width: 200px;
+}
+
+/* Data table */
+.finance-manager .data-table-container {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.finance-manager .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.finance-manager .data-table th,
+.finance-manager .data-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.finance-manager .data-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #475569;
+}
+
+.finance-manager .data-table tr:hover {
+  background-color: #f1f5f9;
+}
+
+.finance-manager .actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.finance-manager .action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: #f1f5f9;
+}
+
+.finance-manager .view-btn {
+  color: #3b82f6;
+}
+
+.finance-manager .view-btn:hover {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.finance-manager .edit-btn {
+  color: #10b981;
+}
+
+.finance-manager .edit-btn:hover {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.finance-manager .delete-btn {
+  color: #ef4444;
+}
+
+.finance-manager .delete-btn:hover {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Status badges */
+.finance-manager .status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.finance-manager .badge-success {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.finance-manager .badge-warning {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.finance-manager .badge-danger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.finance-manager .badge-info {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.finance-manager .badge-secondary {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+.finance-manager .badge-primary {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+/* Loading, error, and empty states */
+.finance-manager .loading,
+.finance-manager .error-message,
+.finance-manager .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.finance-manager .loading svg,
+.finance-manager .error-message svg,
+.finance-manager .empty-state svg {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.finance-manager .loading svg {
+  color: #3b82f6;
+  animation: spin 1s linear infinite;
+}
+
+.finance-manager .error-message svg {
+  color: #ef4444;
+}
+
+.finance-manager .empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  color: #475569;
+}
+
+.finance-manager .empty-state p {
+  color: #64748b;
+  max-width: 400px;
+}
+
+/* Modal styles */
+.finance-manager .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.finance-manager .modal-content {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.finance-manager .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.finance-manager .modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1e293b;
+}
+
+.finance-manager .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.finance-manager .close-btn:hover {
+  color: #ef4444;
+}
+
+.finance-manager .modal-body {
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.finance-manager .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Form styles */
+.finance-manager .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.finance-manager label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.finance-manager .form-control {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  transition: border-color 0.2s;
+}
+
+.finance-manager .form-control:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.finance-manager .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.finance-manager .form-error,
+.finance-manager .form-success {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+}
+
+.finance-manager .form-error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.finance-manager .form-success {
+  background-color: #d1fae5;
+  color: #047857;
+}

@@ -215,7 +215,7 @@ const Header = () => {
               <ForceNavLink to="/contact" onClick={closeMenu}>Contact</ForceNavLink>
             </li>
             <li>
-              <ForceNavLink to="/give" className="btn-give" onClick={closeMenu}>Give</ForceNavLink>
+              <ForceNavLink to="/give" className="btn-give" onClick={closeMenu}>Donation</ForceNavLink>
             </li>
           </ul>
         </nav>

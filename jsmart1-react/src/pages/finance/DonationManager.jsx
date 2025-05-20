@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format } from 'date-fns';
-import AdminLayout from '../../components/admin/AdminLayout';
+import FinanceLayout from '../../components/finance/FinanceLayout';
 import DonationStats from '../../components/admin/DonationStats';
 import api from '../../services/api';
 import '../../styles/admin/DataManager.css';
 import '../../styles/admin/DonationManager.css';
-import '../../styles/admin/ViewOnlyMode.css';
+import '../../styles/finance/FinanceManager.css';
 
 const DonationManager = () => {
   const [donations, setDonations] = useState([]);
@@ -14,7 +14,14 @@ const DonationManager = () => {
   const [error, setError] = useState(null);
   const [currentDonation, setCurrentDonation] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
-
+  const [showStatusForm, setShowStatusForm] = useState(false);
+  const [statusFormData, setStatusFormData] = useState({
+    paymentStatus: '',
+    transactionId: '',
+    paymentReference: '',
+  });
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSuccess] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
   const [filterBranch, setFilterBranch] = useState('');
   const [branches, setBranches] = useState([]);
@@ -71,7 +78,86 @@ const DonationManager = () => {
     setCurrentDonation(null);
   };
 
+  // Handle update status
+  const handleUpdateStatus = (donation) => {
+    setCurrentDonation(donation);
+    setStatusFormData({
+      paymentStatus: donation.paymentStatus,
+      transactionId: donation.transactionId || '',
+      paymentReference: donation.paymentReference || '',
+    });
+    setShowStatusForm(true);
+  };
 
+  // Handle status form input change
+  const handleStatusFormChange = (e) => {
+    const { name, value } = e.target;
+    setStatusFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle status form submit
+  const handleStatusFormSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setFormError(null);
+      setFormSuccess(null);
+
+      // Validate form
+      if (!statusFormData.paymentStatus) {
+        setFormError('Please select a payment status.');
+        return;
+      }
+
+      // Update donation status
+      await api.donations.updateStatus(currentDonation._id, statusFormData);
+
+      setFormSuccess('Donation status updated successfully!');
+
+      // Refresh donations after a short delay
+      setTimeout(() => {
+        const fetchDonations = async () => {
+          try {
+            const donationsData = await api.donations.getAll();
+            setDonations(donationsData);
+          } catch (err) {
+            console.error('Error refreshing donations:', err);
+          }
+        };
+
+        fetchDonations();
+        setShowStatusForm(false);
+        setCurrentDonation(null);
+      }, 2000);
+    } catch (err) {
+      console.error('Error updating donation status:', err);
+      setFormError('Failed to update donation status. Please try again.');
+    }
+  };
+
+  // Handle delete donation
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this donation? This action cannot be undone.')) {
+      try {
+        await api.donations.delete(id);
+
+        // Remove the deleted donation from the state
+        setDonations(donations.filter(donation => donation._id !== id));
+
+        // Close details modal if open
+        if (showDetails && currentDonation?._id === id) {
+          setShowDetails(false);
+          setCurrentDonation(null);
+        }
+      } catch (err) {
+        console.error('Error deleting donation:', err);
+        alert('Failed to delete donation. Please try again.');
+      }
+    }
+  };
 
   // Format currency
   const formatCurrency = (amount, currency = 'Tsh') => {
@@ -102,15 +188,12 @@ const DonationManager = () => {
   };
 
   return (
-    <AdminLayout>
-      <div className="data-manager donation-manager">
+    <FinanceLayout>
+      <div className="data-manager donation-manager finance-manager">
         <div className="page-header">
           <div className="title-section">
-            <h1>Donation Viewer</h1>
-            <p>View and track all donations</p>
-            <div className="view-only-badge">
-              <FontAwesomeIcon icon="eye" /> View Only Mode
-            </div>
+            <h1>Donation Manager</h1>
+            <p>Manage and track all donations</p>
           </div>
 
           <div className="action-buttons">
@@ -238,6 +321,20 @@ const DonationManager = () => {
                         title="View Details"
                       >
                         <FontAwesomeIcon icon="eye" />
+                      </button>
+                      <button
+                        className="action-btn edit-btn"
+                        onClick={() => handleUpdateStatus(donation)}
+                        title="Update Status"
+                      >
+                        <FontAwesomeIcon icon="edit" />
+                      </button>
+                      <button
+                        className="action-btn delete-btn"
+                        onClick={() => handleDelete(donation._id)}
+                        title="Delete"
+                      >
+                        <FontAwesomeIcon icon="trash-alt" />
                       </button>
                     </td>
                   </tr>
@@ -372,17 +469,113 @@ const DonationManager = () => {
                 <button className="btn btn-secondary" onClick={handleCloseDetails}>
                   Close
                 </button>
-                <div className="view-only-note">
-                  <FontAwesomeIcon icon="info-circle" /> Status updates are managed in the Finance Panel
-                </div>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    handleCloseDetails();
+                    handleUpdateStatus(currentDonation);
+                  }}
+                >
+                  Update Status
+                </button>
               </div>
             </div>
           </div>
         )}
 
+        {/* Update Status Modal */}
+        {showStatusForm && currentDonation && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h2>Update Payment Status</h2>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowStatusForm(false)}
+                >
+                  <FontAwesomeIcon icon="times" />
+                </button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={handleStatusFormSubmit}>
+                  {formError && (
+                    <div className="form-error">
+                      <FontAwesomeIcon icon="exclamation-circle" />
+                      <span>{formError}</span>
+                    </div>
+                  )}
 
+                  {formSuccess && (
+                    <div className="form-success">
+                      <FontAwesomeIcon icon="check-circle" />
+                      <span>{formSuccess}</span>
+                    </div>
+                  )}
+
+                  <div className="form-group">
+                    <label htmlFor="paymentStatus">Payment Status</label>
+                    <select
+                      id="paymentStatus"
+                      name="paymentStatus"
+                      value={statusFormData.paymentStatus}
+                      onChange={handleStatusFormChange}
+                      className="form-control"
+                      required
+                    >
+                      <option value="">Select Status</option>
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="completed">Completed</option>
+                      <option value="failed">Failed</option>
+                      <option value="refunded">Refunded</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="transactionId">Transaction ID</label>
+                    <input
+                      type="text"
+                      id="transactionId"
+                      name="transactionId"
+                      value={statusFormData.transactionId}
+                      onChange={handleStatusFormChange}
+                      className="form-control"
+                      placeholder="Enter transaction ID"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="paymentReference">Payment Reference</label>
+                    <input
+                      type="text"
+                      id="paymentReference"
+                      name="paymentReference"
+                      value={statusFormData.paymentReference}
+                      onChange={handleStatusFormChange}
+                      className="form-control"
+                      placeholder="Enter payment reference"
+                    />
+                  </div>
+
+                  <div className="form-actions">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setShowStatusForm(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn btn-primary">
+                      Update Status
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </AdminLayout>
+    </FinanceLayout>
   );
 };
 

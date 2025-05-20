@@ -293,6 +293,8 @@ import ContentMigration from './pages/admin/ContentMigration'
 import FinanceLogin from './pages/finance/Login'
 import FinanceDashboard from './pages/finance/Dashboard'
 import UnifiedDashboard from './pages/finance/UnifiedDashboard'
+import FinanceDonationManager from './pages/finance/DonationManager'
+import FinancePaymentConfigManager from './pages/finance/PaymentConfigManager'
 
 // This component will force a re-render when the location changes
 const LocationAwareRoutes = () => {
@@ -432,6 +434,8 @@ const LocationAwareRoutes = () => {
             <Route path="/finance/reports" element={<FinanceReports />} />
             <Route path="/finance/budget" element={<FinanceBudget />} />
             <Route path="/finance/budget/report" element={<BudgetReport />} />
+            <Route path="/finance/donations" element={<FinanceDonationManager />} />
+            <Route path="/finance/payment-config" element={<FinancePaymentConfigManager />} />
 
             {/* Content Management Routes */}
             <Route path="/admin/ministries" element={<MinistryManager />} />

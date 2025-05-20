@@ -1,12 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import FinanceSidebar from './FinanceSidebar';
 import FinanceHeader from './FinanceHeader';
 import '../../styles/finance/FinanceLayout.css';
+import '../../styles/main.css';
 
 const FinanceLayout = ({ children }) => {
   const { isAuthenticated, userRole, loading } = useContext(AuthContext);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Function to handle sidebar toggle
+  const handleSidebarToggle = (collapsed) => {
+    setSidebarCollapsed(collapsed);
+  };
 
   // TEMPORARY: For development, bypass authentication check
   const bypassAuth = process.env.NODE_ENV === 'development';
@@ -33,8 +40,8 @@ const FinanceLayout = ({ children }) => {
 
   return (
     <div className="finance-layout">
-      <FinanceSidebar />
-      <div className="finance-main">
+      <FinanceSidebar onToggle={handleSidebarToggle} />
+      <div className={`finance-main ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
         <FinanceHeader />
         <main className="finance-content">
           {children}

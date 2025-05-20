@@ -10,20 +10,20 @@ const {
   deleteDonation,
   getDonationStats
 } = require('../controllers/donationController');
-const { protect, admin, finance } = require('../middleware/auth');
+const { protect, admin, finance, financeOnly } = require('../middleware/auth');
 
 // Public routes
 router.post('/', createDonation);
 
-// Protected routes - Admin and Finance
+// Read-only routes - Both Admin and Finance can view
 router.get('/', protect, finance, getDonations);
 router.get('/stats', protect, finance, getDonationStats);
 router.get('/status/:status', protect, finance, getDonationsByStatus);
 router.get('/branch/:branchId', protect, finance, getDonationsByBranch);
 router.get('/:id', protect, finance, getDonationById);
-router.put('/:id/status', protect, finance, updateDonationStatus);
 
-// Admin-only routes
-router.delete('/:id', protect, admin, deleteDonation);
+// Finance-only routes - Only Finance users can modify
+router.put('/:id/status', protect, financeOnly, updateDonationStatus);
+router.delete('/:id', protect, financeOnly, deleteDonation);
 
 module.exports = router;

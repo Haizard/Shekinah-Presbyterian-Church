@@ -1,21 +1,33 @@
-/* Finance Layout Styles */
+/* Finance Layout Styles - Matching Admin Layout */
 .finance-layout {
   display: flex;
   min-height: 100vh;
   background-color: #f5f7fa;
+  width: 100%;
+  position: relative;
 }
 
 .finance-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  width: calc(100% - 280px);
+  margin-left: auto;
+  position: relative;
+}
+
+.finance-sidebar.collapsed + .finance-main {
+  width: calc(100% - 70px);
 }
 
 .finance-content {
   flex: 1;
-  padding: 1.5rem;
+  padding: 2rem;
   overflow-y: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
 }
 
 .finance-loading {
@@ -28,12 +40,12 @@
 }
 
 .finance-spinner {
-  width: 3rem;
-  height: 3rem;
-  border: 0.25rem solid rgba(0, 123, 255, 0.3);
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
-  border-top-color: #007bff;
-  animation: spin 1s linear infinite;
+  border-top-color: #3498db;
+  animation: spin 1s ease-in-out infinite;
   margin-bottom: 1rem;
 }
 
@@ -43,12 +55,45 @@
   }
 }
 
-/* Responsive */
+/* Fix for data tables and content containers */
+.finance-manager {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  margin-top: 1rem;
+}
+
+.finance-manager .page-header {
+  margin-bottom: 1.5rem;
+}
+
+.finance-manager .data-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Fix for all finance components */
+.finance-content > div {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
   .finance-layout {
     flex-direction: column;
   }
-  
+
+  .finance-main {
+    width: 100%;
+  }
+
+  .finance-sidebar.collapsed + .finance-main {
+    width: 100%;
+  }
+
   .finance-content {
     padding: 1rem;
   }

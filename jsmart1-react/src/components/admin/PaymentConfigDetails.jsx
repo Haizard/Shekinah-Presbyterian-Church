@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
+const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete, viewOnly = false }) => {
   if (!config) {
     return (
       <div className="details-container">
@@ -17,7 +17,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
       </div>
     );
   }
-  
+
   // Helper function to get gateway type display name
   const getGatewayTypeDisplay = (type) => {
     const types = {
@@ -27,10 +27,10 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
       bank: 'Bank Account',
       card: 'Card Payment'
     };
-    
+
     return types[type] || type;
   };
-  
+
   // Helper function to get gateway icon
   const getGatewayIcon = (type) => {
     const icons = {
@@ -40,17 +40,17 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
       bank: 'university',
       card: 'credit-card'
     };
-    
+
     return icons[type] || 'question-circle';
   };
-  
+
   // Helper function to mask sensitive data
   const maskSensitiveData = (value) => {
     if (!value) return '';
     if (value.length <= 4) return '*'.repeat(value.length);
     return '*'.repeat(value.length - 4) + value.slice(-4);
   };
-  
+
   // Render gateway-specific details
   const renderGatewayDetails = () => {
     switch (config.gatewayType) {
@@ -98,7 +98,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
             </div>
           </div>
         );
-      
+
       case 'tigopesa':
         return (
           <div className="gateway-details">
@@ -135,7 +135,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
             </div>
           </div>
         );
-      
+
       case 'airtelmoney':
         return (
           <div className="gateway-details">
@@ -172,7 +172,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
             </div>
           </div>
         );
-      
+
       case 'bank':
         return (
           <div className="gateway-details">
@@ -209,7 +209,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
             </div>
           </div>
         );
-      
+
       case 'card':
         return (
           <div className="gateway-details">
@@ -238,7 +238,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
             </div>
           </div>
         );
-      
+
       default:
         return (
           <div className="gateway-details">
@@ -247,7 +247,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
         );
     }
   };
-  
+
   return (
     <div className="details-container">
       <div className="details-header">
@@ -256,20 +256,29 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
           <h2>{config.name}</h2>
         </div>
         <div className="header-actions">
-          <button className="btn btn-primary" onClick={onEdit}>
-            <FontAwesomeIcon icon="edit" />
-            Edit
-          </button>
-          <button className="btn btn-danger" onClick={onDelete}>
-            <FontAwesomeIcon icon="trash-alt" />
-            Delete
-          </button>
+          {!viewOnly && (
+            <>
+              <button className="btn btn-primary" onClick={onEdit}>
+                <FontAwesomeIcon icon="edit" />
+                Edit
+              </button>
+              <button className="btn btn-danger" onClick={onDelete}>
+                <FontAwesomeIcon icon="trash-alt" />
+                Delete
+              </button>
+            </>
+          )}
+          {viewOnly && (
+            <div className="view-only-badge">
+              <FontAwesomeIcon icon="eye" /> View Only
+            </div>
+          )}
           <button className="btn btn-icon" onClick={onClose}>
             <FontAwesomeIcon icon="times" />
           </button>
         </div>
       </div>
-      
+
       <div className="details-content">
         <div className="detail-section">
           <h3>General Information</h3>
@@ -314,7 +323,7 @@ const PaymentConfigDetails = ({ config, onClose, onEdit, onDelete }) => {
             </div>
           </div>
         </div>
-        
+
         {renderGatewayDetails()}
       </div>
     </div>

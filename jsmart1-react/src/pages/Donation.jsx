@@ -6,7 +6,7 @@ import api from '../services/api';
 import '../styles/Donation.css';
 import '../styles/modern-donation.css';
 
-const Give = () => {
+const Donation = () => {
   // Form state
   const [giftAmount, setGiftAmount] = useState('');
   const [customAmount, setCustomAmount] = useState('');
@@ -866,8 +866,3 @@ const Give = () => {
           </button>
         </div>
       </section>
-    </main>
-  );
-};
-
-export default Give;
