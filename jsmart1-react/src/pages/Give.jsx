@@ -251,7 +251,7 @@ const Give = () => {
           {/* Giving Options */}
           <div className="giving-options">
             <div className="giving-form-container">
-              <h3>Online Donation</h3>
+              <h3>Online Donations</h3>
 
               {error && (
                 <div className="alert alert-danger">
