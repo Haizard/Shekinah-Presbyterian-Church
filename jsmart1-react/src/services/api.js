@@ -552,6 +552,8 @@ const api = {
     },
   },
 
+
+
   // Image verification endpoints
   imageVerify: {
     verifyImage: async (imagePath) => {
@@ -615,6 +617,67 @@ const api = {
         throw new Error(`Failed to list uploads: ${error.message}`);
       }
     },
+  },
+
+  // Payment Configuration endpoints
+  paymentConfig: {
+    getAll: () => apiRequest('/api/payment-config'),
+    getActive: () => apiRequest('/api/payment-config/active'),
+    getById: (id) => apiRequest(`/api/payment-config/${id}`),
+    getByType: (gatewayType) => apiRequest(`/api/payment-config/type/${gatewayType}`),
+    create: (configData) => apiRequest('/api/payment-config', {
+      method: 'POST',
+      body: JSON.stringify(configData),
+    }),
+    update: (id, configData) => apiRequest(`/api/payment-config/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(configData),
+    }),
+    delete: (id) => apiRequest(`/api/payment-config/${id}`, {
+      method: 'DELETE',
+    }),
+  },
+
+  // Donation endpoints
+  donations: {
+    getAll: () => apiRequest('/api/donations'),
+    getStats: () => apiRequest('/api/donations/stats'),
+    getByStatus: (status) => apiRequest(`/api/donations/status/${status}`),
+    getByBranch: (branchId) => apiRequest(`/api/donations/branch/${branchId}`),
+    getById: (id) => apiRequest(`/api/donations/${id}`),
+    create: (donationData) => apiRequest('/api/donations', {
+      method: 'POST',
+      body: JSON.stringify(donationData),
+    }),
+    update: (id, donationData) => apiRequest(`/api/donations/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(donationData),
+    }),
+    updateStatus: (id, statusData) => apiRequest(`/api/donations/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify(statusData),
+    }),
+    delete: (id) => apiRequest(`/api/donations/${id}`, {
+      method: 'DELETE',
+    }),
+  },
+
+  // Payment endpoints
+  payments: {
+    processMpesa: (paymentData) => apiRequest('/api/payments/mpesa', {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+    }),
+    processTigoPesa: (paymentData) => apiRequest('/api/payments/tigopesa', {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+    }),
+    processAirtelMoney: (paymentData) => apiRequest('/api/payments/airtel', {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+    }),
+    verifyPayment: (method, id) => apiRequest(`/api/payments/verify/${method}/${id}`),
+    getBankDetails: () => apiRequest('/api/payments/bank-details'),
   },
 };
 

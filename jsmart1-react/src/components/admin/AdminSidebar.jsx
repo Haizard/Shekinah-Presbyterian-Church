@@ -68,6 +68,18 @@ const AdminSidebar = () => {
               <span>Budget Report</span>
             </Link>
           </li>
+          <li className={isActive('/admin/donations') ? 'active' : ''}>
+            <Link to="/admin/donations">
+              <FontAwesomeIcon icon="donate" />
+              <span>Donations</span>
+            </Link>
+          </li>
+          <li className={isActive('/admin/payment-config') ? 'active' : ''}>
+            <Link to="/admin/payment-config">
+              <FontAwesomeIcon icon="credit-card" />
+              <span>Payment Settings</span>
+            </Link>
+          </li>
 
           {/* Admin-only sections */}
           {!isFinanceUser && (

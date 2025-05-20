@@ -278,6 +278,8 @@ import FinanceDetail from './pages/admin/FinanceDetail'
 import FinanceReports from './pages/admin/FinanceReports'
 import FinanceBudget from './pages/admin/FinanceBudget'
 import BudgetReport from './pages/admin/BudgetReport'
+import DonationManager from './pages/admin/DonationManager'
+import PaymentConfigManager from './pages/admin/PaymentConfigManager'
 import MemberManager from './pages/admin/MemberManager'
 import MemberDetail from './pages/admin/MemberDetail'
 import GroupManager from './pages/admin/GroupManager'
@@ -416,6 +418,8 @@ const LocationAwareRoutes = () => {
             <Route path="/admin/finances/reports" element={<FinanceReports />} />
             <Route path="/admin/finances/budget" element={<FinanceBudget />} />
             <Route path="/admin/finances/budget/report" element={<BudgetReport />} />
+            <Route path="/admin/donations" element={<DonationManager />} />
+            <Route path="/admin/payment-config" element={<PaymentConfigManager />} />
 
             {/* Finance User Routes - Separate panel for finance users */}
             <Route path="/finance/login" element={<FinanceLogin />} />

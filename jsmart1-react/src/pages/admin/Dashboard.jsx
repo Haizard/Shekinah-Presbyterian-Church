@@ -215,6 +215,14 @@ const Dashboard = () => {
                 <FontAwesomeIcon icon="images" />
                 <span>Image Verifier</span>
               </Link>
+              <Link to="/admin/donations" className="finance-menu-item hover-lift">
+                <FontAwesomeIcon icon="donate" />
+                <span>Manage Donations</span>
+              </Link>
+              <Link to="/admin/payment-config" className="finance-menu-item hover-lift">
+                <FontAwesomeIcon icon="credit-card" />
+                <span>Payment Settings</span>
+              </Link>
             </div>
           </div>
         </div>

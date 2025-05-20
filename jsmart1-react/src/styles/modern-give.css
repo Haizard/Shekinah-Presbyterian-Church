@@ -246,6 +246,178 @@
   text-align: center;
 }
 
+/* Alert Messages */
+.alert {
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.alert svg {
+  font-size: var(--text-xl);
+}
+
+.alert-danger {
+  background-color: rgba(var(--error-rgb), 0.1);
+  color: var(--error);
+  border: 1px solid rgba(var(--error-rgb), 0.2);
+}
+
+.alert-success {
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success);
+  border: 1px solid rgba(var(--success-rgb), 0.2);
+}
+
+/* Form Styles */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-4);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-text {
+  display: block;
+  margin-top: var(--spacing-1);
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+}
+
+.form-row .form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.mt-2 {
+  margin-top: var(--spacing-2);
+}
+
+.ml-2 {
+  margin-left: var(--spacing-2);
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Payment Confirmation */
+.payment-confirmation {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.payment-confirmation h4 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--spacing-4);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.payment-confirmation p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-4);
+  text-align: center;
+}
+
+.payment-summary {
+  background-color: var(--surface-2);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-item .label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.summary-item .value {
+  color: var(--text-secondary);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-6);
+}
+
+/* Gift Type */
+.gift-type {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.gift-type:hover {
+  background-color: var(--surface-3);
+}
+
+.gift-type.active {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  border-color: var(--primary);
+}
+
+.donor-info {
+  background-color: var(--surface-2);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  margin-top: var(--spacing-3);
+}
+
 /* Other Ways to Give */
 .other-ways {
   display: flex;

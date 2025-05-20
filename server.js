@@ -122,6 +122,9 @@ const budgetRoutes = require('./routes/budgets');
 const memberRoutes = require('./routes/members');
 const groupRoutes = require('./routes/groups');
 const imageVerifyRoutes = require('./routes/image-verify');
+const donationRoutes = require('./routes/donations');
+const paymentRoutes = require('./routes/payments');
+const paymentConfigRoutes = require('./routes/paymentConfig');
 
 // Health check endpoint for Render
 app.get('/api/health', (req, res) => {
@@ -177,6 +180,9 @@ app.use('/api/budgets', budgetRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/image-verify', imageVerifyRoutes);
+app.use('/api/donations', donationRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/payment-config', paymentConfigRoutes);
 
 // Serve React app for any other routes in production
 if (process.env.NODE_ENV === 'production') {
