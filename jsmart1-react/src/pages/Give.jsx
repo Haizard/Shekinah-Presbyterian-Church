@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import api from '../services/api';
-import '../styles/Donation.css';
+import '../styles/donation.css';
 import '../styles/modern-donation.css';
 
 const Give = () => {
