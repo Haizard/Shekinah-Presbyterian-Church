@@ -291,7 +291,7 @@ const Give = () => {
                         className={giftAmount === '50000' ? 'active' : ''}
                         onClick={() => handleAmountClick('50000')}
                       >
-                        Tsh 50,000
+                        Tsh 50,00
                       </button>
                       <button
                         type="button"
