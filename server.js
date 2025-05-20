@@ -265,25 +265,6 @@ const restoreImagesFromMongoDB = async () => {
       fs.mkdirSync(distPath, { recursive: true });
       fs.mkdirSync(distUploadsDir, { recursive: true });
       console.log('Created dist and dist/uploads directories');
-
-      // Create an empty index.html file to prevent 404 errors
-      const indexPath = path.join(distPath, 'index.html');
-      fs.writeFileSync(indexPath, `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Shekinah Presbyterian Church Tanzania</title>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
-        <body>
-          <h1>Shekinah Presbyterian Church Tanzania</h1>
-          <p>This is a temporary page. The React app build was not found.</p>
-          <p>Please check the build process in the deployment configuration.</p>
-        </body>
-        </html>
-      `);
-      console.log('Created temporary index.html file at:', indexPath);
     }
 
     // Restore each image to the filesystem

@@ -11,10 +11,6 @@ services:
       npm install --include=dev &&
       echo "Renaming give.css to Give.css..." &&
       node ../rename-give-css.js &&
-      echo "Building React app..." &&
-      npm run build &&
-      echo "React build complete. Checking dist directory:" &&
-      ls -la dist || echo "ERROR: dist directory not found" &&
       cd .. &&
       echo "Back to root directory. Installing server dependencies..." &&
       npm install &&
@@ -34,8 +30,12 @@ services:
       node migrate-images-to-mongodb.js &&
       echo "Running restore-images script..." &&
       node restore-images.js &&
-      echo "Running final build environment check..." &&
-      node check-build-env.js &&
+      echo "Building React app..." &&
+      cd jsmart1-react &&
+      npm run build &&
+      echo "React build complete. Checking dist directory:" &&
+      ls -la dist || echo "ERROR: dist directory not found" &&
+      cd .. &&
       echo "Build process complete. Final directory structure:" &&
       find . -type d -name "dist" | xargs ls -la
     startCommand: node server.js

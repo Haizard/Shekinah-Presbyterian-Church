@@ -31,25 +31,6 @@ if (!fs.existsSync(jsmart1ReactDir)) {
 if (!fs.existsSync(distDir)) {
   console.log('Creating dist directory:', distDir);
   fs.mkdirSync(distDir, { recursive: true });
-
-  // Create an empty index.html file to prevent 404 errors
-  const indexPath = path.join(distDir, 'index.html');
-  fs.writeFileSync(indexPath, `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Shekinah Presbyterian Church Tanzania</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-      <h1>Shekinah Presbyterian Church Tanzania</h1>
-      <p>This is a temporary page. The React app build was not found.</p>
-      <p>Please check the build process in the deployment configuration.</p>
-    </body>
-    </html>
-  `);
-  console.log('Created temporary index.html file at:', indexPath);
 } else {
   console.log('Dist directory exists:', distDir);
 }
