@@ -3,6 +3,7 @@ services:
     name: shekinah-church-website
     runtime: node
     buildCommand: >
+      set -e &&
       echo "Starting build process..." &&
       echo "Current directory: $(pwd)" &&
       echo "Directory contents: $(ls -la)" &&
@@ -35,6 +36,7 @@ services:
       npm run build &&
       echo "React build complete. Checking dist directory:" &&
       ls -la dist || echo "ERROR: dist directory not found" &&
+      cat dist/index.html || echo "index.html not found or empty" &&
       cd .. &&
       echo "Build process complete. Final directory structure:" &&
       find . -type d -name "dist" | xargs ls -la
