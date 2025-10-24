@@ -3,6 +3,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const ChurchSettings = require('./models/ChurchSettings');
+const { initializeMinisterySections } = require('./utils/initializeMinisterySections');
 const bcrypt = require('bcryptjs');
 
 // Connect to MongoDB
@@ -54,6 +55,9 @@ const createAdmin = async () => {
 
     // Initialize default church settings
     await initializeChurchSettings();
+
+    // Initialize default ministry sections
+    await initializeMinisterySections();
 
     process.exit(0);
   } catch (error) {

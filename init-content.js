@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Content = require('./models/Content');
 const ChurchSettings = require('./models/ChurchSettings');
+const { initializeMinisterySections } = require('./utils/initializeMinisterySections');
 const dotenv = require('dotenv');
 
 // Load environment variables
@@ -127,6 +128,9 @@ async function initializeContent() {
     // Initialize default church settings
     await initializeChurchSettings();
 
+    // Initialize default ministry sections
+    await initializeMinisterySectionsLocal();
+
     console.log('Content initialization completed.');
     mongoose.disconnect();
   } catch (error) {
@@ -171,5 +175,14 @@ async function initializeChurchSettings() {
     console.log('Default church settings created successfully');
   } catch (error) {
     console.error('Error initializing church settings:', error);
+  }
+}
+
+// Initialize ministry sections
+async function initializeMinisterySectionsLocal() {
+  try {
+    await initializeMinisterySections();
+  } catch (error) {
+    console.error('Error initializing ministry sections:', error);
   }
 }

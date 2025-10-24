@@ -13,6 +13,7 @@ const Event = require('./models/Event');
 const Gallery = require('./models/Gallery');
 const Content = require('./models/Content');
 const ChurchSettings = require('./models/ChurchSettings');
+const { initializeMinisterySections } = require('./utils/initializeMinisterySections');
 
 // Sample data
 const sampleData = {
@@ -201,6 +202,9 @@ const initializeDB = async () => {
 
     // Initialize default church settings
     await initializeChurchSettings();
+
+    // Initialize default ministry sections
+    await initializeMinisterySections();
 
     console.log('Database initialization completed successfully');
     console.log('\nYou can now run the application with:');

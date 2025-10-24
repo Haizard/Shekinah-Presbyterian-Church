@@ -7,6 +7,7 @@ const Event = require('./models/Event');
 const Gallery = require('./models/Gallery');
 const Content = require('./models/Content');
 const ChurchSettings = require('./models/ChurchSettings');
+const { initializeMinisterySections } = require('./utils/initializeMinisterySections');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
@@ -157,6 +158,9 @@ const seedDatabase = async () => {
 
     // Initialize default church settings
     await initializeChurchSettings();
+
+    // Initialize default ministry sections
+    await initializeMinisterySections();
 
     console.log('Database seeded successfully');
     process.exit(0);

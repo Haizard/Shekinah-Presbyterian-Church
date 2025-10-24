@@ -123,6 +123,12 @@ const AdminSidebar = () => {
                   <span>Ministries</span>
                 </Link>
               </li>
+              <li className={isActive('/admin/ministry-sections') ? 'active' : ''}>
+                <Link to="/admin/ministry-sections">
+                  <FontAwesomeIcon icon="layer-group" />
+                  <span>Ministry Sections</span>
+                </Link>
+              </li>
               <li className={isActive('/admin/sermons') ? 'active' : ''}>
                 <Link to="/admin/sermons">
                   <FontAwesomeIcon icon="bible" />

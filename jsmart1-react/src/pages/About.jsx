@@ -163,23 +163,38 @@ const About = () => {
             <h2>Our Story</h2>
             <div className="divider" />
           </div>
-          <div className="story-content animate-fade-in" style={{animationDelay: '0.2s'}}>
-            <div className="story-text">
-              <p>The history of Shekinah Presbyterian Church Tanzania is deeply rooted in mission. Although our name includes the word "church," we do not operate as a denomination, but as a Christ-centered, Reformed mission committed to discipleship, Gospel expansion, and leadership development.</p>
-
-              <p>The mission began through the faithful obedience of Missionary Mwl. Boyeon Lee from South Korea, who first visited Tanzania in 1995. After training and language study, she began her ministry in Kolandoto in 1998, focusing on teaching, church planting, and discipleship.</p>
-
-              <p>In 2006, Mwl. Lee moved to Dar es Salaam with a small team including Daniel Seni, establishing the Shekinah Mission Centre. The first official worship service of Shekinah Presbyterian Church Tanzania was held in May 2007.</p>
-
-              <p>By 2008, the mission had purchased land in Madale to establish a permanent base, and in August 2010, the first Sunday service was held at the new site with Rev. Dr. Daniel John Seni preaching.</p>
-
-              <div className="story-cta animate-slide-bottom" style={{animationDelay: '0.4s'}}>
-                <Link to="/full-story" className="btn btn-primary btn-lg">
-                  Read Our Full Story <FontAwesomeIcon icon="arrow-right" />
-                </Link>
+          <DynamicContent
+            section="story"
+            className="story-content animate-fade-in"
+            fallback={
+              <div className="story-content animate-fade-in" style={{animationDelay: '0.2s'}}>
+                <div className="story-text">
+                  <p>Our church has a rich history of faith and service. We are committed to discipleship, Gospel expansion, and leadership development.</p>
+                  <div className="story-cta animate-slide-bottom" style={{animationDelay: '0.4s'}}>
+                    <Link to="/full-story" className="btn btn-primary btn-lg">
+                      Read Our Full Story <FontAwesomeIcon icon="arrow-right" />
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            }
+            renderContent={(content) => (
+              <div className="story-content animate-fade-in" style={{animationDelay: '0.2s'}}>
+                <div className="story-text">
+                  <ContentRendererFactory
+                    section="story"
+                    content={content.content}
+                    contentId={content._id}
+                  />
+                  <div className="story-cta animate-slide-bottom" style={{animationDelay: '0.4s'}}>
+                    <Link to="/full-story" className="btn btn-primary btn-lg">
+                      Read Our Full Story <FontAwesomeIcon icon="arrow-right" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
         </div>
       </section>
 

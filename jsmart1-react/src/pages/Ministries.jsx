@@ -12,28 +12,28 @@ import { getImageUrl, handleImageError, debugImage } from '../utils/imageUtils';
 const Ministries = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [ministries, setMinistries] = useState([]);
+  const [ministrySections, setMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch ministries from API
+  // Fetch ministries and ministry sections from API
   useEffect(() => {
-    const fetchMinistries = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await api.ministries.getAll();
-        console.log('Fetched ministries data:', data);
+        const [ministriesData, sectionsData] = await Promise.all([
+          api.ministries.getAll(),
+          api.ministrySections.getAll()
+        ]);
 
-        // Log image paths for debugging
-        if (data && data.length > 0) {
-          data.forEach(ministry => {
-            console.log(`Ministry "${ministry.title}" image path:`, ministry.image);
-          });
-        }
+        console.log('Fetched ministries data:', ministriesData);
+        console.log('Fetched ministry sections:', sectionsData);
 
-        setMinistries(data);
+        setMinistries(ministriesData);
+        setMinistrySections(sectionsData.sort((a, b) => a.order - b.order));
         setError(null);
       } catch (err) {
-        console.error('Error fetching ministries:', err);
+        console.error('Error fetching data:', err);
         setError('Failed to load ministries. Please try again.');
 
         // Fallback to sample data if API fails
@@ -62,7 +62,7 @@ const Ministries = () => {
       }
     };
 
-    fetchMinistries();
+    fetchData();
   }, []);
 
   // Filter ministries based on category
@@ -292,151 +292,54 @@ const Ministries = () => {
         </div>
       </section>
 
-      {/* Detailed Ministry Sections */}
-
-      {/* Discipleship Ministry */}
-      <section id="discipleship" className="section">
-        <div className="container">
-          <div className="ministry-content reverse">
-            <div className="ministry-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Discipleship Ministry" />
+      {/* Detailed Ministry Sections - Dynamic */}
+      {ministrySections.length > 0 ? (
+        ministrySections.map((section, index) => (
+          <section
+            key={section._id}
+            id={section.sectionId}
+            className={`section ${index % 2 === 1 ? 'bg-light' : ''}`}
+          >
+            <div className="container">
+              <div className={`ministry-content ${index % 2 === 0 ? 'reverse' : ''}`}>
+                <div className="ministry-image">
+                  <img
+                    src={getImageUrl(section.image) || '/images/SPCT/CHURCH.jpg'}
+                    alt={section.title}
+                    onError={(e) => handleImageError(e)}
+                  />
+                </div>
+                <div className="ministry-details">
+                  <h2>{section.title}</h2>
+                  <div className="divider" />
+                  <p>{section.description}</p>
+                  {section.focusAreas && section.focusAreas.length > 0 && (
+                    <>
+                      <h3>Focus Areas:</h3>
+                      <ul className="ministry-list">
+                        {section.focusAreas.map((area, idx) => (
+                          <li key={idx}>
+                            <FontAwesomeIcon icon={area.icon || 'star'} /> {area.text}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  <Link to={`/ministries/${section.sectionId}`} className="btn btn-primary">
+                    Learn More
+                  </Link>
+                </div>
+              </div>
             </div>
-            <div className="ministry-details">
-              <h2>Church Planting & Gospel Expansion</h2>
-              <div className="divider" />
-              <p>We are actively planting Christ-centered, Word-driven churches in unreached and under-served communities—especially in districts and wards across Tanzania. We believe the local church is God's strategy for transforming society.</p>
-              <h3>Focus Areas:</h3>
-              <ul className="ministry-list">
-                <li><FontAwesomeIcon icon="church" /> Church Planting</li>
-                <li><FontAwesomeIcon icon="map-marker-alt" /> Unreached Communities</li>
-                <li><FontAwesomeIcon icon="book-open" /> Bible Translation</li>
-                <li><FontAwesomeIcon icon="hands-helping" /> Community Development</li>
-              </ul>
-              <Link to="/ministries/discipleship" className="btn btn-primary">Learn More</Link>
-            </div>
+          </section>
+        ))
+      ) : (
+        <section className="section">
+          <div className="container">
+            <p className="text-center">No ministry sections available. Please check back soon.</p>
           </div>
-        </div>
-      </section>
-
-      {/* Children's Ministry */}
-      <section id="children" className="section bg-light">
-        <div className="container">
-          <div className="ministry-content">
-            <div className="ministry-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Children's Ministry" />
-            </div>
-            <div className="ministry-details">
-              <h2>Leadership Development</h2>
-              <div className="divider" />
-              <p>We mentor and train emerging leaders — both lay and vocational — to serve faithfully in ministry, missions, and the marketplace, grounded in sound doctrine and godly character.</p>
-              <h3>Training Areas:</h3>
-              <ul className="ministry-list">
-                <li><FontAwesomeIcon icon="user-tie" /> Pastoral Training</li>
-                <li><FontAwesomeIcon icon="chalkboard-teacher" /> Teaching & Preaching</li>
-                <li><FontAwesomeIcon icon="briefcase" /> Marketplace Leadership</li>
-                <li><FontAwesomeIcon icon="graduation-cap" /> Theological Education</li>
-              </ul>
-              <Link to="/ministries/leadership" className="btn btn-primary">Learn More</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Youth Ministry */}
-      <section id="youth" className="section">
-        <div className="container">
-          <div className="ministry-content reverse">
-            <div className="ministry-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Youth Ministry" />
-            </div>
-            <div className="ministry-details">
-              <h2>Youth & Next Generation Ministry</h2>
-              <div className="divider" />
-              <p>We invest intentionally in young people, helping them discover their identity in Christ, engage with Scripture, and rise as Gospel influencers in their schools, communities, and future callings.</p>
-              <h3>Activities:</h3>
-              <ul className="ministry-list">
-                <li><FontAwesomeIcon icon="bible" /> Youth Discipleship</li>
-                <li><FontAwesomeIcon icon="school" /> School Outreach</li>
-                <li><FontAwesomeIcon icon="users" /> Youth Fellowship</li>
-                <li><FontAwesomeIcon icon="music" /> Worship Training</li>
-              </ul>
-              <Link to="/ministries/youth" className="btn btn-primary">Learn More</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Outreach Ministry */}
-      <section id="outreach" className="section bg-light">
-        <div className="container">
-          <div className="ministry-content">
-            <div className="ministry-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Outreach Ministry" />
-            </div>
-            <div className="ministry-details">
-              <h2>Community Impact & Mercy Ministry</h2>
-              <div className="divider" />
-              <p>We serve the practical needs of the vulnerable through acts of compassion, health outreach, education, and empowerment initiatives—motivated by the love of Christ.</p>
-              <h3>Outreach Programs:</h3>
-              <ul className="ministry-list">
-                <li><FontAwesomeIcon icon="utensils" /> Food Distribution</li>
-                <li><FontAwesomeIcon icon="heartbeat" /> Health Outreach</li>
-                <li><FontAwesomeIcon icon="graduation-cap" /> Education Support</li>
-                <li><FontAwesomeIcon icon="hands-helping" /> Community Development</li>
-              </ul>
-              <Link to="/ministries/outreach" className="btn btn-primary">Learn More</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Missions Ministry */}
-      <section id="missions" className="section">
-        <div className="container">
-          <div className="ministry-content reverse">
-            <div className="ministry-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Missions Ministry" />
-            </div>
-            <div className="ministry-details">
-              <h2>Missions & Evangelism</h2>
-              <div className="divider" />
-              <p>We go beyond our walls, engaging in local and cross-cultural missions, house-to-house evangelism, school outreach, and regional Gospel campaigns.</p>
-              <h3>Mission Focus:</h3>
-              <ul className="ministry-list">
-                <li><FontAwesomeIcon icon="home" /> House-to-House Evangelism</li>
-                <li><FontAwesomeIcon icon="school" /> School Outreach</li>
-                <li><FontAwesomeIcon icon="bullhorn" /> Gospel Campaigns</li>
-                <li><FontAwesomeIcon icon="globe-africa" /> Cross-Cultural Missions</li>
-              </ul>
-              <Link to="/ministries/missions" className="btn btn-primary">Learn More</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Prayer Ministry */}
-      <section id="prayer" className="section bg-light">
-        <div className="container">
-          <div className="ministry-content">
-            <div className="ministry-image">
-              <img src="/images/SPCT/CHURCH.jpg" alt="Prayer Ministry" />
-            </div>
-            <div className="ministry-details">
-              <h2>Prayer Ministry</h2>
-              <div className="divider" />
-              <p>Prayer fuels everything we do. We stand together in intercession as we plant churches, train leaders, and reach new communities. You can receive regular prayer updates and join our prayer network.</p>
-              <h3>Prayer Opportunities:</h3>
-              <ul className="ministry-list">
-                <li><FontAwesomeIcon icon="users" /> Corporate Prayer Meetings</li>
-                <li><FontAwesomeIcon icon="network-wired" /> Prayer Network</li>
-                <li><FontAwesomeIcon icon="hands" /> Prayer Team</li>
-                <li><FontAwesomeIcon icon="envelope" /> Prayer Updates</li>
-              </ul>
-              <Link to="/ministries/prayer" className="btn btn-primary">Learn More</Link>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Video Gallery Section */}
       <section className="section">

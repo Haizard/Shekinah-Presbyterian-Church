@@ -126,6 +126,7 @@ const donationRoutes = require('./routes/donations');
 const paymentRoutes = require('./routes/payments');
 const paymentConfigRoutes = require('./routes/paymentConfig');
 const churchSettingsRoutes = require('./routes/churchSettings');
+const ministrySectionRoutes = require('./routes/ministrySections');
 
 // Health check endpoint for Render
 app.get('/api/health', (req, res) => {
@@ -185,6 +186,7 @@ app.use('/api/donations', donationRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/payment-config', paymentConfigRoutes);
 app.use('/api/church-settings', churchSettingsRoutes);
+app.use('/api/ministry-sections', ministrySectionRoutes);
 
 // Serve React app for any other routes in production
 if (process.env.NODE_ENV === 'production') {

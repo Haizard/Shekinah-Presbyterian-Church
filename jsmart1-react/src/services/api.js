@@ -688,6 +688,24 @@ const api = {
       body: JSON.stringify(settingsData),
     }),
   },
+
+  // Ministry Sections endpoints
+  ministrySections: {
+    getAll: () => apiRequest('/api/ministry-sections'),
+    getById: (id) => apiRequest(`/api/ministry-sections/by-id/${id}`),
+    getBySectionId: (sectionId) => apiRequest(`/api/ministry-sections/by-section/${sectionId}`),
+    create: (data) => apiRequest('/api/ministry-sections', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    update: (id, data) => apiRequest(`/api/ministry-sections/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+    delete: (id) => apiRequest(`/api/ministry-sections/${id}`, {
+      method: 'DELETE',
+    }),
+  },
 };
 
 export default api;

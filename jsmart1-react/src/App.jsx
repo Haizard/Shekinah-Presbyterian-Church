@@ -266,6 +266,7 @@ import TestBranches from './pages/TestBranches'
 import AdminLogin from './pages/admin/Login'
 import AdminDashboard from './pages/admin/Dashboard'
 import MinistryManager from './pages/admin/MinistryManager'
+import MinistrySectionManager from './pages/admin/MinistrySectionManager'
 import SermonManager from './pages/admin/SermonManager'
 import EventManager from './pages/admin/EventManager'
 import GalleryManager from './pages/admin/GalleryManager'
@@ -441,6 +442,7 @@ const LocationAwareRoutes = () => {
 
             {/* Content Management Routes */}
             <Route path="/admin/ministries" element={<MinistryManager />} />
+            <Route path="/admin/ministry-sections" element={<MinistrySectionManager />} />
             <Route path="/admin/sermons" element={<SermonManager />} />
             <Route path="/admin/events" element={<EventManager />} />
             <Route path="/admin/gallery" element={<GalleryManager />} />
