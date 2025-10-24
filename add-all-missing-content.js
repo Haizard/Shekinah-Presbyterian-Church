@@ -88,23 +88,23 @@ const allContentData = [
     title: 'How We Serve',
     content: JSON.stringify([
       {
-        title: 'Community Outreach',
-        description: 'We provide food, clothing, and support to those in need in our community.',
+        title: 'Service Area 1',
+        description: 'Describe your first area of ministry and service.',
         icon: 'faHandsHelping'
       },
       {
-        title: 'Youth Ministry',
-        description: 'Engaging programs for children and teens to grow in faith and fellowship.',
+        title: 'Service Area 2',
+        description: 'Describe your second area of ministry and service.',
         icon: 'faUsers'
       },
       {
-        title: 'Worship Services',
-        description: 'Inspiring worship services with powerful messages and uplifting music.',
+        title: 'Service Area 3',
+        description: 'Describe your third area of ministry and service.',
         icon: 'faChurch'
       },
       {
-        title: 'Bible Study',
-        description: 'In-depth Bible studies for all ages to deepen understanding of Scripture.',
+        title: 'Service Area 4',
+        description: 'Describe your fourth area of ministry and service.',
         icon: 'faBookOpen'
       }
     ]),

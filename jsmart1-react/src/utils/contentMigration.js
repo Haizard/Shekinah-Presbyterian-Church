@@ -112,15 +112,11 @@ export const migrateContentItem = async (content) => {
 const migrateMottoContent = (content) => {
   // Default motto data
   const defaultMottoData = {
-    mottoText: 'The True Word, The True Gospel, and True Freedom',
-    verseReference: 'Matthew 9:35',
+    mottoText: 'Enter your church motto here',
+    verseReference: '',
     explanation: `
-      <p>This motto shapes everything we do. Inspired by the ministry of Jesus—who went through towns and villages teaching, preaching the Gospel of the Kingdom, and healing—we are committed to:</p>
-      <ul>
-        <li><strong>The True Word</strong> - Teaching the uncompromised Word of God as the foundation of life, discipleship, and mission.</li>
-        <li><strong>The True Gospel</strong> - Proclaiming the Good News of Jesus Christ clearly, boldly, and faithfully—calling all people to repentance, faith, and new life.</li>
-        <li><strong>True Freedom</strong> - Helping people experience the real freedom found in Christ alone—freedom from sin, fear, brokenness, and spiritual darkness.</li>
-      </ul>
+      <p>This motto shapes everything we do in our church and ministry.</p>
+      <p>Edit this section through the admin panel to add your church's motto, verse reference, and explanation.</p>
     `
   };
 

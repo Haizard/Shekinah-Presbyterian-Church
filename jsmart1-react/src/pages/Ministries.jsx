@@ -92,8 +92,8 @@ const Ministries = () => {
             className="ministries-intro"
             fallback={
               <div className="ministries-intro">
-                <p>At Shekinah Presbyterian Mission Tanzania, ministry is not just what we do — it's who we are. We serve with the conviction that the Gospel of Christ transforms lives, families, communities, and nations.</p>
-                <p>Whether you're called to pray, serve, donation, or spread the word — there's a place for you in this mission. We invite you to explore our ministries and find where God is calling you to get involved.</p>
+                <p>Ministry is not just what we do — it's who we are. We serve with the conviction that the Gospel of Christ transforms lives, families, communities, and nations.</p>
+                <p>Whether you're called to pray, serve, donate, or spread the word — there's a place for you in this mission. We invite you to explore our ministries and find where God is calling you to get involved.</p>
                 <div className="ministry-buttons">
                   <a href="#worship" className="btn btn-sm">Worship</a>
                   <a href="#discipleship" className="btn btn-sm">Discipleship</a>
@@ -140,7 +140,7 @@ const Ministries = () => {
             <div className="divider" />
           </div>
           <div className="ministries-intro">
-            <p>At Shekinah Presbyterian Church Tanzania, we believe that every believer is called to serve. Our ministries provide opportunities for you to use your gifts, grow in your faith, and make a difference in the lives of others.</p>
+            <p>We believe that every believer is called to serve. Our ministries provide opportunities for you to use your gifts, grow in your faith, and make a difference in the lives of others.</p>
             <p>Explore our ministries below and find where you can connect and serve.</p>
           </div>
 
