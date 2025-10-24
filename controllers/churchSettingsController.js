@@ -6,13 +6,33 @@ const ChurchSettings = require('../models/ChurchSettings');
 const getChurchSettings = async (req, res) => {
   try {
     let settings = await ChurchSettings.findOne();
-    
+
     // If no settings exist, create default empty settings
     if (!settings) {
-      settings = new ChurchSettings({});
+      console.log('No church settings found, creating default settings...');
+      settings = new ChurchSettings({
+        churchName: '',
+        churchDescription: '',
+        logo: '',
+        favicon: '',
+        address: '',
+        city: '',
+        country: '',
+        postalCode: '',
+        phone: '',
+        email: '',
+        serviceTimes: [],
+        socialMedia: {},
+        bankDetails: {},
+        mapCoordinates: {},
+        timezone: 'UTC',
+        currency: 'USD',
+        language: 'en',
+      });
       await settings.save();
+      console.log('Default church settings created successfully');
     }
-    
+
     res.status(200).json(settings);
   } catch (error) {
     console.error('Error fetching church settings:', error);

@@ -88,6 +88,12 @@ const AdminSidebar = () => {
               <li className="nav-section-title">
                 <span>Church Management</span>
               </li>
+              <li className={isActive('/admin/church-settings') ? 'active' : ''}>
+                <Link to="/admin/church-settings">
+                  <FontAwesomeIcon icon="church" />
+                  <span>Church Settings</span>
+                </Link>
+              </li>
               <li className={isActive('/admin/branches') ? 'active' : ''}>
                 <Link to="/admin/branches">
                   <FontAwesomeIcon icon="building" />
