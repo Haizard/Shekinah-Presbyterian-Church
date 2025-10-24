@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -13,11 +13,14 @@ import {
   faInstagram,
   faYoutube
 } from '@fortawesome/free-brands-svg-icons';
+import ChurchSettingsContext from '../context/ChurchSettingsContext';
 // Import our modern design system
 import '../styles/main.css';
 import '../styles/modern-footer.css';
 
 const Footer = () => {
+  const { settings } = useContext(ChurchSettingsContext);
+
   useEffect(() => {
     // Set current year in footer
     const yearElement = document.getElementById('year');
@@ -65,8 +68,10 @@ const Footer = () => {
         <div className="container">
           <div className="footer-content">
             <div className="footer-logo">
-              <img src="/images/logo.png" alt="Shekinah Church Logo" />
-              <h3>Shekinah Presbyterian Church Tanzania</h3>
+              {settings?.logo && (
+                <img src={settings.logo} alt={settings.churchName || 'Church Logo'} />
+              )}
+              <h3>{settings?.churchName || 'Church'}</h3>
             </div>
             <div className="footer-links">
               <h3>Quick Links</h3>
@@ -80,21 +85,27 @@ const Footer = () => {
             </div>
             <div className="footer-contact">
               <h3>Contact Us</h3>
-              <p>
-                <a href="https://maps.google.com/?q=Dar+es+Salaam,Tanzania" target="_blank" rel="noopener noreferrer" className="contact-link">
-                  <FontAwesomeIcon icon={faMapMarkerAlt} /> Dar es Salaam, Tanzania
-                </a>
-              </p>
-              <p>
-                <a href="tel:+255769080629" className="contact-link">
-                  <FontAwesomeIcon icon={faPhone} /> +255 769 080 629
-                </a>
-              </p>
-              <p>
-                <a href="mailto:spctanzania@gmail.com" className="contact-link">
-                  <FontAwesomeIcon icon={faEnvelope} /> spctanzania@gmail.com
-                </a>
-              </p>
+              {settings?.address && (
+                <p>
+                  <a href={`https://maps.google.com/?q=${encodeURIComponent(settings.address)}`} target="_blank" rel="noopener noreferrer" className="contact-link">
+                    <FontAwesomeIcon icon={faMapMarkerAlt} /> {settings.address}
+                  </a>
+                </p>
+              )}
+              {settings?.phone && (
+                <p>
+                  <a href={`tel:${settings.phone}`} className="contact-link">
+                    <FontAwesomeIcon icon={faPhone} /> {settings.phone}
+                  </a>
+                </p>
+              )}
+              {settings?.email && (
+                <p>
+                  <a href={`mailto:${settings.email}`} className="contact-link">
+                    <FontAwesomeIcon icon={faEnvelope} /> {settings.email}
+                  </a>
+                </p>
+              )}
             </div>
             <div className="footer-newsletter">
               <h3>Subscribe to Our Newsletter</h3>
@@ -105,7 +116,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; <span id="year"></span> Shekinah Presbyterian Church Tanzania. All Rights Reserved.</p>
+            <p>&copy; <span id="year"></span> {settings?.churchName || 'Church'}. All Rights Reserved.</p>
             <p className="admin-link"><Link to="/admin/login">Admin</Link></p>
           </div>
         </div>

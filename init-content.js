@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Content = require('./models/Content');
+const ChurchSettings = require('./models/ChurchSettings');
 const dotenv = require('dotenv');
 
 // Load environment variables
@@ -113,7 +114,7 @@ async function initializeContent() {
     // Check if content already exists
     for (const content of contentData) {
       const existingContent = await Content.findOne({ section: content.section });
-      
+
       if (existingContent) {
         console.log(`Content section "${content.section}" already exists. Skipping...`);
       } else {
@@ -122,11 +123,53 @@ async function initializeContent() {
         console.log(`Content section "${content.section}" created successfully.`);
       }
     }
-    
+
+    // Initialize default church settings
+    await initializeChurchSettings();
+
     console.log('Content initialization completed.');
     mongoose.disconnect();
   } catch (error) {
     console.error('Error initializing content:', error);
     mongoose.disconnect();
+  }
+}
+
+// Function to initialize default church settings
+async function initializeChurchSettings() {
+  try {
+    // Check if church settings already exist
+    const settingsExists = await ChurchSettings.findOne();
+
+    if (settingsExists) {
+      console.log('Church settings already exist. Skipping...');
+      return;
+    }
+
+    // Create default empty church settings
+    const defaultSettings = new ChurchSettings({
+      churchName: '',
+      churchDescription: '',
+      logo: '',
+      favicon: '',
+      address: '',
+      city: '',
+      country: '',
+      postalCode: '',
+      phone: '',
+      email: '',
+      serviceTimes: [],
+      socialMedia: {},
+      bankDetails: {},
+      mapCoordinates: {},
+      timezone: 'UTC',
+      currency: 'USD',
+      language: 'en',
+    });
+
+    await defaultSettings.save();
+    console.log('Default church settings created successfully');
+  } catch (error) {
+    console.error('Error initializing church settings:', error);
   }
 }

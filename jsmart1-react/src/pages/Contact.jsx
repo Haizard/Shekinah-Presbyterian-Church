@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import ChurchSettingsContext from '../context/ChurchSettingsContext';
 import '../styles/Contact.css';
 import '../styles/modern-contact.css';
 import api from '../services/api';
 
 const Contact = () => {
+  const { settings } = useContext(ChurchSettingsContext);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -75,33 +77,39 @@ const Contact = () => {
           </div>
           <div className="contact-content">
             <div className="contact-info">
-              <div className="contact-item">
-                <FontAwesomeIcon icon="map-marker-alt" />
-                <div>
-                  <h3>Location</h3>
-                  <a href="https://maps.google.com/?q=Dar+es+Salaam,Tanzania" target="_blank" rel="noopener noreferrer" className="contact-link">
-                    Dar es Salaam, Tanzania
-                  </a>
+              {settings?.address && (
+                <div className="contact-item">
+                  <FontAwesomeIcon icon="map-marker-alt" />
+                  <div>
+                    <h3>Location</h3>
+                    <a href={`https://maps.google.com/?q=${encodeURIComponent(settings.address)}`} target="_blank" rel="noopener noreferrer" className="contact-link">
+                      {settings.address}
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <div className="contact-item">
-                <FontAwesomeIcon icon="phone" />
-                <div>
-                  <h3>Phone</h3>
-                  <a href="tel:+255769080629" className="contact-link">
-                    +255 769 080 629
-                  </a>
+              )}
+              {settings?.phone && (
+                <div className="contact-item">
+                  <FontAwesomeIcon icon="phone" />
+                  <div>
+                    <h3>Phone</h3>
+                    <a href={`tel:${settings.phone}`} className="contact-link">
+                      {settings.phone}
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <div className="contact-item">
-                <FontAwesomeIcon icon="envelope" />
-                <div>
-                  <h3>Email</h3>
-                  <a href="mailto:spctanzania@gmail.com" className="contact-link">
-                    spctanzania@gmail.com
-                  </a>
+              )}
+              {settings?.email && (
+                <div className="contact-item">
+                  <FontAwesomeIcon icon="envelope" />
+                  <div>
+                    <h3>Email</h3>
+                    <a href={`mailto:${settings.email}`} className="contact-link">
+                      {settings.email}
+                    </a>
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="contact-item">
                 <FontAwesomeIcon icon="clock" />
                 <div>
@@ -200,38 +208,44 @@ const Contact = () => {
             <div className="divider" />
           </div>
           <div className="contact-cards">
-            <div className="contact-card">
-              <div className="contact-icon">
-                <FontAwesomeIcon icon="map-marker-alt" />
+            {settings?.address && (
+              <div className="contact-card">
+                <div className="contact-icon">
+                  <FontAwesomeIcon icon="map-marker-alt" />
+                </div>
+                <h3>Visit Us</h3>
+                {settings?.churchName && <p>{settings.churchName}</p>}
+                {settings?.postalCode && <p>P.O. Box {settings.postalCode}</p>}
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(settings.address)}`} target="_blank" rel="noopener noreferrer" className="contact-link">
+                  {settings.address}
+                </a>
               </div>
-              <h3>Visit Us</h3>
-              <p>Shekinah Presbyterian Church Tanzania</p>
-              <p>P.O. Box 32807</p>
-              <a href="https://maps.google.com/?q=Dar+es+Salaam,Tanzania" target="_blank" rel="noopener noreferrer" className="contact-link">
-                Dar es Salaam, Tanzania
-              </a>
-            </div>
-            <div className="contact-card">
-              <div className="contact-icon">
-                <FontAwesomeIcon icon="phone" />
+            )}
+            {settings?.phone && (
+              <div className="contact-card">
+                <div className="contact-icon">
+                  <FontAwesomeIcon icon="phone" />
+                </div>
+                <h3>Call Us</h3>
+                <a href={`tel:${settings.phone}`} className="contact-link">
+                  Phone: {settings.phone}
+                </a>
+                <p>Office Hours:</p>
+                <p>Monday-Friday: 9:00 AM - 5:00 PM</p>
               </div>
-              <h3>Call Us</h3>
-              <a href="tel:+255769080629" className="contact-link">
-                Phone: +255 769 080 629
-              </a>
-              <p>Office Hours:</p>
-              <p>Monday-Friday: 9:00 AM - 5:00 PM</p>
-            </div>
-            <div className="contact-card">
-              <div className="contact-icon">
-                <FontAwesomeIcon icon="envelope" />
+            )}
+            {settings?.email && (
+              <div className="contact-card">
+                <div className="contact-icon">
+                  <FontAwesomeIcon icon="envelope" />
+                </div>
+                <h3>Email Us</h3>
+                <p>Email:</p>
+                <a href={`mailto:${settings.email}`} className="contact-link">
+                  {settings.email}
+                </a>
               </div>
-              <h3>Email Us</h3>
-              <p>Email:</p>
-              <a href="mailto:spctanzania@gmail.com" className="contact-link">
-                spctanzania@gmail.com
-              </a>
-            </div>
+            )}
             <div className="contact-card">
               <div className="contact-icon">
                 <FontAwesomeIcon icon="clock" />
@@ -277,7 +291,9 @@ const Contact = () => {
           <div className="prayer-request-content">
             <div className="prayer-request-text">
               <p>We believe in the power of prayer. If you have a specific prayer need, our prayer team would be honored to pray for you.</p>
-              <p>You can submit your prayer request using the form below or by emailing us at <a href="mailto:spctanzania@gmail.com" className="contact-link">spctanzania@gmail.com</a>.</p>
+              {settings?.email && (
+                <p>You can submit your prayer request using the form below or by emailing us at <a href={`mailto:${settings.email}`} className="contact-link">{settings.email}</a>.</p>
+              )}
               <p>All prayer requests are kept confidential and are shared only with our prayer team.</p>
             </div>
             <div className="prayer-request-form">

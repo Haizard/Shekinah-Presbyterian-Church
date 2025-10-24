@@ -4,6 +4,7 @@ import './App.css'
 import './styles/main.css' // Import our modern design system
 import { AuthProvider } from './context/AuthContext'
 import { ContentProvider } from './context/ContentContext'
+import { ChurchSettingsProvider } from './context/ChurchSettingsContext'
 import ErrorBoundary from './components/common/ErrorBoundary'
 
 // Font Awesome
@@ -270,6 +271,7 @@ import EventManager from './pages/admin/EventManager'
 import GalleryManager from './pages/admin/GalleryManager'
 import ContactManager from './pages/admin/ContactManager'
 import ContentManager from './pages/admin/ContentManager'
+import ChurchSettingsManager from './pages/admin/ChurchSettingsManager'
 
 // New Admin Pages
 import BranchManager from './pages/admin/BranchManager'
@@ -451,6 +453,9 @@ const LocationAwareRoutes = () => {
 
             {/* Communication Routes */}
             <Route path="/admin/contact" element={<ContactManager />} />
+
+            {/* Church Settings Routes */}
+            <Route path="/admin/church-settings" element={<ChurchSettingsManager />} />
           </Routes>
     </div>
   );
@@ -461,9 +466,11 @@ function App() {
     <ErrorBoundary>
       <AuthProvider>
         <ContentProvider>
-          <BrowserRouter>
-            <LocationAwareRoutes />
-          </BrowserRouter>
+          <ChurchSettingsProvider>
+            <BrowserRouter>
+              <LocationAwareRoutes />
+            </BrowserRouter>
+          </ChurchSettingsProvider>
         </ContentProvider>
       </AuthProvider>
     </ErrorBoundary>

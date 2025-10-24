@@ -12,6 +12,7 @@ const Sermon = require('./models/Sermon');
 const Event = require('./models/Event');
 const Gallery = require('./models/Gallery');
 const Content = require('./models/Content');
+const ChurchSettings = require('./models/ChurchSettings');
 
 // Sample data
 const sampleData = {
@@ -198,6 +199,9 @@ const initializeDB = async () => {
       console.log('Data already exists in the database');
     }
 
+    // Initialize default church settings
+    await initializeChurchSettings();
+
     console.log('Database initialization completed successfully');
     console.log('\nYou can now run the application with:');
     console.log('node server.js');
@@ -213,6 +217,45 @@ const initializeDB = async () => {
     process.exit(1);
   }
 };
+
+// Function to initialize default church settings
+async function initializeChurchSettings() {
+  try {
+    // Check if church settings already exist
+    const settingsExists = await ChurchSettings.findOne();
+
+    if (settingsExists) {
+      console.log('Church settings already exist. Skipping...');
+      return;
+    }
+
+    // Create default empty church settings
+    const defaultSettings = new ChurchSettings({
+      churchName: '',
+      churchDescription: '',
+      logo: '',
+      favicon: '',
+      address: '',
+      city: '',
+      country: '',
+      postalCode: '',
+      phone: '',
+      email: '',
+      serviceTimes: [],
+      socialMedia: {},
+      bankDetails: {},
+      mapCoordinates: {},
+      timezone: 'UTC',
+      currency: 'USD',
+      language: 'en',
+    });
+
+    await defaultSettings.save();
+    console.log('Default church settings created successfully');
+  } catch (error) {
+    console.error('Error initializing church settings:', error);
+  }
+}
 
 // Run the initialization function
 initializeDB();

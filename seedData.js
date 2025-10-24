@@ -6,6 +6,7 @@ const Sermon = require('./models/Sermon');
 const Event = require('./models/Event');
 const Gallery = require('./models/Gallery');
 const Content = require('./models/Content');
+const ChurchSettings = require('./models/ChurchSettings');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
@@ -153,7 +154,10 @@ const seedDatabase = async () => {
     await Event.insertMany(eventsData);
     await Gallery.insertMany(galleryData);
     await Content.insertMany(contentData);
-    
+
+    // Initialize default church settings
+    await initializeChurchSettings();
+
     console.log('Database seeded successfully');
     process.exit(0);
   } catch (error) {
@@ -161,6 +165,45 @@ const seedDatabase = async () => {
     process.exit(1);
   }
 };
+
+// Function to initialize default church settings
+async function initializeChurchSettings() {
+  try {
+    // Check if church settings already exist
+    const settingsExists = await ChurchSettings.findOne();
+
+    if (settingsExists) {
+      console.log('Church settings already exist. Skipping...');
+      return;
+    }
+
+    // Create default empty church settings
+    const defaultSettings = new ChurchSettings({
+      churchName: '',
+      churchDescription: '',
+      logo: '',
+      favicon: '',
+      address: '',
+      city: '',
+      country: '',
+      postalCode: '',
+      phone: '',
+      email: '',
+      serviceTimes: [],
+      socialMedia: {},
+      bankDetails: {},
+      mapCoordinates: {},
+      timezone: 'UTC',
+      currency: 'USD',
+      language: 'en',
+    });
+
+    await defaultSettings.save();
+    console.log('Default church settings created successfully');
+  } catch (error) {
+    console.error('Error initializing church settings:', error);
+  }
+}
 
 // Run the function
 seedDatabase();

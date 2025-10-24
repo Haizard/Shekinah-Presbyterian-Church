@@ -2,6 +2,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/User');
+const ChurchSettings = require('./models/ChurchSettings');
 const bcrypt = require('bcryptjs');
 
 // Connect to MongoDB
@@ -51,10 +52,52 @@ const createAdmin = async () => {
     console.log('Email:', adminData.email);
     console.log('Password:', adminData.password);
 
+    // Initialize default church settings
+    await initializeChurchSettings();
+
     process.exit(0);
   } catch (error) {
     console.error('Error creating admin user:', error);
     process.exit(1);
+  }
+};
+
+// Initialize default church settings
+const initializeChurchSettings = async () => {
+  try {
+    // Check if church settings already exist
+    const settingsExists = await ChurchSettings.findOne();
+
+    if (settingsExists) {
+      console.log('Church settings already exist');
+      return;
+    }
+
+    // Create default empty church settings
+    const defaultSettings = new ChurchSettings({
+      churchName: '',
+      churchDescription: '',
+      logo: '',
+      favicon: '',
+      address: '',
+      city: '',
+      country: '',
+      postalCode: '',
+      phone: '',
+      email: '',
+      serviceTimes: [],
+      socialMedia: {},
+      bankDetails: {},
+      mapCoordinates: {},
+      timezone: 'UTC',
+      currency: 'USD',
+      language: 'en',
+    });
+
+    await defaultSettings.save();
+    console.log('Default church settings created successfully');
+  } catch (error) {
+    console.error('Error initializing church settings:', error);
   }
 };
 

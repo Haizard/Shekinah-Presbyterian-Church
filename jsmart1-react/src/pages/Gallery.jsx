@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import ChurchSettingsContext from '../context/ChurchSettingsContext';
 import '../styles/Gallery.css';
 import '../styles/modern-gallery.css';
 import api from '../services/api';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
 const Gallery = () => {
+  const { settings } = useContext(ChurchSettingsContext);
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState(null);
   const [visibleImages, setVisibleImages] = useState(8);
@@ -105,7 +107,7 @@ const Gallery = () => {
             <div className="divider" />
           </div>
           <div className="gallery-intro">
-            <p>Browse through our collection of photos showcasing the life and ministry of Shekinah Presbyterian Church Tanzania. From worship services to outreach activities, these images capture the moments where we gather to glorify God and serve others.</p>
+            <p>Browse through our collection of photos showcasing the life and ministry of {settings?.churchName || 'our church'}. From worship services to outreach activities, these images capture the moments where we gather to glorify God and serve others.</p>
           </div>
 
           {/* Gallery Categories */}

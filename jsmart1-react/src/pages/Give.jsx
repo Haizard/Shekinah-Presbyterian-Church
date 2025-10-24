@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import ChurchSettingsContext from '../context/ChurchSettingsContext';
 import api from '../services/api';
 import '../styles/donation.css';
 import '../styles/modern-donation.css';
 
 const Give = () => {
+  const { settings } = useContext(ChurchSettingsContext);
   // Form state
   const [giftAmount, setGiftAmount] = useState('');
   const [customAmount, setCustomAmount] = useState('');
@@ -244,7 +246,7 @@ const Give = () => {
             <div className="divider" />
           </div>
           <div className="giving-intro">
-            <p>Your generous donation helps us proclaim the Gospel, disciple believers, and serve our community. Every gift makes a difference in advancing God's Kingdom through the ministries of Shekinah Presbyterian Church Tanzania.</p>
+            <p>Your generous donation helps us proclaim the Gospel, disciple believers, and serve our community. Every gift makes a difference in advancing God's Kingdom through the ministries of {settings?.churchName || 'our church'}.</p>
             <p>We are committed to financial integrity and transparency in all our operations. Thank you for partnering with us in this mission!</p>
           </div>
 
@@ -654,27 +656,29 @@ const Give = () => {
                   <h4>Bank Transfer</h4>
                   <p>Transfer directly to our church account:</p>
                   <div className="bank-details">
-                    {bankDetails ? (
+                    {bankDetails || settings?.bankDetails ? (
                       <>
-                        <p><strong>Bank:</strong> {bankDetails.bankName || 'Tanzania National Bank'}</p>
-                        <p><strong>Account Name:</strong> {bankDetails.accountName || 'Shekinah Presbyterian Church Tanzania'}</p>
-                        <p><strong>Account Number:</strong> {bankDetails.accountNumber || '1234567890'}</p>
-                        {bankDetails.branchName && (
-                          <p><strong>Branch:</strong> {bankDetails.branchName}</p>
+                        {(bankDetails?.bankName || settings?.bankDetails?.bankName) && (
+                          <p><strong>Bank:</strong> {bankDetails?.bankName || settings?.bankDetails?.bankName}</p>
                         )}
-                        {bankDetails.swiftCode && (
-                          <p><strong>Swift Code:</strong> {bankDetails.swiftCode}</p>
+                        {(bankDetails?.accountName || settings?.bankDetails?.accountName) && (
+                          <p><strong>Account Name:</strong> {bankDetails?.accountName || settings?.bankDetails?.accountName}</p>
                         )}
-                        {bankDetails.instructions && (
-                          <p><strong>Instructions:</strong> {bankDetails.instructions}</p>
+                        {(bankDetails?.accountNumber || settings?.bankDetails?.accountNumber) && (
+                          <p><strong>Account Number:</strong> {bankDetails?.accountNumber || settings?.bankDetails?.accountNumber}</p>
+                        )}
+                        {(bankDetails?.branchName || settings?.bankDetails?.branchName) && (
+                          <p><strong>Branch:</strong> {bankDetails?.branchName || settings?.bankDetails?.branchName}</p>
+                        )}
+                        {(bankDetails?.swiftCode || settings?.bankDetails?.swiftCode) && (
+                          <p><strong>Swift Code:</strong> {bankDetails?.swiftCode || settings?.bankDetails?.swiftCode}</p>
+                        )}
+                        {(bankDetails?.instructions || settings?.bankDetails?.instructions) && (
+                          <p><strong>Instructions:</strong> {bankDetails?.instructions || settings?.bankDetails?.instructions}</p>
                         )}
                       </>
                     ) : (
-                      <>
-                        <p><strong>Bank:</strong> Tanzania National Bank</p>
-                        <p><strong>Account Name:</strong> Shekinah Presbyterian Church Tanzania</p>
-                        <p><strong>Account Number:</strong> 1234567890</p>
-                      </>
+                      <p>Bank details not configured. Please contact us for more information.</p>
                     )}
                   </div>
                 </div>
@@ -777,7 +781,7 @@ const Give = () => {
                 </span>
               </button>
               <div className={`faq-answer ${activeFaq === 0 ? 'show' : ''}`}>
-                <p>Yes, all donations to Shekinah Presbyterian Church Tanzania are tax-deductible. We provide receipts for all donations upon request.</p>
+                <p>Yes, all donations to {settings?.churchName || 'our church'} are tax-deductible. We provide receipts for all donations upon request.</p>
               </div>
             </div>
 

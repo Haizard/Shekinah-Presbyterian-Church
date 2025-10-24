@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import ForceNavLink from './ForceNavLink';
+import ChurchSettingsContext from '../context/ChurchSettingsContext';
 // Import our modern design system
 import '../styles/main.css';
 import '../styles/modern-header.css';
@@ -10,6 +11,7 @@ import '../styles/modern-header.css';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { settings } = useContext(ChurchSettingsContext);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,8 +84,10 @@ const Header = () => {
     <header className={isScrolled ? 'scrolled' : ''}>
       <div className="container">
         <div className="logo">
-          <img src="/images/SPCT/LOGO.jpg" alt="Shekinah Church Logo" />
-          <h1>Shekinah Church</h1>
+          {settings?.logo && (
+            <img src={settings.logo} alt={settings.churchName || 'Church Logo'} />
+          )}
+          <h1>{settings?.churchName || 'Church'}</h1>
         </div>
 
         <button

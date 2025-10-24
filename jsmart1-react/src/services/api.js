@@ -679,6 +679,15 @@ const api = {
     verifyPayment: (method, id) => apiRequest(`/api/payments/verify/${method}/${id}`),
     getBankDetails: () => apiRequest('/api/payments/bank-details'),
   },
+
+  // Church Settings endpoints
+  churchSettings: {
+    get: () => apiRequest('/api/church-settings'),
+    update: (settingsData) => apiRequest('/api/church-settings', {
+      method: 'PUT',
+      body: JSON.stringify(settingsData),
+    }),
+  },
 };
 
 export default api;
