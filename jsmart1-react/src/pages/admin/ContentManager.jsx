@@ -46,6 +46,7 @@ const ContentManager = () => {
     { value: 'mission', label: 'Our Mission' },
     { value: 'story', label: 'Our Story' },
     { value: 'motto', label: 'Our Motto' },
+    { value: 'beliefs', label: 'Our Beliefs' },
     { value: 'leadership', label: 'Our Leadership' },
     { value: 'weekly_schedule', label: 'Weekly Schedule' },
     { value: 'featured_event', label: 'Featured Event' },

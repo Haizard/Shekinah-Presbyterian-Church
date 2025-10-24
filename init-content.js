@@ -106,6 +106,44 @@ const contentData = [
     title: 'Our Mission',
     content: 'To make disciples of Jesus Christ for the transformation of the world by proclaiming the good news of God\'s grace.',
     image: '/images/SPCT/CHURCH.jpg'
+  },
+  {
+    section: 'story',
+    title: 'Our Story',
+    content: 'Share your church\'s unique story and history. Tell how your church was founded, the journey it has taken, and the impact it has made in the community.',
+    image: '/images/SPCT/CHURCH.jpg'
+  },
+  {
+    section: 'motto',
+    title: 'Our Motto',
+    content: JSON.stringify({
+      mottoText: 'Enter your church motto here',
+      verseReference: '',
+      explanation: '<p>This motto shapes everything we do in our church and ministry.</p><p>Edit this section through the admin panel to add your church\'s motto, verse reference, and explanation.</p>'
+    }),
+    image: '/images/SPCT/CHURCH.jpg'
+  },
+  {
+    section: 'beliefs',
+    title: 'Our Beliefs',
+    content: JSON.stringify({
+      introduction: 'Share the core beliefs that guide your church and ministry.',
+      beliefs: [
+        {
+          title: 'Belief 1',
+          description: 'Describe your first core belief.'
+        },
+        {
+          title: 'Belief 2',
+          description: 'Describe your second core belief.'
+        },
+        {
+          title: 'Belief 3',
+          description: 'Describe your third core belief.'
+        }
+      ]
+    }),
+    image: '/images/SPCT/CHURCH.jpg'
   }
 ];
 

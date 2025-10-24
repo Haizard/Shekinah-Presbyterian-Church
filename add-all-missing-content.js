@@ -168,6 +168,28 @@ const allContentData = [
       }
     ]),
     image: '/images/SPCT/CHURCH.jpg'
+  },
+  {
+    section: 'beliefs',
+    title: 'Our Beliefs',
+    content: JSON.stringify({
+      introduction: 'Share the core beliefs that guide your church and ministry.',
+      beliefs: [
+        {
+          title: 'Belief 1',
+          description: 'Describe your first core belief.'
+        },
+        {
+          title: 'Belief 2',
+          description: 'Describe your second core belief.'
+        },
+        {
+          title: 'Belief 3',
+          description: 'Describe your third core belief.'
+        }
+      ]
+    }),
+    image: '/images/SPCT/CHURCH.jpg'
   }
 ];
 
