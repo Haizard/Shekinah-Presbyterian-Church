@@ -23,7 +23,7 @@ const sampleData = {
       title: 'Worship Ministry',
       category: 'worship',
       description: 'Our worship ministry leads the congregation in praise and worship.',
-      image: '/images/SPCT/CHURCH.jpg',
+      image: '',
       leader: 'John Doe',
       meetingTime: 'Saturdays at 4:00 PM'
     },
@@ -31,7 +31,7 @@ const sampleData = {
       title: 'Children\'s Ministry',
       category: 'children',
       description: 'We provide a safe, fun, and Bible-based environment for children.',
-      image: '/images/SPCT/CHURCH.jpg',
+      image: '',
       leader: 'Jane Smith',
       meetingTime: 'Sundays during service'
     },
@@ -39,7 +39,7 @@ const sampleData = {
       title: 'Youth Ministry',
       category: 'youth',
       description: 'Engaging young people in spiritual growth and community service.',
-      image: '/images/SPCT/CHURCH.jpg',
+      image: '',
       leader: 'Michael Johnson',
       meetingTime: 'Fridays at 6:00 PM'
     }
@@ -73,7 +73,7 @@ const sampleData = {
       time: '9:00 AM - 4:00 PM',
       location: 'Main Sanctuary',
       description: 'Join us for our annual church conference with guest speakers and worship.',
-      image: '/images/SPCT/CHURCH.jpg'
+      image: ''
     },
     {
       title: 'Community Outreach',
@@ -81,7 +81,7 @@ const sampleData = {
       time: '10:00 AM - 2:00 PM',
       location: 'Community Center',
       description: 'Serving our community through various outreach activities.',
-      image: '/images/SPCT/CHURCH.jpg'
+      image: ''
     }
   ],
 
@@ -90,14 +90,14 @@ const sampleData = {
     {
       title: 'Sunday Worship Service',
       category: 'worship',
-      image: '/images/SPCT/CHURCH.jpg',
+      image: '',
       date: 'May 28, 2023',
       description: 'Moments from our Sunday worship service.'
     },
     {
       title: 'Youth Camp',
       category: 'youth',
-      image: '/images/SPCT/CHURCH.jpg',
+      image: '',
       date: 'June 15, 2023',
       description: 'Highlights from our annual youth camp.'
     }
@@ -109,19 +109,19 @@ const sampleData = {
       section: 'about',
       title: 'Who We Are',
       content: '<p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond.</p>',
-      image: '/images/SPCT/CHURCH.jpg'
+      image: ''
     },
     {
       section: 'vision',
       title: 'Our Vision',
       content: '<p>To be a beacon of light and hope, transforming lives through the Gospel of Jesus Christ.</p>',
-      image: '/images/SPCT/CHURCH.jpg'
+      image: ''
     },
     {
       section: 'mission',
       title: 'Our Mission',
       content: '<p>To make disciples of all nations, teaching them to observe all that Jesus has commanded.</p>',
-      image: '/images/SPCT/CHURCH.jpg'
+      image: ''
     }
   ]
 };

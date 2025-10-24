@@ -56,7 +56,7 @@ const contentData = [
         icon: 'faBookOpen'
       }
     ]),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'video_gallery',
@@ -65,23 +65,23 @@ const contentData = [
       {
         title: 'Sunday Worship Service',
         date: 'June 4, 2023',
-        thumbnail: '/images/SPCT/CHURCH.jpg',
+        thumbnail: '',
         url: 'https://www.youtube.com/watch?v=example1'
       },
       {
         title: 'Bible Study: The Book of John',
         date: 'May 28, 2023',
-        thumbnail: '/images/SPCT/CHURCH.jpg',
+        thumbnail: '',
         url: 'https://www.youtube.com/watch?v=example2'
       },
       {
         title: 'Testimony: God\'s Faithfulness',
         date: 'May 21, 2023',
-        thumbnail: '/images/SPCT/CHURCH.jpg',
+        thumbnail: '',
         url: 'https://www.youtube.com/watch?v=example3'
       }
     ]),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'featured_event',
@@ -93,25 +93,25 @@ const contentData = [
       description: 'Join us for our annual church conference with guest speakers and worship. This year\'s theme is "Rooted in Christ, Growing in Faith."',
       link: '/events'
     }),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'our_vision',
     title: 'Our Vision',
     content: 'To be a beacon of hope and light in our community, transforming lives through the love of Christ.',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'our_mission',
     title: 'Our Mission',
     content: 'To make disciples of Jesus Christ for the transformation of the world by proclaiming the good news of God\'s grace.',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'story',
     title: 'Our Story',
     content: 'Share your church\'s unique story and history. Tell how your church was founded, the journey it has taken, and the impact it has made in the community.',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'motto',
@@ -121,7 +121,7 @@ const contentData = [
       verseReference: '',
       explanation: '<p>This motto shapes everything we do in our church and ministry.</p><p>Edit this section through the admin panel to add your church\'s motto, verse reference, and explanation.</p>'
     }),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'beliefs',
@@ -143,7 +143,7 @@ const contentData = [
         }
       ]
     }),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   }
 ];
 

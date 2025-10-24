@@ -28,7 +28,7 @@ const getBaseUrl = () => {
  * @param {string} fallbackImage - The fallback image to use if the path is invalid
  * @returns {string} - The proper image URL
  */
-export const getImageUrl = (imagePath, fallbackImage = '/images/SPCT/CHURCH.jpg') => {
+export const getImageUrl = (imagePath, fallbackImage = '') => {
   // If the image path is empty or null, return the fallback image
   if (!imagePath) {
     return fallbackImage;
@@ -73,7 +73,7 @@ export const getImageUrl = (imagePath, fallbackImage = '/images/SPCT/CHURCH.jpg'
  * @param {string} fallbackImage - The fallback image to use
  * @param {string} componentName - Optional name of the component for debugging
  */
-export const handleImageError = (event, fallbackImage = '/images/SPCT/CHURCH.jpg', componentName = '') => {
+export const handleImageError = (event, fallbackImage = '', componentName = '') => {
   // Get the original source that failed
   const originalSrc = event.target.src;
 

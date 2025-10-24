@@ -162,13 +162,13 @@ const createDefaultContent = async (section) => {
               name: 'Pastor John Doe',
               position: 'Senior Pastor',
               bio: 'Pastor John has been serving our church for over 10 years.',
-              image: '/images/SPCT/CHURCH.jpg'
+              image: ''
             },
             {
               name: 'Elder Jane Smith',
               position: 'Elder',
               bio: 'Elder Jane oversees our children\'s ministry.',
-              image: '/images/SPCT/CHURCH.jpg'
+              image: ''
             }
           ]
         };
@@ -252,7 +252,7 @@ const createDefaultContent = async (section) => {
           section: 'how_we_serve',
           title: 'How We Serve',
           content: JSON.stringify(howWeServeData),
-          image: '/images/SPCT/CHURCH.jpg'
+          image: ''
         };
 
         console.log('How We Serve content data:', contentData);
@@ -266,14 +266,14 @@ const createDefaultContent = async (section) => {
           time: '9:00 AM - 12:00 PM',
           location: 'Main Sanctuary',
           description: 'Join us for our weekly worship service. Everyone is welcome!',
-          image: '/images/SPCT/CHURCH.jpg'
+          image: ''
         };
 
         contentData = {
           section: 'featured_event',
           title: 'Featured Event',
           content: JSON.stringify(featuredEventData),
-          image: '/images/SPCT/CHURCH.jpg'
+          image: ''
         };
 
         console.log('Featured Event content data:', contentData);
@@ -315,7 +315,7 @@ const createDefaultContent = async (section) => {
           section: 'event_calendar',
           title: 'Event Calendar',
           content: JSON.stringify(eventCalendarData),
-          image: '/images/SPCT/CHURCH.jpg'
+          image: ''
         };
 
         console.log('Event Calendar content data:', contentData);

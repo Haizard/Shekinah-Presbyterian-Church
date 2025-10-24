@@ -136,13 +136,17 @@ const DynamicContent = ({
       }
     };
 
-    fetchContent();
+    // Wait for context to finish initial loading before fetching
+    // This ensures we don't show stale data
+    if (!loading) {
+      fetchContent();
+    }
 
     // Clean up the timeout
     return () => {
       clearTimeout(loadingTimeout);
     };
-  }, [section, getContentBySection, refreshTrigger, contentData, isLoading]); // Added isLoading to dependencies
+  }, [section, getContentBySection, refreshTrigger, contentData, isLoading, loading]); // Added loading to dependencies
 
   // Direct API fetch effect - only runs when content is not found in context
   useEffect(() => {
@@ -150,7 +154,8 @@ const DynamicContent = ({
     // 1. We don't have content data
     // 2. We're not already loading
     // 3. We haven't already tried direct fetching
-    if (!contentData && !isLoading && !directFetchAttemptedRef.current) {
+    // 4. Context has finished loading
+    if (!contentData && !isLoading && !directFetchAttemptedRef.current && !loading) {
       const fetchContentDirectly = async () => {
         try {
           console.log(`DynamicContent: No content found for "${section}" in context, fetching directly...`);
@@ -176,7 +181,7 @@ const DynamicContent = ({
 
       fetchContentDirectly();
     }
-  }, [section, contentData, isLoading]);
+  }, [section, contentData, isLoading, loading]);
 
   // Refresh content periodically (every 5 minutes)
   useEffect(() => {
@@ -285,16 +290,12 @@ const DynamicContent = ({
   // If we have content data, always show it even if we're refreshing in the background
   // This prevents flickering between content and loading states
 
-  // If no content found and we're not loading, create default content
+  // If no content found and we're not loading, don't render anything
+  // This prevents showing default/placeholder content that might be outdated
   if (!contentData && !isLoading) {
-    // Create a default content object with the section name
-    setContentData({
-      _id: 'default-' + section,
-      section: section,
-      title: section.charAt(0).toUpperCase() + section.slice(1).replace(/_/g, ' '),
-      content: `Default content for ${section}`
-    });
-    return null;
+    // Return empty div instead of creating default content
+    // This prevents flashing of old data
+    return <div className={`dynamic-content ${className}`} data-section={section} />;
   }
 
   // Removed debug logging to prevent browser overload
@@ -334,7 +335,7 @@ const DynamicContent = ({
             <div className="dynamic-content-text">
               <ContentRendererFactory
                 section={section}
-                content={contentData.content || `Default content for ${section}`}
+                content={contentData.content}
                 truncate={false}
                 contentId={contentData._id}
               />

@@ -107,7 +107,7 @@ const Home = () => {
             showContent={false}
             renderContent={(content) => (
               <img
-                src={getImageUrl(content.image) || '/images/SPCT/CHURCH.jpg'}
+                src={getImageUrl(content.image)}
                 alt="Church Background"
                 className="hero-bg-image"
                 onError={(e) => handleImageError(e)}

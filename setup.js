@@ -80,7 +80,7 @@ const galleryData = [
   {
     title: 'Sunday Worship Service',
     category: 'worship',
-    image: '/images/SPCT/CHURCH.jpg',
+    image: '',
     date: 'May 28, 2023',
     description: 'Moments from our Sunday worship service.'
   }
@@ -92,7 +92,7 @@ const contentData = [
     section: 'about',
     title: 'Who We Are',
     content: '<p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   }
 ];
 

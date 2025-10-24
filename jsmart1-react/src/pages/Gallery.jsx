@@ -30,25 +30,8 @@ const Gallery = () => {
         console.error('Error fetching gallery images:', err);
         setError('Failed to load gallery images. Please try again.');
 
-        // Fallback to sample data if API fails
-        setGalleryImages([
-          {
-            _id: '1',
-            category: 'worship',
-            title: 'Sunday Worship Service',
-            description: 'Our congregation gathered for Sunday worship service.',
-            image: '/images/SPCT/CHURCH.jpg',
-            date: 'June 5, 2023'
-          },
-          {
-            _id: '2',
-            category: 'events',
-            title: 'Annual Church Conference',
-            description: 'Highlights from our annual church conference.',
-            image: '/images/SPCT/CHURCH.jpg',
-            date: 'May 20, 2023'
-          }
-        ]);
+        // Fallback to empty array if API fails
+        setGalleryImages([]);
       } finally {
         setLoading(false);
       }

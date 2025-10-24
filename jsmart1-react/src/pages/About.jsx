@@ -70,7 +70,7 @@ const About = () => {
                   <div className="about-text">
                     <ContentRendererFactory
                       section="about"
-                      content={content.content || 'Default content for about'}
+                      content={content.content}
                       contentId={content._id}
                     />
                   </div>

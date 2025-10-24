@@ -173,7 +173,6 @@ const ImageVerifier = () => {
                   alt="Verification preview"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = '/images/SPCT/CHURCH.jpg';
                     e.target.classList.add('error');
                   }}
                 />

@@ -22,7 +22,7 @@ export const ContentProvider = ({ children }) => {
   // Fetch all content on mount only
   useEffect(() => {
     if (!initialFetchDone.current) {
-      // Removed console log to prevent browser overload
+      console.log('ContentContext: Initial fetch starting...');
       fetchAllContent();
       initialFetchDone.current = true;
     }

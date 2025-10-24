@@ -32,56 +32,56 @@ const allContentData = [
     section: 'hero',
     title: 'Welcome to Shekinah Presbyterian Church',
     content: '<p>A Christ-centered community committed to proclaiming the Kingdom of God.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'about',
     title: 'Who We Are',
     content: '<p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond. We exist to raise up mature disciples of Jesus, build Gospel-driven communities, and extend the love and truth of Christ to every sphere of life.</p><p>We are not just building churches—we are cultivating a missional culture where every believer is equipped to live for Christ, serve others, and make disciples who make disciples.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'vision',
     title: 'Our Vision',
     content: '<p>To be a beacon of light and hope, transforming lives through the Gospel of Jesus Christ.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'mission',
     title: 'Our Mission',
     content: '<p>To make disciples of all nations, teaching them to observe all that Jesus has commanded.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   // Additional sections
   {
     section: 'who_we_are',
     title: 'Who We Are',
     content: '<p><strong>Shekinah Presbyterian Church Tanzania</strong> is a Christ-centered community committed to proclaiming the Kingdom of God across Tanzania and beyond. We exist to raise up mature disciples of Jesus, build Gospel-driven communities, and extend the love and truth of Christ to every sphere of life.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'our_vision',
     title: 'Our Vision',
     content: '<p>To be a beacon of light and hope, transforming lives through the Gospel of Jesus Christ.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'our_mission',
     title: 'Our Mission',
     content: '<p>To make disciples of all nations, teaching them to observe all that Jesus has commanded.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'our_story',
     title: 'Our Story',
     content: '<p>Shekinah Presbyterian Church Tanzania was founded with a vision to bring the transformative power of the Gospel to communities across Tanzania. Our journey began with a small group of believers committed to authentic discipleship and has grown into a vibrant community of faith.</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'our_motto',
     title: 'Our Motto',
     content: '<p>"Proclaiming Christ, Building Communities, Transforming Lives"</p>',
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'how_we_serve',
@@ -108,7 +108,7 @@ const allContentData = [
         icon: 'faBookOpen'
       }
     ]),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'weekly_schedule',
@@ -136,7 +136,7 @@ const allContentData = [
         ]
       }
     ]),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'featured_event',
@@ -148,7 +148,7 @@ const allContentData = [
       location: 'Main Sanctuary',
       description: 'Join us for a special Easter celebration as we commemorate the resurrection of Jesus Christ.'
     }),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'video_gallery',
@@ -157,17 +157,17 @@ const allContentData = [
       {
         title: 'Sunday Sermon: The Power of Faith',
         url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        thumbnail: '/images/SPCT/CHURCH.jpg',
+        thumbnail: '',
         description: 'Pastor James delivers a powerful message on the importance of faith in our daily lives.'
       },
       {
         title: 'Youth Conference Highlights',
         url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        thumbnail: '/images/SPCT/CHURCH.jpg',
+        thumbnail: '',
         description: 'Highlights from our annual youth conference featuring worship, teaching, and fellowship.'
       }
     ]),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   },
   {
     section: 'beliefs',
@@ -189,7 +189,7 @@ const allContentData = [
         }
       ]
     }),
-    image: '/images/SPCT/CHURCH.jpg'
+    image: ''
   }
 ];
 
