@@ -2,8 +2,13 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    // Use environment variable for MongoDB connection string or fallback to the standard connection string
-    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+    // Use environment variable for MongoDB connection string
+    // MONGODB_URI MUST be set in .env file
+    const MONGODB_URI = process.env.MONGODB_URI;
+
+    if (!MONGODB_URI) {
+      throw new Error('MONGODB_URI environment variable is not set. Please configure it in your .env file.');
+    }
 
     // Connect to MongoDB
     const conn = await mongoose.connect(MONGODB_URI);

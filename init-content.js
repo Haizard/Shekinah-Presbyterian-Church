@@ -10,8 +10,15 @@ dotenv.config();
 // MongoDB Connection
 console.log('Connecting to MongoDB Atlas...');
 
-// Use environment variable for MongoDB connection string or fallback to the standard connection string
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://haithammisape:hrz123@cluster0.jeis2ve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// Use environment variable for MongoDB connection string
+// MONGODB_URI MUST be set in .env file
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error('ERROR: MONGODB_URI environment variable is not set!');
+  console.error('Please set MONGODB_URI in your .env file');
+  process.exit(1);
+}
 
 // Connect to MongoDB with additional options
 mongoose.connect(MONGODB_URI, {
